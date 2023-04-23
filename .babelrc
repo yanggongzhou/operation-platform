@@ -1,0 +1,16 @@
+{
+  "presets": [
+    "react-app"
+  ],
+  "plugins": [
+    [
+      "babel-plugin-import",
+      {
+        "libraryName": "lodash",
+        "libraryDirectory": "",
+        "camel2DashComponentName": false
+      },
+      "lodash"
+    ]
+  ]
+}

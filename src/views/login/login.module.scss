@@ -1,0 +1,15 @@
+.loginWarp {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .loginForm {
+    width: 400px;
+    height: 200px;
+  }
+
+  .loginBtn {
+    width: 100%;
+  }
+}
