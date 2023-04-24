@@ -18,7 +18,7 @@ const RouterView = () => {
           {Routers.map((item) => {
             const TempComponent = item.component;
             // 根据组件是否需要权限验证以及登录状态控制页面显示
-            return <Route key={item.name} path={item.path} element={<TempComponent />} />;
+            return <Route key={item.key} path={item.path} element={<TempComponent />} />;
           })}
         </Routes>
       </Suspense>

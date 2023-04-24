@@ -10,7 +10,7 @@ export const commonSlice = createSlice({
     loading: false,
   }),
   reducers: {
-    setLoading: (state: ICommon, action) => {
+    setLoading: (state, action) => {
       return action.payload.loading
     }
   },

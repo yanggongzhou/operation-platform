@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Draft } from "immer";
 import { getUserInfo } from "@/service/user";
 
 // createAsyncThunk会提供一个thunk对象，可以使用它的dispatch方法将请求的结果转发给其他的reducer处理
@@ -30,11 +31,11 @@ export const userSlice = createSlice({
   }),
   reducers: {
 
-    setUserInfo: (state: IUser, action) => {
+    setUserInfo: (state: Draft<IUser>, action) => {
       return Object.assign({}, state,{ ...action.payload }) as IUser;
     },
 
-    resetToken: (state) => {
+    resetToken: (state: Draft<IUser>) => {
       state.userToken = '';
     },
 

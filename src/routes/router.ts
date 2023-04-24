@@ -1,4 +1,3 @@
-// router.ts
 import { lazy, ComponentType } from "react";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -11,12 +10,15 @@ function AsyncComponent(
   NProgress.start();
   return lazy(() => loader().finally(() => NProgress.done()));
 }
-const Home = AsyncComponent(() => import("@/views/home"));
-const Login = AsyncComponent(() => import("@/views/login"));
+// const Home = AsyncComponent(() => import("@/views/home"));
+// const Login = AsyncComponent(() => import("@/views/login"));
+const AdReport = AsyncComponent(() => import("@/views/ad-report"));
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default [
-  { path: "/", key: 1, name: "首页", component: Home },
-  { path: "/home", key: 2, name: "首页", component: Home },
-  { path: "/Login", key: 2, name: "首页", component: Login },
+const Routers = [
+  { path: "/", key: 0, component: AdReport }, // 广告管理
+  // { path: "/", key: 1, component: Home }, // 首页
+  // { path: "/home", key: 2, component: Home }, // 首页
+  // { path: "/Login", key: 3, component: Login }, // 登陆
 ];
+
+export default Routers;

@@ -3,7 +3,7 @@ import axios, {
   AxiosResponse,
   AxiosError,
   AxiosPromise,
-  InternalAxiosRequestConfig
+  InternalAxiosRequestConfig, CreateAxiosDefaults
 } from 'axios';
 import { notification } from "antd";
 import { Store } from "redux";
@@ -37,8 +37,8 @@ const CancelToken = axios.CancelToken;
 const Service = axios.create({
   baseURL: process.env.NODE_ENV === 'production' ? '/dzapi' : '/dzapi',
   withCredentials: true,
-  timeout: 5000
-});
+  timeout: 5000,
+} as CreateAxiosDefaults);
 
 export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {
   if (!Service.redux) {
@@ -64,7 +64,6 @@ Service.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     Reflect.set(request.headers, 'userToken', getToken() || '');
     Reflect.set(request.headers, 'userId', getUserId() || '');
-
     request.cancelToken = new CancelToken((c: any) => {
       pending.push({
         url: request.url,
