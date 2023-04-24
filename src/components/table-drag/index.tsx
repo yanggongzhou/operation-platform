@@ -5,78 +5,65 @@ import {
   SortableContainer,
   SortableContainerProps,
   SortableElement,
-  SortableElementProps
+  SortableElementProps,
 } from 'react-sortable-hoc';
+import { AnyObject } from "antd/es/table/Table";
+import { FixedType } from "rc-table/lib/interface";
+import styles from '@/components/table-drag/index.module.scss';
 
 interface IProps {
-
+  dataSource: AnyObject[];
 }
 
 interface IColItem {
-  title: any;
+  title: string;
   dataIndex: string;
-  key: string
-}
-
-interface IRowItem {
   key: string;
-  name: string;
-  age: number;
-  address: string
+  width: number;
+  fixed?: FixedType
 }
 
 // @ts-ignore
-const SortableItem: React.ComponentClass<{ name: string } & SortableElementProps> = SortableElement(({ name }) =>
-  <span>{name}</span>);
+const SortableItem: React.ComponentClass<{ name: string } & SortableElementProps> = SortableElement(({ name }) => {
+  return <tr className={styles.sortableItem}>{name}</tr>;
+});
 
-const SortableList: React.ComponentClass<{ rows: IRowItem[]; cols: IColItem[] } & SortableContainerProps> =
-  SortableContainer(({ rows, cols }: { rows: IRowItem[]; cols: IColItem[] }) => <Table columns={cols} dataSource={rows}/>);
+const SortableList: React.ComponentClass<{ cols: IColItem[] } & SortableContainerProps> =
+  SortableContainer(({ cols }: { cols: IColItem[] }) => {
+    return <thead className={styles.sortableBox}>
+      { cols.map((val, ind) => {
+        return <SortableItem key={val.dataIndex} name={val.title} index={ind}/>
+      }) }
+    </thead>;
+  });
 
-export const TableDrag: FC<IProps> = () => {
+export const TableDrag:FC<IProps> = ({dataSource}) => {
 
-  const [cols, setCols] = useState([
-    {
-      title: <SortableItem name={'ceshi'} index={0}/>,
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: <SortableItem name={'年龄'} index={1}/>,
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: <SortableItem name={'住址'} index={2}/>,
-      dataIndex: 'address',
-      key: 'address',
-    },
+  const [cols, setCols] = useState<IColItem[]>([
+    { title: '名字', dataIndex: 'name', key: 'name', width: 200, fixed: 'left' },
+    { title: '年龄', dataIndex: 'age', key: 'age', width: 200, fixed: 'left' },
+    { title: '住址', dataIndex: 'address', key: 'address', width: 200, fixed: 'left' },
+    { title: '名字1', dataIndex: 'name1', key: 'name1', width: 200, fixed: 'left' },
+    { title: '年龄1', dataIndex: 'age1', key: 'age1', width: 200 },
+    { title: '住址1', dataIndex: 'address1', key: 'address1', width: 200 },
   ]);
 
-  const [rows, setRows] = useState([
-    {
-      key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    },
-    {
-      key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    },
-  ]);
-
-
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
-    console.log('onSortEnd: ', oldIndex, newIndex);
-    setCols(cols => {
-      // const data = JSON.parse(JSON.stringify(cols));
-      return arrayMove(cols, oldIndex, newIndex);
-    });
+  const onSortEndHandle = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
+    console.log('onSortEndHandle: ', oldIndex, newIndex);
+    setCols(cols => arrayMove(cols, oldIndex, newIndex));
   };
 
   return (
-    <SortableList cols={cols} rows={rows} onSortEnd={onSortEnd}/>
+    <div>
+      <table>
+        <SortableList axis="x" lockAxis="x" cols={cols} onSortEnd={onSortEndHandle}/>
+      </table>
+      <Table
+        scroll={{x: 1000}}
+        pagination={false}
+        bordered
+        columns={cols}
+        dataSource={dataSource}/>
+    </div>
   );
 };
