@@ -1,0 +1,50 @@
+.adHeaderBox {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .adHeaderLeft {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .adHeaderInput {
+      margin: 0 10px !important;
+      font-weight: 700 !important;
+      font-size: 18px !important;
+      background-color: transparent;
+      border: 2px solid transparent;
+      box-shadow: none;
+      padding: 0 10px;
+
+      &:hover {
+        box-shadow: 0 0 0 1px grey;
+        background-color: #FFFFFF;
+      }
+    }
+
+    .adHeaderInputFocus {
+      margin: 0 10px !important;
+      font-weight: 700 !important;
+      font-size: 18px !important;
+      background-color: #FFFFFF;
+      box-shadow: 0 0 0 2px #1E90FFFF;
+      border: 2px solid transparent;
+      padding: 0 10px;
+    }
+
+  }
+
+  .adHeaderRight {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .adHeaderUpdateTime {
+      font-size: 14px;
+      margin-right: 10px;
+    }
+  }
+}
