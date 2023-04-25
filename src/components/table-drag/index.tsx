@@ -32,7 +32,7 @@ const SortableList: React.ComponentClass<{ cols: IColItem[] } & SortableContaine
   SortableContainer(({ cols }: { cols: IColItem[] }) => {
     return <thead className={styles.sortableBox}>
       { cols.map((val, ind) => {
-        return <SortableItem key={val.dataIndex} name={val.title} index={ind}/>
+        return <SortableItem key={val.dataIndex} name={val.title} index={ind} disabled={ind === 1}/>
       }) }
     </thead>;
   });

@@ -15,6 +15,7 @@ const history = createHashHistory();
 initAxios(store, history);
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

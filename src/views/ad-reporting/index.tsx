@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import styles from "@/views/ad-report/index.module.scss";
+import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 
-const AdReport = () => {
+const AdReporting = () => {
 
   const [rows, setRows] = useState([
     { key: '1', name: '胡彦斌', age: 32, address: '西湖区湖底公园1号' },
@@ -11,6 +11,7 @@ const AdReport = () => {
 
   return (
     <div className={styles.adReportWrap}>
+
       <div className={styles.adReportBox}>
         <TableDrag dataSource={rows}/>
       </div>
@@ -18,4 +19,4 @@ const AdReport = () => {
   );
 };
 
-export default AdReport;
+export default AdReporting;

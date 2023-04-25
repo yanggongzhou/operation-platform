@@ -1,0 +1,39 @@
+.adsReportingWrap {
+  padding: 16px 24px 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .adsTitle {
+    font-weight: 700;
+    color: rgba(0,0,0,.75);
+  }
+
+  .adsMain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .adsHeader {
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1), 0 0 1px 0 rgba(0,0,0,.1);
+    border-radius: 8px;
+  }
+
+  .adsBox {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1), 0 0 1px 0 rgba(0,0,0,.1);
+    border-radius: 8px;
+    flex: 1;
+    padding: 15px;
+  }
+}
+
+.copyModelBtnBox {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
