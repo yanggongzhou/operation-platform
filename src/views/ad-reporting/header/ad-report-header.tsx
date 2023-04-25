@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { Button, Input, Tooltip } from "antd";
 import { LeftOutlined, SaveOutlined } from "@ant-design/icons";
-import styles from "@/views/ad-reporting/components/ad-report-header.module.scss";
+import styles from "@/views/ad-reporting/header/ad-report-header.module.scss";
 
 interface IProps {
   title: string;

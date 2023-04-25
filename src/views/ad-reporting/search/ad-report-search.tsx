@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
-import { TreeSelect } from 'antd';
-import styles from "@/views/ad-reporting/components/ad-report-search.module.scss";
+import React, { FC, useRef, useState } from "react";
+import { Button, Popconfirm, TreeSelect } from 'antd';
+import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 
 const treeData = [
   {
@@ -30,6 +30,9 @@ interface IProps {
 
 const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const [value, setValue] = useState<string>();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const ceshiRef = useRef<HTMLDivElement>({} as HTMLDivElement);
   const onChange = (newValue: string) => {
     console.log(newValue);
     setValue(newValue);
@@ -46,6 +49,22 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
         treeDefaultExpandAll
         onChange={onChange}
       />
+
+      <div ref={ceshiRef} className={styles.adSearchModalBox}>
+        <Button onClick={() => setIsOpen(true)}>ceshimodal</Button>
+        <Popconfirm
+          title="Delete the task"
+          description="Are you sure to delete this task?"
+          open={isOpen}
+          onConfirm={() => setIsOpen(false)}
+          onCancel={() => setIsOpen(false)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <h4>报告名称</h4>
+        </Popconfirm>
+      </div>
+
     </div>
   );
 };

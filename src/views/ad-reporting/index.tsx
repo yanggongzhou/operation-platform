@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
-import AdReportHeader from "@/views/ad-reporting/components/ad-report-header";
-import AdReportSearch from "@/views/ad-reporting/components/ad-report-search";
+import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
+import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 
 const AdReporting = () => {
   const navigate = useNavigate();

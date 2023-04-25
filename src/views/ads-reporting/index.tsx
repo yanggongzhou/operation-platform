@@ -39,7 +39,7 @@ const AdsReporting = () => {
   // 获取报表列表
   const getList = (pageData: { page: number; pageSize: number; }) => {
     console.log('获取报表列表：', pageData.page, pageData.pageSize);
-    setPageInfo({ ...pageData })
+    setPageInfo({ ...pageData });
     setTotal(1000);
     setRows(prevState => prevState);
   };

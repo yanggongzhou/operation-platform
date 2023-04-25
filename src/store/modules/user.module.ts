@@ -7,7 +7,6 @@ export const userInfoAsync = createAsyncThunk(
   'user/getUserInfo',
   async () => {
     const response = await getUserInfo();
-    // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
@@ -32,7 +31,7 @@ export const userSlice = createSlice({
   reducers: {
 
     setUserInfo: (state: Draft<IUser>, action) => {
-      return Object.assign({}, state,{ ...action.payload }) as IUser;
+      return Object.assign({}, state, { ...action.payload }) as IUser;
     },
 
     resetToken: (state: Draft<IUser>) => {
@@ -42,14 +41,14 @@ export const userSlice = createSlice({
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
   extraReducers: (builder) => {
-    builder
-      .addCase(userInfoAsync.pending, (state) => {
-        // state.status = 'loading';
-      })
-      .addCase(userInfoAsync.fulfilled, (state, action) => {
-        // state.status = 'idle';
-        // state.value += action.payload;
-      });
+    // builder
+    //   .addCase(userInfoAsync.pending, (state) => {
+    //     // state.status = 'loading';
+    //   })
+    //   .addCase(userInfoAsync.fulfilled, (state, action) => {
+    //     // state.status = 'idle';
+    //     // state.value += action.payload;
+    //   });
   }
 });
 

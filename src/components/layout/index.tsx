@@ -1,12 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { userInfoAsync } from "@/store/modules/user.module";
-import { AppDispatch } from "@/store";
+import { useAppDispatch } from "@/store";
 
 const Layout = () => {
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(userInfoAsync());

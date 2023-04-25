@@ -54,7 +54,7 @@ export const TableDrag:FC<IProps> = ({dataSource}) => {
   };
 
   return (
-    <div>
+    <>
       <table>
         <SortableList axis="x" lockAxis="x" cols={cols} onSortEnd={onSortEndHandle}/>
       </table>
@@ -64,6 +64,6 @@ export const TableDrag:FC<IProps> = ({dataSource}) => {
         bordered
         columns={cols}
         dataSource={dataSource}/>
-    </div>
+    </>
   );
 };

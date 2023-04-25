@@ -8,3 +8,13 @@
 
 
 }
+
+.adSearchModalBox {
+  position: relative;
+  z-index: 9999;
+  .adSearchModal {
+    color: red;
+    z-index: 9999;
+  }
+}
+
