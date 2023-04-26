@@ -1,11 +1,16 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { Button, Popover, Space } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import { EGroupField, NGroupField } from "@/views/ad-reporting/index.interfaces";
 
-interface IProps {}
+interface IProps {
+  field: EGroupField;
+  children: React.ReactNode;
+}
 
-const SearchPop: FC<IProps> = () => {
+const SearchPop: FC<IProps> = ({ field, children }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const isUseful = useRef(false);
 
   const confirm = () => {
     setIsOpen(false)
@@ -14,8 +19,14 @@ const SearchPop: FC<IProps> = () => {
     });
   };
 
+  useEffect(() => {
+    setTimeout(() => isUseful.current = true, 1000);
+  }, [])
+
   const handleOpenChange = (newOpen: boolean) => {
-    setIsOpen(newOpen);
+    if (isUseful.current) {
+      setIsOpen(newOpen);
+    }
   };
 
   return <Popover
@@ -23,13 +34,13 @@ const SearchPop: FC<IProps> = () => {
     destroyTooltipOnHide
     placement={'bottom'}
     defaultOpen={true}
-    title="Delete the task"
-    content="Are you sure to delete this task?"
+    title={<div>{NGroupField[field]}</div>}
+    content={children}
     open={isOpen}
     onOpenChange={handleOpenChange}
   >
     <Space.Compact>
-      <Button type={'default'} onClick={() => setIsOpen(true)}>Combine input and button</Button>
+      <Button type={'default'} onClick={() => setIsOpen(true)}>{NGroupField[field]}</Button>
       <Button type="primary" icon={<CloseOutlined />} />
     </Space.Compact>
   </Popover>;

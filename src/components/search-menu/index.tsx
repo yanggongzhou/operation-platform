@@ -1,60 +1,32 @@
 import React, { FC, useState } from 'react';
-import { Button, Popover, Space, TreeSelect } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { TreeSelect } from "antd";
+import { EGroupField, NGroupField } from "@/views/ad-reporting/index.interfaces";
 
-interface IProps {}
+interface IProps {
+  onChoose: (field: EGroupField) => void;
+}
 
+const treeData = Object.keys(NGroupField).map((field) => (
+  { label: NGroupField[field as EGroupField], value: field }
+));
 
-const treeData = [
-  {
-    value: 'xxx',
-    title: '广告',
-    disabled: true,
-    children: [
-      {
-        value: 'leaf1',
-        title: '广告组',
-      },
-      {
-        value: 'leaf2',
-        title: '广告系列',
-      },
-      {
-        value: 'parent 1-1',
-        title: '广告组',
-      },
-    ],
-  },
-  {
-    value: 'parent 1-22',
-    title: 'App',
-    disabled: true,
-    children: [
-      {
-        value: 'appId',
-        title: <b style={{ color: '#08c' }}>App</b>,
-      },
-    ],
-  },
-];
+const SearchMenu: FC<IProps> = ({ onChoose }) => {
 
-const SearchMenu: FC<IProps> = () => {
+  const [value, setValue] = useState<EGroupField>();
 
-  const [value, setValue] = useState<string>();
-
-  const onChange = (newValue: string) => {
-    console.log(newValue);
-    setValue(newValue);
+  const onChange = (newValue: EGroupField) => {
+    onChoose(newValue);
+    setValue(undefined);
   };
 
   return (
     <TreeSelect
       showSearch
-      style={{ width: '278px' }}
+      style={{ width: '278px', marginLeft: '20px' }}
       value={value}
       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
       treeData={treeData}
-      placeholder="Please select"
+      placeholder="请搜索和筛选"
       treeDefaultExpandAll
       onChange={onChange}
     />
