@@ -25,19 +25,21 @@ interface IColItem {
 
 // @ts-ignore
 const SortableItem: React.ComponentClass<{ name: string } & SortableElementProps> = SortableElement(({ name }) => {
-  return <tr className={styles.sortableItem}>{name}</tr>;
+  return (
+    <tr className={styles.sortableItem}>{name}</tr>
+  );
 });
 
 const SortableList: React.ComponentClass<{ cols: IColItem[] } & SortableContainerProps> =
   SortableContainer(({ cols }: { cols: IColItem[] }) => {
     return <thead className={styles.sortableBox}>
-      { cols.map((val, ind) => {
-        return <SortableItem key={val.dataIndex} name={val.title} index={ind} disabled={ind === 1}/>
-      }) }
+      {cols.map((val, ind) => {
+        return <SortableItem key={val.dataIndex} name={val.title} index={ind} disabled={ind === 1}/>;
+      })}
     </thead>;
   });
 
-export const TableDrag:FC<IProps> = ({dataSource}) => {
+export const TableDrag: FC<IProps> = ({ dataSource }) => {
 
   const [cols, setCols] = useState<IColItem[]>([
     { title: '名字', dataIndex: 'name', key: 'name', width: 200, fixed: 'left' },
@@ -59,7 +61,7 @@ export const TableDrag:FC<IProps> = ({dataSource}) => {
         <SortableList axis="x" lockAxis="x" cols={cols} onSortEnd={onSortEndHandle}/>
       </table>
       <Table
-        scroll={{x: 1000}}
+        scroll={{ x: 1000 }}
         pagination={false}
         bordered
         columns={cols}

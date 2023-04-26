@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 
 const AdReporting = () => {
+  const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
   const isNeedSave = useRef(true);
   const isPaint = useRef(true);
@@ -23,6 +25,7 @@ const AdReporting = () => {
   const windowBack = () => {
     window.onpopstate = function () {
       if (isNeedSave.current) {
+        messageApi.warning('提示保存')
         window.history.pushState('forward', '', '');
         window.history.forward();
       } else {
@@ -44,6 +47,7 @@ const AdReporting = () => {
   const onSave = (name: string) => {
     console.log('保存报表:', name);
     isNeedSave.current = false;
+    messageApi.success('已保存')
   };
   // 搜索
   const onSearch = () => {
@@ -52,7 +56,7 @@ const AdReporting = () => {
   // 返回
   const onBackTo = () => {
     if (isNeedSave.current) {
-
+      messageApi.warning('提示保存')
     } else {
       navigate('/adsReporting', { replace: true });
     }
@@ -60,6 +64,7 @@ const AdReporting = () => {
 
   return (
     <div className={styles.adReportWrap}>
+      {contextMsgHolder}
       <AdReportHeader title={'未命名广告'} onSave={onSave} onBackTo={onBackTo}/>
       <AdReportSearch onSearch={onSearch}/>
       <div className={styles.adReportBox}>

@@ -5,16 +5,21 @@
   box-shadow: 0 0 5px 0 rgba(0,0,0,.1), 0 0 1px 0 rgba(0,0,0,.1);
   border-radius: 8px;
 
+  .adSearchTop {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
 
+  .adSearchBottom {
+    border-top: 1px dashed #e8e8e8;
+    padding-top: 15px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 
-}
-
-.adSearchModalBox {
-  position: relative;
-  z-index: 9999;
-  .adSearchModal {
-    color: red;
-    z-index: 9999;
+    .timeRange {
+      margin-left: 20px;
+    }
   }
 }
-

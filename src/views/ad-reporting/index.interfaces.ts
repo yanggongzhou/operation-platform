@@ -17,3 +17,14 @@ export enum ESegmentation {
   PixelID = '像素ID',
   LineOfBusiness = '业务线',
 }
+
+// 消耗
+export enum EConsume {
+  All = '2',
+  FWC = '3',
+}
+
+export const ConsumeOptions = [
+  { value: EConsume.All, label: '所有数据' },
+  { value: EConsume.FWC, label: '过滤无消耗' },
+];

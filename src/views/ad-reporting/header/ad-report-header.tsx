@@ -12,6 +12,7 @@ interface IProps {
 const AdReportHeader: FC<IProps> = ({ title = '', onSave, onBackTo }) => {
   const [isFocus, setIsFocus] = useState(false);
   const [adName, setAdName] = useState(title);
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAdName(e.target.value);
   };
@@ -35,7 +36,6 @@ const AdReportHeader: FC<IProps> = ({ title = '', onSave, onBackTo }) => {
 
       <div className={styles.adHeaderRight}>
         <div className={styles.adHeaderUpdateTime}>更新时间: 2023-04-25 12:00:00</div>
-
       </div>
 
     </div>

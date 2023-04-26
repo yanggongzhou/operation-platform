@@ -1,70 +1,50 @@
-import React, { FC, useRef, useState } from "react";
-import { Button, Popconfirm, TreeSelect } from 'antd';
+import React, { FC } from "react";
+import { Select } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
-
-const treeData = [
-  {
-    title: 'Node1',
-    value: '0-0',
-    children: [
-      {
-        title: 'Child Node1',
-        value: '0-0-1',
-      },
-      {
-        title: 'Child Node2',
-        value: '0-0-2',
-      },
-    ],
-  },
-  {
-    title: 'Node2',
-    value: '0-1',
-  },
-];
-
+import SearchPop from "@/components/search-pop";
+import SearchMenu from "@/components/search-menu";
+import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
+import { ConsumeOptions, EConsume } from "@/views/ad-reporting/index.interfaces";
 
 interface IProps {
   onSearch: () => void;
 }
 
 const AdReportSearch: FC<IProps> = ({ onSearch }) => {
-  const [value, setValue] = useState<string>();
-  const [isOpen, setIsOpen] = useState(false);
 
-  const ceshiRef = useRef<HTMLDivElement>({} as HTMLDivElement);
-  const onChange = (newValue: string) => {
-    console.log(newValue);
-    setValue(newValue);
+  // 消耗过滤
+  const consumeSearch = (value: string) => {
+    console.log(`消耗过滤: ${value}`);
+    onSearch();
+  };
+
+  // 日期范围搜索
+  const onTimeSearch = (startDate: string, endDate: string) => {
+    console.log('日期范围搜索 From: ', startDate, ', to: ', endDate);
+    onSearch();
   };
 
   return (
-    <div  className={styles.adSearchWrap}>
-      <TreeSelect
-        style={{ width: '100%' }}
-        value={value}
-        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-        treeData={treeData}
-        placeholder="Please select"
-        treeDefaultExpandAll
-        onChange={onChange}
-      />
-
-      <div ref={ceshiRef} className={styles.adSearchModalBox}>
-        <Button onClick={() => setIsOpen(true)}>ceshimodal</Button>
-        <Popconfirm
-          title="Delete the task"
-          description="Are you sure to delete this task?"
-          open={isOpen}
-          onConfirm={() => setIsOpen(false)}
-          onCancel={() => setIsOpen(false)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <h4>报告名称</h4>
-        </Popconfirm>
+    <div className={styles.adSearchWrap}>
+      <div className={styles.adSearchTop}>
+        <SearchPop/>
+        <SearchMenu/>
       </div>
-
+      <div className={styles.adSearchBottom}>
+        <div>
+          <span>消耗过滤: </span>
+          <Select
+            defaultValue={EConsume.All}
+            style={{ width: 150 }}
+            onChange={consumeSearch}
+            options={ConsumeOptions}
+          />
+        </div>
+        <div className={styles.timeRange}>
+          <span>时间范围: </span>
+          <AdReportSearchTime onSearch={onTimeSearch}/>
+        </div>
+      </div>
     </div>
   );
 };
