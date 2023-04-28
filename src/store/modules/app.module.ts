@@ -1,23 +1,47 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EDevice, IAppStore } from "@/store/store.interfaces";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IAppStore } from "@/store/store.interfaces";
+import { netBaseInfoList } from "@/service/ads-reporting";
+import { INetBaseInfoList } from "@/service/index.interfaces";
+
+export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
+  'app/netBaseInfoList',
+  async () => {
+    return await netBaseInfoList();
+  }
+);
 
 export const appSlice = createSlice({
   name: 'app',
   initialState: (): IAppStore => ({
-    device: EDevice.mobile,
-    footerAdVisible: false, // m底部横幅是否显示
+    app: [],
+    country: [],
+    pline: [],
+    language: [],
+    media: [],
+    type: [],
+    device: [],
   }),
   reducers: {
-    setDevice: (state: IAppStore, action: PayloadAction<EDevice>) => {
-      state.device = action.payload;
-    },
-
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
-      state.footerAdVisible = action.payload;
+      // state.footerAdVisible = action.payload;
     },
+  },
+  // 在extraReducers中可以对请求结果的成功失败，做不同的处理
+  extraReducers: (builder) => {
+    builder
+      .addCase(baseInfoAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetBaseInfoList>) => {
+        const { app = [], country = [], pline = [], language = [], media = [], type = [], device = [] } = action.payload;
+        state.app = app;
+        state.country = country;
+        state.pline = pline;
+        state.language = language;
+        state.media = media;
+        state.type = type;
+        state.device = device;
+      });
   }
 });
 
-export const { setDevice, setFooterAdVisible } = appSlice.actions;
+export const { setFooterAdVisible } = appSlice.actions;
 
 export const appReducer = appSlice.reducer;

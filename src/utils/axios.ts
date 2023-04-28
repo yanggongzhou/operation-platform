@@ -10,7 +10,6 @@ import { Store } from "redux";
 import { HashHistory } from "history";
 import { NavigateFunction } from "react-router";
 import { AppState } from "@/store";
-import { resetToken } from '@/store/modules/user.module';
 import { getToken, getUserId } from '@/utils/cookies';
 
 // 定义接口
@@ -35,7 +34,7 @@ declare module 'axios' {
 const pending: PendingType[] = [];
 const CancelToken = axios.CancelToken;
 const Service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '/dzapi' : '/dzapi',
+  baseURL: '/api',
   withCredentials: true,
   timeout: 5000,
 } as CreateAxiosDefaults);
@@ -63,7 +62,6 @@ export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {
 Service.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     Reflect.set(request.headers, 'userToken', getToken() || '');
-    Reflect.set(request.headers, 'userId', getUserId() || '');
     request.cancelToken = new CancelToken((c: any) => {
       pending.push({
         url: request.url,
@@ -84,15 +82,15 @@ Service.interceptors.request.use(
 Service.interceptors.response.use(
   (response: AxiosResponse): AxiosPromise<any> => {
     try {
-      if (response.data.retCode !== 0) {
-        if (response.data.retCode === 6) {
-          // Service.navigate('/login');
-          // // 清除用户信息
-          // Service.redux.dispatch(resetToken());
-          notification.error({ message: '登录失效', placement: 'topRight' });
-        }
-        notification.error({ message: response.data.retMsg, placement: 'topRight' });
-        return Promise.reject(response.data.retMsg);
+      if (response.data.code !== 200) {
+        // if (response.data.code === 6) {
+        //   Service.navigate('/login');
+        //   // 清除用户信息
+        //   Service.redux.dispatch(resetToken());
+        //   notification.error({ message: '登录失效', placement: 'topRight' });
+        // }
+        notification.error({ message: response.data.msg, placement: 'topRight' });
+        return Promise.reject(response.data.msg);
       }
       return response.data.data;
     } catch (err) {
@@ -110,7 +108,7 @@ Service.interceptors.response.use(
     // } else if (err.response?.status === 404) {
     //   Service.navigate('/404')
     } else if (err.response) {
-      const { data } = err.response;
+      // const { data } = err.response;
       // notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
 
     } else {

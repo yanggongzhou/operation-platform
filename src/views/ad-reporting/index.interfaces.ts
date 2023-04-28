@@ -45,6 +45,8 @@ export enum EGroupField {
   Country = 'country',
   Url = 'url',
   AdType = 'adType',
+  Device = 'device',
+  Pixel = 'pixel'
 }
 
 export const NGroupField = {
@@ -62,6 +64,8 @@ export const NGroupField = {
   [EGroupField.Country]: '国家',
   [EGroupField.Url]: 'url',
   [EGroupField.AdType]: '投放类型',
+  [EGroupField.Device]: '设备',
+  [EGroupField.Pixel]: '像素ID',
 };
 
 /** 操作类型 in为包含，nin为不包含，eq为相等，neq为不相等 */

@@ -6,11 +6,14 @@ import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-tim
 import {
   ConsumeOptions,
   EConsume,
-  EGroupField, EOperator,
+  EGroupField,
+  EOperator,
   ISearchFieldItem,
   NGroupField
 } from "@/views/ad-reporting/index.interfaces";
-import AdReportSearchPop from "@/views/ad-reporting/search/ad-report-search-pop";
+import AdPop from "@/views/ad-reporting/pop/ad-pop";
+import CheckedPop from "@/views/ad-reporting/pop/checked-pop";
+import CountryPop from "@/views/ad-reporting/pop/country-pop";
 
 interface IProps {
   onSearch: () => void;
@@ -44,7 +47,14 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
     <div className={styles.adSearchWrap}>
       <div className={styles.adSearchTop}>
         {fieldList.map((fieldItem, index) => {
-          return <AdReportSearchPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
+          // @ts-ignore
+          if([EGroupField.AdId, EGroupField.Optimizer, EGroupField.AccountId, EGroupField.Url, EGroupField.Pixel].includes(fieldItem.fieldName)) {
+            return <AdPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
+          } else if (EGroupField.Country === fieldItem.fieldName) {
+            return <CountryPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
+          } else {
+            return <CheckedPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
+          }
         })}
         <SearchMenu onChoose={onChoose}/>
       </div>

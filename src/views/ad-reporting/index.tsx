@@ -5,13 +5,17 @@ import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
+import { useAppDispatch } from "@/store";
+import { baseInfoAsync } from "@/store/modules/app.module";
 
 const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
   const isNeedSave = useRef(true);
   const isPaint = useRef(true);
+  const dispatch = useAppDispatch();
   useEffect(() => {
+    dispatch(baseInfoAsync());
     windowBack();
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理

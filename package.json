@@ -42,10 +42,9 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
-    "@reduxjs/toolkit": "^1.9.5",
+    "@reduxjs/toolkit": "^1.9.3",
     "@types/js-cookie": "^3.0.3",
     "@types/nprogress": "^0.2.0",
-    "@types/react-virtualized": "^9.21.21",
-    "eslint-plugin-unicorn": "^46.0.0"
+    "@types/react-virtualized": "^9.21.21"
   }
 }

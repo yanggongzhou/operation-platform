@@ -4,6 +4,7 @@ import styles from "@/views/ads-reporting/index.module.scss";
 import { IAdsDataType } from "@/views/ads-reporting/index.interfaces";
 import AdsReportingTable from "@/views/ads-reporting/components/ads-reporting-table";
 import AdsReportingHeader from "@/views/ads-reporting/components/ads-reporting-header";
+import { netAdsList } from "@/service/ads-reporting";
 
 const AdsReporting = () => {
   const navigate = useNavigate();
@@ -37,11 +38,13 @@ const AdsReporting = () => {
     navigate('/adReporting');
   };
   // 获取报表列表
-  const getList = (pageData: { page: number; pageSize: number; }) => {
+  const getList = async (pageData: { page: number; pageSize: number; }) => {
     console.log('获取报表列表：', pageData.page, pageData.pageSize);
     setPageInfo({ ...pageData });
     setTotal(1000);
     setRows(prevState => prevState);
+    const list = await netAdsList(pageData.page, pageData.pageSize);
+    console.log('list:', list)
   };
 
   return (

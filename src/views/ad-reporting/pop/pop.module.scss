@@ -1,0 +1,13 @@
+.popSelect {
+  width: 200px;
+}
+
+.checkedPop {
+  display: flex;
+  flex-direction: column;
+  :global {
+    .ant-checkbox-group-item {
+      margin-left: 8px;
+    }
+  }
+}

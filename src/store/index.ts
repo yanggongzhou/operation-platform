@@ -1,8 +1,9 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action, ThunkDispatch, AnyAction } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { appReducer } from "@/store/modules/app.module";
-import { userReducer } from "@/store/modules/user.module";
-import { commonReducer } from "@/store/modules/common.module";
+import { IUser, userReducer } from "@/store/modules/user.module";
+import { commonReducer, ICommon } from "@/store/modules/common.module";
+import { IAppStore } from "@/store/store.interfaces";
 
 export function makeStore() {
   return configureStore({
@@ -10,12 +11,17 @@ export function makeStore() {
       app: appReducer,
       user: userReducer,
       common: commonReducer
-    },
+    }
   });
 }
+export const store = makeStore();
 
 export type AppState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch & ThunkDispatch<{
+  app: IAppStore,
+  user: IUser,
+  common: ICommon
+}, undefined, AnyAction>
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppState,
@@ -27,5 +33,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
-
-export const store = makeStore();

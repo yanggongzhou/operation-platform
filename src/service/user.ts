@@ -2,7 +2,7 @@ import Service from "@/utils/axios";
 /**
  * 获取用户信息
  */
-export const getUserInfo = async (): Promise<{ data: string }> => await Service.post('/script-editor/entry/4002');
+export const getUserInfo = async () => await Service.post('/script-editor/entry/4002');
 
 export interface ILoginForm {
   userName: string;

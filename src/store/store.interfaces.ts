@@ -1,9 +1,4 @@
-export enum EDevice {
-  mobile = 1,
-  pc = 2,
-}
+import { INetBaseInfoList } from "@/service/index.interfaces";
 
-export interface IAppStore {
-  device: EDevice;
-  footerAdVisible: boolean;
+export interface IAppStore extends INetBaseInfoList {
 }
