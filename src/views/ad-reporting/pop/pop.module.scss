@@ -2,6 +2,11 @@
   width: 200px;
 }
 
+.adPopBox {
+  flex-direction: column;
+  align-items: start;
+}
+
 .checkedPop {
   display: flex;
   flex-direction: column;

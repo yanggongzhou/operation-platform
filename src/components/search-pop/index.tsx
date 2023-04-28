@@ -6,9 +6,10 @@ import styles from '@/components/search-pop/index.module.scss';
 interface IProps {
   field: EGroupField;
   children: React.ReactNode;
+  onDelete: () => void;
 }
 
-const SearchPop: FC<IProps> = ({ field, children }) => {
+const SearchPop: FC<IProps> = ({ field, children, onDelete }) => {
   const [isOpen, setIsOpen] = useState(true);
   const isUseful = useRef(false);
 
@@ -29,43 +30,33 @@ const SearchPop: FC<IProps> = ({ field, children }) => {
     }
   };
 
-  // return <Popover
-  //   trigger={'click'}
-  //   destroyTooltipOnHide
-  //   placement={'bottom'}
-  //   defaultOpen={true}
-  //   title={<div>{NGroupField[field]}</div>}
-  //   content={children}
-  //   open={isOpen}
-  //   onOpenChange={handleOpenChange}
-  // >
-  //   <Space.Compact>
-  //     <Button type={'default'} onClick={() => setIsOpen(true)}>{NGroupField[field]}</Button>
-  //     <Button type="primary" icon={<CloseOutlined />} />
-  //   </Space.Compact>
-  // </Popover>;
-
-
   return (
-    <div className={styles.searchPopWrap}>
-      <Space.Compact>
-        <Button type={'default'} onClick={() => setIsOpen(true)}>{NGroupField[field]}</Button>
-        <Button type="primary" icon={<CloseOutlined/>}/>
-      </Space.Compact>
-
-      {isOpen ? <div className={styles.popBox}>
-        <div className={styles.popTitle}>{NGroupField[field]}</div>
-        <div className={styles.popMain}>
-          {children}
+    <Space.Compact className={styles.popShowBox}>
+      <Popover
+        className={styles.searchPopWrap}
+        trigger={'click'}
+        destroyTooltipOnHide
+        placement={'bottomLeft'}
+        defaultOpen={true}
+        title={<div className={styles.popTitle}>{NGroupField[field]}</div>}
+        content={<div className={styles.popBox}>
+          <div className={styles.popMain}>
+            {children}
+          </div>
           <div className={styles.popFooter}>
             <Space>
               <Button onClick={() => setIsOpen(false)}>取消</Button>
               <Button type="primary" onClick={() => setIsOpen(false)}>应用</Button>
             </Space>
           </div>
-        </div>
-      </div> : null}
-    </div>
+        </div>}
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+      >
+        <div className={styles.popName} onClick={() => setIsOpen(true)}>{NGroupField[field]}</div>
+      </Popover>
+      <div className={styles.popCancel} onClick={() => onDelete()}><CloseOutlined /></div>
+    </Space.Compact>
   );
 };
 

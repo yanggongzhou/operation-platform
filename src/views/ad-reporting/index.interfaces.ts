@@ -40,7 +40,6 @@ export enum EGroupField {
   Language = 'language',
   BookId = 'bookId',
   Pline = 'pline',
-  Date = 'date',
   Media = 'media',
   Country = 'country',
   Url = 'url',
@@ -50,7 +49,7 @@ export enum EGroupField {
 }
 
 export const NGroupField = {
-  [EGroupField.AppId]: 'app',
+  [EGroupField.AppId]: 'App',
   [EGroupField.CampaignId]: '广告计划',
   [EGroupField.SetId]: '广告组',
   [EGroupField.AdId]: '广告',
@@ -59,10 +58,9 @@ export const NGroupField = {
   [EGroupField.Language]: '语种',
   [EGroupField.BookId]: '书籍',
   [EGroupField.Pline]: '业务线',
-  [EGroupField.Date]: '按日细分',
   [EGroupField.Media]: '媒体',
   [EGroupField.Country]: '国家',
-  [EGroupField.Url]: 'url',
+  [EGroupField.Url]: 'URL：落地页ID',
   [EGroupField.AdType]: '投放类型',
   [EGroupField.Device]: '设备',
   [EGroupField.Pixel]: '像素ID',

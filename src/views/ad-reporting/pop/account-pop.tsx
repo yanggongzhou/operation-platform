@@ -12,7 +12,7 @@ interface IProps {
   onDelete: () => void;
 }
 
-const AdPop: FC<IProps> = ({ fieldItem, onDelete }) => {
+const AccountPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   const [data, setData] = useState<SelectProps['options']>([]);
   const [value, setValue] = useState<string>();
 
@@ -71,4 +71,4 @@ const AdPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   );
 };
 
-export default AdPop;
+export default AccountPop;

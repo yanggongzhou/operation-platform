@@ -4,7 +4,7 @@ import { Select, Radio, Space } from 'antd';
 import { debounce } from 'throttle-debounce';
 import { EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 import SearchPop from "@/components/search-pop";
-import { netAccountList } from "@/service/ads-reporting";
+import { netOptimizerList } from "@/service/ads-reporting";
 import styles from '@/views/ad-reporting/pop/pop.module.scss';
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
   onDelete: () => void;
 }
 
-const AdPop: FC<IProps> = ({ fieldItem, onDelete }) => {
+const OptimizerPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   const [data, setData] = useState<SelectProps['options']>([]);
   const [value, setValue] = useState<string>();
 
@@ -26,14 +26,15 @@ const AdPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   const handleFocus = () => {
 
   };
-  // 获取广告账户数据
-  const getAccountList = async (search: string) => {
-    const accountList = await netAccountList(search);
+  // 获取优化师数据
+  const getOptimizerList = async () => {
+    const accountList = await netOptimizerList();
     console.log('accountList:', accountList);
+
   };
 
-  const handleSearch = debounce(500, (newValue: string) => {
-    getAccountList(newValue);
+  const handleSearch = debounce(500, () => {
+    getOptimizerList();
     console.log('121221');
   });
 
@@ -71,4 +72,4 @@ const AdPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   );
 };
 
-export default AdPop;
+export default OptimizerPop;

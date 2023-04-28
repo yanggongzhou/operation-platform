@@ -14,6 +14,8 @@ import {
 import AdPop from "@/views/ad-reporting/pop/ad-pop";
 import CheckedPop from "@/views/ad-reporting/pop/checked-pop";
 import CountryPop from "@/views/ad-reporting/pop/country-pop";
+import OptimizerPop from "@/views/ad-reporting/pop/optimizer-pop";
+import AccountPop from "@/views/ad-reporting/pop/account-pop";
 
 interface IProps {
   onSearch: () => void;
@@ -40,20 +42,29 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
       fieldValue: [],
       operator: EOperator.In
     }]));
-
+  };
+  // 删除筛选条件
+  const onDelete = (index: number) => {
+    const list = fieldList.filter((_, ind) => ind !== index);
+    setFieldList(list);
+    onSearch();
   };
 
   return (
     <div className={styles.adSearchWrap}>
       <div className={styles.adSearchTop}>
         {fieldList.map((fieldItem, index) => {
-          // @ts-ignore
-          if([EGroupField.AdId, EGroupField.Optimizer, EGroupField.AccountId, EGroupField.Url, EGroupField.Pixel].includes(fieldItem.fieldName)) {
-            return <AdPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
-          } else if (EGroupField.Country === fieldItem.fieldName) {
-            return <CountryPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
-          } else {
-            return <CheckedPop key={fieldItem.fieldName + index} fieldItem={fieldItem}/>;
+          switch (fieldItem.fieldName) {
+            case EGroupField.AdId:
+              return <AdPop key={fieldItem.fieldName + index} fieldItem={fieldItem} onDelete={() => onDelete(index)}/>;
+            case EGroupField.AccountId:
+              return <AccountPop key={fieldItem.fieldName + index} fieldItem={fieldItem} onDelete={() => onDelete(index)}/>;
+            case EGroupField.Optimizer:
+              return <OptimizerPop key={fieldItem.fieldName + index} fieldItem={fieldItem} onDelete={() => onDelete(index)}/>;
+            case EGroupField.Country:
+              return <CountryPop key={fieldItem.fieldName + index} fieldItem={fieldItem} onDelete={() => onDelete(index)}/>;
+            default:
+              return <CheckedPop key={fieldItem.fieldName + index} fieldItem={fieldItem} onDelete={() => onDelete(index)}/>;
           }
         })}
         <SearchMenu onChoose={onChoose}/>

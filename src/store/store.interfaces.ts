@@ -1,4 +1,5 @@
 import { INetBaseInfoList } from "@/service/index.interfaces";
 
-export interface IAppStore extends INetBaseInfoList {
+export interface IAppStore {
+  baseInfoList: INetBaseInfoList;
 }

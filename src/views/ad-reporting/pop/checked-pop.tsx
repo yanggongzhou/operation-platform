@@ -8,27 +8,31 @@ import { useAppSelector } from "@/store";
 
 interface IProps {
   fieldItem: ISearchFieldItem
+  onDelete: () => void;
 }
 
-const CheckedPop: FC<IProps> = ({ fieldItem }) => {
+const CheckedPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   const [value, setValue] = useState<CheckboxValueType[]>();
   const options = useAppSelector(state => {
     let arr: any[] = [];
     switch (fieldItem.fieldName) {
-      case EGroupField.AdId:
-        arr = state.app.app;
+      case EGroupField.AppId:
+        arr = state.app.baseInfoList.app;
         break;
       case EGroupField.Device:
-        arr = state.app.device;
+        arr = state.app.baseInfoList.device;
         break;
       case EGroupField.Media:
-        arr = state.app.media;
+        arr = state.app.baseInfoList.media;
         break;
       case EGroupField.AdType:
-        arr = state.app.type;
+        arr = state.app.baseInfoList.type;
+        break;
+      case EGroupField.Language:
+        arr = state.app.baseInfoList.language;
         break;
       case EGroupField.Pline:
-        arr = state.app.pline;
+        arr = state.app.baseInfoList.pline;
         break;
       default:
         arr = [];
@@ -37,13 +41,15 @@ const CheckedPop: FC<IProps> = ({ fieldItem }) => {
     return arr.map(val => ({ label: val.text, value: val.field }));
   });
 
+  console.log(options);
+
   const handleChange = (checkedValues: CheckboxValueType[]) => {
     setValue(checkedValues);
     console.log('checked = ', checkedValues);
   };
 
   return (
-    <SearchPop field={fieldItem.fieldName}>
+    <SearchPop field={fieldItem.fieldName} onDelete={onDelete}>
       <Checkbox.Group className={styles.checkedPop} options={options} onChange={handleChange} />
     </SearchPop>
   );

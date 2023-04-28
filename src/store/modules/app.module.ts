@@ -13,13 +13,15 @@ export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
 export const appSlice = createSlice({
   name: 'app',
   initialState: (): IAppStore => ({
-    app: [],
-    country: [],
-    pline: [],
-    language: [],
-    media: [],
-    type: [],
-    device: [],
+    baseInfoList: {
+      app: [],
+      country: [],
+      pline: [],
+      language: [],
+      media: [],
+      type: [],
+      device: [],
+    },
   }),
   reducers: {
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
@@ -31,13 +33,14 @@ export const appSlice = createSlice({
     builder
       .addCase(baseInfoAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetBaseInfoList>) => {
         const { app = [], country = [], pline = [], language = [], media = [], type = [], device = [] } = action.payload;
-        state.app = app;
-        state.country = country;
-        state.pline = pline;
-        state.language = language;
-        state.media = media;
-        state.type = type;
-        state.device = device;
+        // state.app = app;
+        // state.country = country;
+        // state.pline = pline;
+        // state.language = language;
+        // state.media = media;
+        // state.type = type;
+        // state.device = device;
+        state.baseInfoList = action.payload;
       });
   }
 });

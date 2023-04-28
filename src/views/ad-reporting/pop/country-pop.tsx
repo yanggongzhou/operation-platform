@@ -7,13 +7,14 @@ import styles from '@/views/ad-reporting/pop/pop.module.scss';
 import { useAppSelector } from "@/store";
 
 interface IProps {
-  fieldItem: ISearchFieldItem
+  fieldItem: ISearchFieldItem;
+  onDelete: () => void;
 }
 
-const CountryPop: FC<IProps> = ({ fieldItem }) => {
+const CountryPop: FC<IProps> = ({ fieldItem, onDelete }) => {
   const [value, setValue] = useState<CheckboxValueType[]>();
   const options = useAppSelector(state => {
-    return state.app.country;
+    return state.app.baseInfoList.country;
   });
 
   const handleChange = (checkedValues: CheckboxValueType[]) => {
@@ -22,7 +23,7 @@ const CountryPop: FC<IProps> = ({ fieldItem }) => {
   };
 
   return (
-    <SearchPop field={fieldItem.fieldName}>
+    <SearchPop field={fieldItem.fieldName} onDelete={onDelete}>
       <Select
         fieldNames={{
           label: "countryName",

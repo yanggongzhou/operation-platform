@@ -1,34 +1,57 @@
 .searchPopWrap {
   position: relative;
-  height: 40px;
-  z-index: 99;
+}
 
-  .popBox {
-    position: absolute;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    top: 0;
-    overflow: hidden;
+.popTitle {
+  background: rgba(0, 0, 0, .15);
+  padding: 9px 12px 10px;
+  font-size: 13px;
+  line-height: 17px;
+  letter-spacing: normal;
+  overflow-wrap: normal;
+  text-align: left;
+  color: rgb(28, 30, 33);
+  font-weight: bold;
+}
 
-    .popTitle {
-      background: rgba(0, 0, 0, .15);
-      padding: 9px 12px 10px;
-      font-size: 13px;
-      line-height: 17px;
-      letter-spacing: normal;
-      overflow-wrap: normal;
-      text-align: left;
-      color: rgb(28, 30, 33);
-      font-weight: bold;
-    }
+.popBox {
+  .popMain {
 
-    .popMain {
-      padding: 12px;
-    }
-    .popFooter {
-      margin-top: 15px;
-      text-align: right;
+  }
+  .popFooter {
+    margin-top: 15px;
+    text-align: right;
+  }
+}
+
+.popShowBox {
+  height: 30px;
+  margin-right: 10px;
+
+  .popName {
+    background-color: rgba(0, 0, 0, .05);
+    padding: 0 10px;
+    border-radius: 8px 0 0 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0,0,0,0.1);;
     }
   }
+  .popCancel {
+    border-radius: 0 8px 8px 0;
+    background-color: rgba(0, 0, 0, .1);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0,0,0,0.15);;
+    }
+  }
+
 }

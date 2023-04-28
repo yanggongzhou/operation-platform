@@ -10,3 +10,8 @@ export interface INetBaseInfoList {
   type: IItem[];
   device: IItem[];
 }
+
+export interface INetSearchList {
+  target: IItem[];
+  group: IItem[];
+}

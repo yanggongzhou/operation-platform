@@ -1,5 +1,5 @@
 import Service from "@/utils/axios";
-import { INetBaseInfoList } from "@/service/index.interfaces";
+import { INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
 
 
 /**
@@ -20,13 +20,36 @@ export interface INetAccountList {
  * @param search 查询内容
  */
 export const netAccountList = async (search: string) => {
-  return await Service.post('/hw-adserving/dropList/accountList', { search, offset: 1, limit: 20 });
+  return await Service.post('/hw-adserving/dropList/accountList', { search, offset: 1, sort:"", order:"", limit: 20 });
 };
 
+/**
+ * 计划列表
+ */
+export const netCampaignList = async (search: string): Promise<INetSearchList> => {
+  return await Service.post('/hw-adserving/dropList/campaignList', { search, offset: 1, limit: 20 });
+};
 
 /**
  * 细分条件和指标列表
  */
+export const netSearchList = async (): Promise<INetSearchList> => {
+  return await Service.get('/hw-adserving/dropList/searchList');
+};
+
+
+/**
+ * 细分条件和指标列表详情
+ */
 export const netBaseInfoList = async (): Promise<INetBaseInfoList> => {
   return await Service.get('/hw-adserving/dropList/baseInfoList');
 };
+
+/**
+ * 优化师列表
+ */
+export const netOptimizerList = async (): Promise<string[]> => {
+  return await Service.get('/hw-adserving/dropList/optimizerList');
+};
+
+
