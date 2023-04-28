@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Select } from "antd";
+import { Select, Space } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
@@ -70,19 +70,19 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
         <SearchMenu onChoose={onChoose}/>
       </div>
       <div className={styles.adSearchBottom}>
-        <div>
-          <span>消耗过滤: </span>
+        <Space.Compact>
+          <div className={styles.adSearchBottomLabel}>消耗过滤: </div>
           <Select
             defaultValue={EConsume.All}
             style={{ width: 150 }}
             onChange={consumeSearch}
             options={ConsumeOptions}
           />
-        </div>
-        <div className={styles.timeRange}>
-          <span>时间范围: </span>
+        </Space.Compact>
+        <Space.Compact className={styles.timeRange}>
+          <div className={styles.adSearchBottomLabel}>时间范围: </div>
           <AdReportSearchTime onSearch={onTimeSearch}/>
-        </div>
+        </Space.Compact>
       </div>
     </div>
   );

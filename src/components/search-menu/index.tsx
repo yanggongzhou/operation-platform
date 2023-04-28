@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { TreeSelect } from "antd";
+import { Select } from "antd";
 import { EGroupField, NGroupField } from "@/views/ad-reporting/index.interfaces";
 
 interface IProps {
@@ -20,15 +20,13 @@ const SearchMenu: FC<IProps> = ({ onChoose }) => {
   };
 
   return (
-    <TreeSelect
+    <Select
+      style={{ width: '220px', marginLeft: '20px' }}
       showSearch
-      style={{ width: '278px', marginLeft: '20px' }}
       value={value}
-      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-      treeData={treeData}
       placeholder="请搜索和筛选"
-      treeDefaultExpandAll
       onChange={onChange}
+      options={treeData}
     />
   );
 };

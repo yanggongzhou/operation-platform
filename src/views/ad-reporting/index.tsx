@@ -29,7 +29,7 @@ const AdReporting = () => {
   const windowBack = () => {
     window.onpopstate = function () {
       if (isNeedSave.current) {
-        messageApi.warning('提示保存')
+        messageApi.warning('提示保存');
         window.history.pushState('forward', '', '');
         window.history.forward();
       } else {
@@ -51,7 +51,7 @@ const AdReporting = () => {
   const onSave = (name: string) => {
     console.log('保存报表:', name);
     isNeedSave.current = false;
-    messageApi.success('已保存')
+    messageApi.success('已保存');
   };
   // 搜索
   const onSearch = () => {
@@ -60,7 +60,7 @@ const AdReporting = () => {
   // 返回
   const onBackTo = () => {
     if (isNeedSave.current) {
-      messageApi.warning('提示保存')
+      messageApi.warning('提示保存');
     } else {
       navigate('/adsReporting', { replace: true });
     }
@@ -72,7 +72,12 @@ const AdReporting = () => {
       <AdReportHeader title={'未命名广告'} onSave={onSave} onBackTo={onBackTo}/>
       <AdReportSearch onSearch={onSearch}/>
       <div className={styles.adReportBox}>
-        <TableDrag dataSource={rows}/>
+        <div className={styles.detailedTableBox}>
+          <TableDrag dataSource={rows}/>
+        </div>
+        <div className={styles.indicatorTableBox}>
+          <TableDrag dataSource={rows}/>
+        </div>
       </div>
     </div>
   );

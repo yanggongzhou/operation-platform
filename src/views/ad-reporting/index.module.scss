@@ -5,9 +5,23 @@
   flex-direction: column;
 
   .adReportBox {
-    padding: 20px;
-    border: 1px solid grey;
     border-radius: 8px;
     position: relative;
+    padding: 10px 15px;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
+    height: calc(100% - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+
+    .detailedTableBox {
+
+    }
+
+    .indicatorTableBox {
+
+    }
   }
 }

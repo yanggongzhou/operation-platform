@@ -23,6 +23,18 @@
     .timeRange {
       margin-left: 20px;
     }
+
+    .adSearchBottomLabel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-top: 1px solid #d9d9d9;
+      border-bottom: 1px solid #d9d9d9;
+      border-left: 1px solid #d9d9d9;
+      border-radius: 2px 0 0 2px;
+      font-size: 14px;
+    }
   }
 }
 
