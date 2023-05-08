@@ -17,7 +17,7 @@ const AdsReporting = AsyncComponent(() => import("@/views/ads-reporting"));
 
 const Routers = [
   { path: "/adsReporting", key: 1, component: AdsReporting }, // 广告报告
-  { path: "/adReporting", key: 0, component: AdReporting }, // 广告报告详情
+  { path: "/adReporting/:id", key: 0, component: AdReporting }, // 广告报告详情
 ];
 
 export default Routers;

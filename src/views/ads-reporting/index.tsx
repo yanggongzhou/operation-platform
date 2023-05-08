@@ -34,7 +34,7 @@ const AdsReporting = () => {
   // 查看报表
   const onCheck = (detail: IAdsListItem) => {
     console.log('查看报表：', detail);
-    navigate('/adReporting');
+    navigate(`/adReporting/${detail.id}`);
   };
   // 获取报表列表
   const getList = async (pageData: { page: number; pageSize: number; }) => {

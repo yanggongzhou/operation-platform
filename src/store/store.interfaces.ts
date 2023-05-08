@@ -1,6 +1,7 @@
-import { INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
+import { INetBaseInfoList, INetDetailAd, INetSearchList } from "@/service/index.interfaces";
 
 export interface IAppStore {
   baseInfoList: INetBaseInfoList;
   searchList: INetSearchList;
+  detail: INetDetailAd;
 }

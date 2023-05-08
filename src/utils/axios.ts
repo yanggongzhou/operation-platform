@@ -10,7 +10,7 @@ import { Store } from "redux";
 import { HashHistory } from "history";
 import { NavigateFunction } from "react-router";
 import { AppState } from "@/store";
-import { getToken, getUserId } from '@/utils/cookies';
+import { getToken } from '@/utils/cookies';
 
 // 定义接口
 interface PendingType {
@@ -36,7 +36,7 @@ const CancelToken = axios.CancelToken;
 const Service = axios.create({
   baseURL: '/api',
   withCredentials: true,
-  timeout: 5000,
+  timeout: 10000,
 } as CreateAxiosDefaults);
 
 export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {

@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAppStore } from "@/store/store.interfaces";
-import { netBaseInfoList, netSearchList } from "@/service/ads-reporting";
-import { INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
+import { netBaseInfoList, netDetailAd, netSearchList } from "@/service/ads-reporting";
+import { INetBaseInfoList, INetDetailAd, INetSearchList } from "@/service/index.interfaces";
+import { EConsume, EOperator } from "@/views/ad-reporting/index.interfaces";
 
 export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
   'app/netBaseInfoList',
@@ -14,6 +15,13 @@ export const searchListAsync = createAsyncThunk<INetSearchList>(
   'app/netSearchList',
   async () => {
     return await netSearchList();
+  }
+);
+
+export const detailAdAsync = createAsyncThunk<INetDetailAd, string>(
+  'app/netDetailAd',
+  async (id) => {
+    return await netDetailAd(id);
   }
 );
 
@@ -32,7 +40,16 @@ export const appSlice = createSlice({
     searchList: {
       target: [],
       group: [],
-    }
+    },
+    detail: {
+      structure: {
+        costType: EConsume.All, //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
+        searchFieldList: [], // 搜索字段
+        order: "desc",
+        filterFieldList: [] as string[], // 细分条件
+        indexColumnList: [] as string[], // 指标字段
+      },
+    } as INetDetailAd,
   }),
   reducers: {
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
@@ -55,6 +72,9 @@ export const appSlice = createSlice({
       })
       .addCase(searchListAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetSearchList>) => {
         state.searchList = action.payload;
+      })
+      .addCase(detailAdAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetDetailAd>) => {
+        state.detail = action.payload;
       });
   }
 });

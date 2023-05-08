@@ -1,5 +1,11 @@
 import Service from "@/utils/axios";
-import { INetAdsList, INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
+import {
+  INetAdsList,
+  INetBaseInfoList,
+  INetDetailAd,
+  INetDetailListAd,
+  INetSearchList
+} from "@/service/index.interfaces";
 
 
 /**
@@ -33,13 +39,39 @@ export const netDeleteAd = async (ids: string[]) =>
 export const netAddAd = async (name: string) =>
   await Service.post('/hw-adserving/reportForm/add', { name });
 
+/**
+ * 报表详情(筛选项)
+ * @param id
+ */
+export const netDetailAd = async (id: string): Promise<INetDetailAd> => {
+  return await Service.get('/hw-adserving/reportForm/getById', { params: { id } });
+};
 
+/**
+ * 报表详情(列表数据, 未修改配置情况下)
+ * @param id
+ * @param page
+ */
+export const netDetailListAd = async (id: string, page: number = 0): Promise<INetDetailListAd> => {
+  return await Service.get('/hw-adserving/reportForm/getData', { params: { id, page } });
+};
 
-export interface INetAccountList {
-  limit: number;
-  offset: number;
-  search: string;
-}
+/**
+ * 报表详情(列表数据, 修改配置情况下)
+ * @param data
+ * @param page
+ */
+export const netListAd = async (data: INetDetailAd, page: number = 0): Promise<INetDetailListAd> => {
+  return await Service.post('/hw-adserving/reportForm/getData', data,{ params: { page } } );
+};
+
+/**
+ * 报表更新
+ * @param data
+ */
+export const netUpdateAd = async (data: INetDetailAd) =>
+  await Service.post('/hw-adserving/reportForm/add', data);
+
 /**
  * 广告账户列表
  * @param search 查询内容

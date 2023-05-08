@@ -1,73 +1,95 @@
-import React, { FC, useState } from 'react';
-import { Table } from 'antd';
-import {
-  arrayMove,
-  SortableContainer,
-  SortableContainerProps,
-  SortableElement,
-  SortableElementProps,
-} from 'react-sortable-hoc';
+import React, { FC, useEffect, useMemo, useState } from 'react';
+import { Table, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
 import styles from '@/components/table-drag/index.module.scss';
+import { useAppSelector } from "@/store";
+import { TableDragHeader } from "@/components/table-drag/table-drag-header";
+const { Text } = Typography;
 
 interface IProps {
   dataSource: AnyObject[];
+  sumData: AnyObject;
+  total: number;
 }
 
-interface IColItem {
+export interface IColItem {
   title: string;
   dataIndex: string;
   key: string;
   width: number;
-  fixed?: FixedType
+  fixed?: FixedType;
+  ellipsis?: boolean;
 }
 
-// @ts-ignore
-const SortableItem: React.ComponentClass<{ name: string } & SortableElementProps> = SortableElement(({ name }) => {
-  return (
-    <th className={styles.sortableItem}>{name}</th>
-  );
-});
+export const TableDrag: FC<IProps> = ({ dataSource, sumData, total }) => {
 
-const SortableList: React.ComponentClass<{ cols: IColItem[] } & SortableContainerProps> =
-  SortableContainer(({ cols }: { cols: IColItem[] }) => {
-    return <thead className={styles.sortableBox}>
-      <tr>
-        {cols.map((val, ind) => {
-          return <SortableItem key={val.dataIndex} name={val.title} index={ind} disabled={ind === 1}/>;
-        })}
-      </tr>
-    </thead>;
+  const groupColumns = useAppSelector(state => {
+    const filterFieldList = state.app.detail.structure.filterFieldList;
+    const groupData = state.app.searchList.group;
+    return filterFieldList.map(val => {
+      const groupItem = groupData.find(item => item.field === val) || { text: '-', filed: '-' };
+      return { title: groupItem.text, dataIndex: val, key: val, width: 120, fixed: 'left' };
+    });
+  }) as IColItem[];
+
+  const targetColumns = useAppSelector(state => {
+    const indexColumnList = state.app.detail.structure.indexColumnList;
+    const targetData = state.app.searchList.target;
+    return indexColumnList.map(val => {
+      const targetItem = targetData.find(item => item.field === val) || { text: '-', filed: '-' };
+      return { title: targetItem.text, dataIndex: val, key: val, width: 120 };
+    });
   });
 
-export const TableDrag: FC<IProps> = ({ dataSource }) => {
+  const targetSum = useAppSelector(state => {
+    const indexColumnList = state.app.detail.structure.indexColumnList;
+    const targetData = state.app.searchList.target;
+    return indexColumnList.map(val => {
+      const targetItem = targetData.find(item => item.field === val) || { text: '-', filed: '-' };
+      return { key: val, label: targetItem.text, sum: sumData?.[val] ?? '-' };
+    });
+  });
 
-  const [cols, setCols] = useState<IColItem[]>([
-    { title: '名字', dataIndex: 'name', key: 'name', width: 200 },
-    { title: '年龄', dataIndex: 'age', key: 'age', width: 200 },
-    { title: '住址', dataIndex: 'address', key: 'address', width: 200 },
-    { title: '名字1', dataIndex: 'name1', key: 'name1', width: 200 },
-    { title: '年龄1', dataIndex: 'age1', key: 'age1', width: 200 },
-    { title: '住址1', dataIndex: 'address1', key: 'address1', width: 200 },
-  ]);
-
-  const onSortEndHandle = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
-    console.log('onSortEndHandle: ', oldIndex, newIndex);
-    setCols(cols => arrayMove(cols, oldIndex, newIndex));
-  };
+  const columns = useMemo(() => {
+    return [...groupColumns, ...targetColumns];
+  }, [groupColumns, targetColumns]);
 
   return (
     <>
-      <table>
-        <SortableList axis="x" lockAxis="x" cols={cols} onSortEnd={onSortEndHandle}/>
-      </table>
+      <TableDragHeader
+        groupColumns={groupColumns}
+        targetColumns={targetColumns}/>
       <Table
-        scroll={{ x: 1000 }}
+        size='small'
+        rowKey={'uuId'}
+        scroll={{ x: 'max-content' }}
         pagination={false}
         bordered
-        columns={cols}
-        dataSource={dataSource}/>
+        columns={columns}
+        dataSource={dataSource}
+        summary={() => (
+          <Table.Summary.Row>
+            <Table.Summary.Cell index={0} colSpan={groupColumns.length}>
+              <Text strong>{total}</Text>
+              <br/>
+              <Text type={'secondary'}>总行数</Text>
+            </Table.Summary.Cell>
+
+            {targetSum.map(tar => {
+              return <Table.Summary.Cell key={tar.key} index={groupColumns.length}>
+                <div>
+                  <Text strong>{tar.sum}</Text>
+                  <br/>
+                  <Text type={'secondary'}>{tar.label}</Text>
+                </div>
+                {/*'secondary' | 'success' | 'warning' | 'danger';*/}
+              </Table.Summary.Cell>
+            })}
+
+          </Table.Summary.Row>
+        )}
+      />
     </>
   );
 };
