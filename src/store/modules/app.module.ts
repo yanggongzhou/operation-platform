@@ -1,12 +1,19 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAppStore } from "@/store/store.interfaces";
-import { netBaseInfoList } from "@/service/ads-reporting";
-import { INetBaseInfoList } from "@/service/index.interfaces";
+import { netBaseInfoList, netSearchList } from "@/service/ads-reporting";
+import { INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
 
 export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
   'app/netBaseInfoList',
   async () => {
     return await netBaseInfoList();
+  }
+);
+
+export const searchListAsync = createAsyncThunk<INetSearchList>(
+  'app/netSearchList',
+  async () => {
+    return await netSearchList();
   }
 );
 
@@ -22,6 +29,10 @@ export const appSlice = createSlice({
       type: [],
       device: [],
     },
+    searchList: {
+      target: [],
+      group: [],
+    }
   }),
   reducers: {
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
@@ -32,7 +43,7 @@ export const appSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(baseInfoAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetBaseInfoList>) => {
-        const { app = [], country = [], pline = [], language = [], media = [], type = [], device = [] } = action.payload;
+        // const { app = [], country = [], pline = [], language = [], media = [], type = [], device = [] } = action.payload;
         // state.app = app;
         // state.country = country;
         // state.pline = pline;
@@ -41,6 +52,9 @@ export const appSlice = createSlice({
         // state.type = type;
         // state.device = device;
         state.baseInfoList = action.payload;
+      })
+      .addCase(searchListAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetSearchList>) => {
+        state.searchList = action.payload;
       });
   }
 });

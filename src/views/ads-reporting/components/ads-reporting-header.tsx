@@ -12,6 +12,10 @@ const AdsReportingHeader: FC<IProps> = ({ onCreate }) => {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAdName(e.target.value);
   };
+  const onClose = () => {
+    setAdName('');
+    setCreateVisible(false);
+  };
   return (
     <>
       <Button type="primary" icon={<FileAddOutlined/>} onClick={() => setCreateVisible(true)}>创建报告</Button>
@@ -20,13 +24,13 @@ const AdsReportingHeader: FC<IProps> = ({ onCreate }) => {
         width={400}
         open={createVisible}
         title="创建报告"
-        onCancel={() => {
-          setAdName('');
-          setCreateVisible(false);
-        }}
+        onCancel={onClose}
         okText="创建"
         cancelText="取消"
-        onOk={() => onCreate(adName)}
+        onOk={() => {
+          onCreate(adName);
+          onClose();
+        }}
       >
         <h4>报告名称</h4>
         <Input defaultValue={adName} showCount maxLength={100} onChange={(e) => onInputChange(e)}/>

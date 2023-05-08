@@ -10,7 +10,7 @@ module.exports = {
           '^/api': ''
         }
       },
-      after: (app) => {
+      before: (app) => {
         app.get('/api/hw-adserving/dropList/baseInfoList', function (req, res) {
           res.json({
             "code": 200,

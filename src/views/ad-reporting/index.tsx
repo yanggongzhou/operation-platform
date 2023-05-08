@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { CheckboxValueType } from "antd/es/checkbox/Group";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 import { useAppDispatch } from "@/store";
-import { baseInfoAsync } from "@/store/modules/app.module";
+import { baseInfoAsync, searchListAsync } from "@/store/modules/app.module";
+import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
+import { EFilterType } from "@/views/ad-reporting/index.interfaces";
 
 const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
@@ -16,6 +19,8 @@ const AdReporting = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(baseInfoAsync());
+    dispatch(searchListAsync());
+
     windowBack();
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
@@ -65,18 +70,32 @@ const AdReporting = () => {
       navigate('/adsReporting', { replace: true });
     }
   };
+  // 指标｜细分条件
+  const onChange = (checkedValues: CheckboxValueType[], filterType: EFilterType) => {
+    if (filterType === EFilterType.Group) {
+      console.log('checked = ', checkedValues, filterType);
+    } else {
+      console.log('checked = ', checkedValues, filterType);
+    }
+  };
 
   return (
     <div className={styles.adReportWrap}>
       {contextMsgHolder}
       <AdReportHeader title={'未命名广告'} onSave={onSave} onBackTo={onBackTo}/>
       <AdReportSearch onSearch={onSearch}/>
-      <div className={styles.adReportBox}>
-        <div className={styles.detailedTableBox}>
-          <TableDrag dataSource={rows}/>
+      <div className={styles.adReportMain}>
+        <div className={styles.adReportBox}>
+          <div className={styles.detailedTableBox}>
+            <TableDrag dataSource={rows}/>
+          </div>
+          {/*<div className={styles.indicatorTableBox}>*/}
+          {/*  <TableDrag dataSource={rows}/>*/}
+          {/*</div>*/}
         </div>
-        <div className={styles.indicatorTableBox}>
-          <TableDrag dataSource={rows}/>
+
+        <div className={styles.adReportRight}>
+          <AdReportRight onChange={onChange}/>
         </div>
       </div>
     </div>

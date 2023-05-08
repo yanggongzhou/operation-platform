@@ -1,5 +1,5 @@
 import Service from "@/utils/axios";
-import { INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
+import { INetAdsList, INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
 
 
 /**
@@ -7,7 +7,32 @@ import { INetBaseInfoList, INetSearchList } from "@/service/index.interfaces";
  * @param offset
  * @param limit
  */
-export const netAdsList = async (offset: number, limit: number) => await Service.post('/hw-adserving/reportForm/list', { offset, limit });
+export const netAdsList = async (offset: number, limit: number): Promise<INetAdsList> =>
+  await Service.post('/hw-adserving/reportForm/list', { offset, limit });
+
+
+/**
+ * 复制报表
+ * @param id
+ * @param name
+ */
+export const netCopyAd = async (id: string, name: string) =>
+  await Service.get('/hw-adserving/reportForm/copy', { params: { id, name } });
+
+/**
+ * 删除报表
+ * @param ids
+ */
+export const netDeleteAd = async (ids: string[]) =>
+  await Service.post('/hw-adserving/reportForm/delete', ids);
+
+/**
+ * 新增报表
+ * @param name
+ */
+export const netAddAd = async (name: string) =>
+  await Service.post('/hw-adserving/reportForm/add', { name });
+
 
 
 export interface INetAccountList {
@@ -39,7 +64,7 @@ export const netSearchList = async (): Promise<INetSearchList> => {
 
 
 /**
- * 细分条件和指标列表详情
+ * 搜索详情列表
  */
 export const netBaseInfoList = async (): Promise<INetBaseInfoList> => {
   return await Service.get('/hw-adserving/dropList/baseInfoList');

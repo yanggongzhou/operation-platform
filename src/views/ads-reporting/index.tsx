@@ -1,54 +1,53 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 import styles from "@/views/ads-reporting/index.module.scss";
-import { IAdsDataType } from "@/views/ads-reporting/index.interfaces";
+import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
 import AdsReportingTable from "@/views/ads-reporting/components/ads-reporting-table";
 import AdsReportingHeader from "@/views/ads-reporting/components/ads-reporting-header";
-import { netAdsList } from "@/service/ads-reporting";
+import { netAddAd, netAdsList, netCopyAd, netDeleteAd } from "@/service/ads-reporting";
 
 const AdsReporting = () => {
   const navigate = useNavigate();
-  const [total, setTotal] = useState(1000);
+  const [messageApi, contextMsgHolder] = message.useMessage();
+  const [total, setTotal] = useState(0);
   const [pageInfo, setPageInfo] = useState({ page: 1, pageSize: 30 });
-
-
-  const [rows, setRows] = useState<IAdsDataType[]>([
-    { key: '1', name: '胡彦斌', updateTime: '32', createTime: '西湖区湖底公园1号' },
-    { key: '2', name: '胡彦祖', updateTime: '42', createTime: '西湖区湖底公园1号' },
-    { key: '3', name: '胡彦祖', updateTime: '42', createTime: '西湖区湖底公园1号' },
-  ]);
+  const [rows, setRows] = useState<IAdsListItem[]>([]);
   // 创建报表
-  const onCreate = (name: string) => {
+  const onCreate = async (name: string) => {
+    await netAddAd(name);
     console.log('创建报表', name);
-    getList(pageInfo);
+    await getList(pageInfo);
   };
   // 复制报表
-  const onCopyAd = (detail: IAdsDataType, name: string) => {
-    console.log('复制报表：', name, detail);
-    getList(pageInfo);
+  const onCopyAd = async (detail: IAdsListItem, name: string) => {
+    await netCopyAd(detail.id, name);
+    messageApi.success(`复制成功: ${name}`);
+    await getList(pageInfo);
   };
   // 删除报表
-  const onDeleteAd = (id: string) => {
+  const onDeleteAd = async (id: string) => {
+    await netDeleteAd([id]);
     console.log('删除报表：', id);
-    getList(pageInfo);
+    await getList(pageInfo);
   };
   // 查看报表
-  const onCheck = (detail: IAdsDataType) => {
+  const onCheck = (detail: IAdsListItem) => {
     console.log('查看报表：', detail);
     navigate('/adReporting');
   };
   // 获取报表列表
   const getList = async (pageData: { page: number; pageSize: number; }) => {
-    console.log('获取报表列表：', pageData.page, pageData.pageSize);
     setPageInfo({ ...pageData });
-    setTotal(1000);
-    setRows(prevState => prevState);
-    const list = await netAdsList(pageData.page, pageData.pageSize);
-    console.log('list:', list)
+    const { total = 0, rows = [] } = await netAdsList(pageData.page, pageData.pageSize);
+    console.log('获取报表列表:', pageData.page, pageData.pageSize, total, rows);
+    setRows(rows);
+    setTotal(total);
   };
 
   return (
     <div className={styles.adsReportingWrap}>
+      {contextMsgHolder}
       <h3 className={styles.adsTitle}>广告报告</h3>
       <div className={styles.adsMain}>
         <div className={styles.adsHeader}>

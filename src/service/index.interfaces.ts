@@ -1,3 +1,9 @@
+import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
+
+export interface INetAdsList {
+  rows: IAdsListItem[];
+  total: number;
+}
 
 interface IItem { code: string; field: string; text: string; }
 

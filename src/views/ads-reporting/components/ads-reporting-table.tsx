@@ -2,15 +2,15 @@ import React, { FC, useEffect, useState } from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Input, message, Modal, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { IAdsDataType } from "@/views/ads-reporting/index.interfaces";
+import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
 import styles from '@/views/ads-reporting/index.module.scss';
 
 interface IProps {
   pageData: { page: number; pageSize: number; }
-  dataSource: IAdsDataType[];
+  dataSource: IAdsListItem[];
   total: number;
-  onCopyAd: (detail: IAdsDataType, name: string) => void;
-  onCheck: (detail: IAdsDataType) => void;
+  onCopyAd: (detail: IAdsListItem, name: string) => void;
+  onCheck: (detail: IAdsListItem) => void;
   getList: (pageInfo: { page: number; pageSize: number; }) => void;
   onDeleteAd: (id: string) => void;
 }
@@ -23,7 +23,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   });
   const [adName, setAdName] = useState('');
   const [copyVisible, setCopyVisible] = useState(false);
-  const [detail, setDetail] = useState<IAdsDataType>({} as IAdsDataType);
+  const [detail, setDetail] = useState<IAdsListItem>({} as IAdsListItem);
 
   useEffect(() => {
     getList(pageInfo);
@@ -33,7 +33,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
     { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name' },
     { title: '编辑时间', align: 'center', dataIndex: 'updateTime', key: 'updateTime' },
     { title: '创建时间', align: 'center', dataIndex: 'createTime', key: 'createTime' },
-    { title: '操作', width: 200, align: 'center', key: 'operation', render: (value: any, record: IAdsDataType) => (
+    { title: '操作', width: 200, align: 'center', key: 'operation', render: (value: any, record: IAdsListItem) => (
       <Space size="small">
         <Button
           type={'primary'}
@@ -45,14 +45,14 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
           danger>删除</Button>
       </Space>)
     },
-  ] as ColumnsType<IAdsDataType>;
+  ] as ColumnsType<IAdsListItem>;
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAdName(e.target.value);
   };
 
   // 复制
-  const handleCopy = (record: IAdsDataType, e: any) => {
+  const handleCopy = (record: IAdsListItem, e: any) => {
     e.stopPropagation();
     setAdName(record.name + '副本');
     setCopyVisible(true);
@@ -60,7 +60,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   };
 
   // 删除
-  const handleDelete = (record: IAdsDataType, e: any) => {
+  const handleDelete = (record: IAdsListItem, e: any) => {
     e.stopPropagation();
     modal.confirm({
       title: '删除报表',
@@ -72,15 +72,21 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
         type: "primary",
         danger: true,
       },
-      onOk: () => onDeleteAd(record.key)
+      onOk: () => onDeleteAd(record.id)
     });
     console.log('删除');
   };
 
+  const onCloseModal = () => {
+    setAdName('');
+    setCopyVisible(false);
+  };
+
   return (
     <>
-      <Table<IAdsDataType>
+      <Table<IAdsListItem>
         bordered
+        rowKey={'id'}
         size={'small'}
         onRow={(record, rowIndex) => {
           return {
@@ -114,10 +120,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
         width={400}
         open={copyVisible}
         title="复制报告"
-        onCancel={() => {
-          setAdName('');
-          setCopyVisible(false);
-        }}
+        onCancel={onCloseModal}
         footer={
           <div className={styles.copyModelBtnBox}>
             <Space>
@@ -137,7 +140,8 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
                     });
                     return;
                   }
-                  onCopyAd(detail, adName)
+                  onCopyAd(detail, adName);
+                  onCloseModal();
                 }}>复制</Button>
             </Space>
           </div>

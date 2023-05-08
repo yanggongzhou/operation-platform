@@ -80,3 +80,12 @@ export interface ISearchFieldItem {
   fieldValue: string[];
   operator: EOperator;
 }
+
+/** 表格条件
+ * group 细分条件
+ * target 指标
+ */
+export enum EFilterType {
+  Group = 'group',
+  Target = 'target',
+}
