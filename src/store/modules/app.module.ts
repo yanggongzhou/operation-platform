@@ -57,19 +57,20 @@ export const appSlice = createSlice({
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
       // state.footerAdVisible = action.payload;
     },
+    setIndexColumnList: (state: IAppStore, action: PayloadAction<string[]>) => {
+      state.detail.structure.indexColumnList = action.payload;
+    },
+    setFilterFieldList: (state: IAppStore, action: PayloadAction<string[]>) => {
+      state.detail.structure.filterFieldList = action.payload;
+    },
+    setCostType: (state: IAppStore, action: PayloadAction<EConsume>) => {
+      state.detail.structure.costType = action.payload;
+    },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
   extraReducers: (builder) => {
     builder
       .addCase(baseInfoAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetBaseInfoList>) => {
-        // const { app = [], country = [], pline = [], language = [], media = [], type = [], device = [] } = action.payload;
-        // state.app = app;
-        // state.country = country;
-        // state.pline = pline;
-        // state.language = language;
-        // state.media = media;
-        // state.type = type;
-        // state.device = device;
         state.baseInfoList = action.payload;
       })
       .addCase(searchListAsync.fulfilled, (state: IAppStore, action: PayloadAction<{ searchList: INetSearchList, detail: INetDetailAd }>) => {
@@ -83,5 +84,8 @@ export const appSlice = createSlice({
 });
 
 export const { setFooterAdVisible } = appSlice.actions;
+export const setIndexColumnList = appSlice.actions.setIndexColumnList;
+export const setFilterFieldList = appSlice.actions.setFilterFieldList;
+export const setCostType = appSlice.actions.setCostType;
 
 export const appReducer = appSlice.reducer;

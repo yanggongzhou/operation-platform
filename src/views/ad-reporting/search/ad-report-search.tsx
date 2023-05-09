@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Select, Space } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
@@ -16,6 +16,8 @@ import CheckedPop from "@/views/ad-reporting/pop/checked-pop";
 import CountryPop from "@/views/ad-reporting/pop/country-pop";
 import OptimizerPop from "@/views/ad-reporting/pop/optimizer-pop";
 import AccountPop from "@/views/ad-reporting/pop/account-pop";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setCostType } from "@/store/modules/app.module";
 
 interface IProps {
   onSearch: () => void;
@@ -23,9 +25,11 @@ interface IProps {
 
 const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const [fieldList, setFieldList] = useState<ISearchFieldItem[]>([]);
+  const costType = useAppSelector(state => state.app.detail.structure.costType);
+  const dispatch = useAppDispatch();
   // 消耗过滤
-  const consumeSearch = (value: string) => {
-    console.log(`消耗过滤: ${value}`);
+  const consumeSearch = (value: EConsume) => {
+    dispatch(setCostType(value));
     onSearch();
   };
 
@@ -72,8 +76,8 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
       <div className={styles.adSearchBottom}>
         <Space.Compact>
           <div className={styles.adSearchBottomLabel}>消耗过滤: </div>
-          <Select
-            defaultValue={EConsume.All}
+          <Select<EConsume>
+            value={costType}
             style={{ width: 150 }}
             onChange={consumeSearch}
             options={ConsumeOptions}

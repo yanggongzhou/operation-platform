@@ -20,8 +20,8 @@
 
 // 消耗
 export enum EConsume {
-  All = '2',
-  FWC = '3',
+  All = 2,
+  FWC = 3,
 }
 
 export const ConsumeOptions = [

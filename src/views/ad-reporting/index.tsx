@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
-import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { debounce } from "throttle-debounce";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 import { useAppDispatch } from "@/store";
-import { baseInfoAsync, searchListAsync } from "@/store/modules/app.module";
+import { baseInfoAsync, searchListAsync, setFilterFieldList, setIndexColumnList } from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailListAd, netListAd } from "@/service/ads-reporting";
@@ -26,7 +25,6 @@ const AdReporting = () => {
   useEffect(() => {
     dispatch(baseInfoAsync());
     dispatch(searchListAsync(routeParams.id as string));
-
     windowBack();
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
@@ -37,11 +35,9 @@ const AdReporting = () => {
     };
   }, []);
 
-
   useEffect(() => {
     getList(routeParams.id as string, page);
   }, [page]);
-
   // 保存挽留
   const windowBack = () => {
     window.onpopstate = function () {
@@ -58,12 +54,9 @@ const AdReporting = () => {
     window.history.pushState('forward', '', '');
     window.history.forward();
   };
-
   const [rows, setRows] = useState<IRecordsItem[]>([]);
   const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
   const [totalRows, setTotalRows] = useState(0);
-
-
   // 报表详情(列表数据, 修改配置情况下)
   const getUnSaveList = async (id: string, page: number) => {
     const data = await netListAd({} as INetDetailAd, page);
@@ -96,11 +89,13 @@ const AdReporting = () => {
     }
   };
   // 指标｜细分条件
-  const onChange = (checkedValues: CheckboxValueType[], filterType: EFilterType) => {
+  const onChange = (checkedValues: string[], filterType: EFilterType) => {
     if (filterType === EFilterType.Group) {
       console.log('checked = ', checkedValues, filterType);
+      dispatch(setFilterFieldList(checkedValues));
     } else {
       console.log('checked = ', checkedValues, filterType);
+      dispatch(setIndexColumnList(checkedValues));
     }
   };
 

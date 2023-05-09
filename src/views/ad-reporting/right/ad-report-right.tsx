@@ -1,29 +1,28 @@
 import React, { FC, useEffect, useState } from "react";
 import { Tabs, TabsProps, Checkbox, Row, Col, } from "antd";
-import { CheckboxValueType } from "antd/es/checkbox/Group";
 import styles from "@/views/ad-reporting/right/ad-report-right.module.scss";
 import { useAppSelector } from "@/store";
 import { EFilterType } from "@/views/ad-reporting/index.interfaces";
 
 interface IProps {
-  onChange: (checkedValues: CheckboxValueType[], filterType: EFilterType) => void;
+  onChange: (checkedValues: string[], filterType: EFilterType) => void;
 }
 
 interface IItemChildProps {
-  onChange: (checkedValues: CheckboxValueType[]) => void;
+  onChange: (checkedValues: string[]) => void;
   list: {field: string; text: string;}[];
-  defaultValue?: CheckboxValueType[];
+  defaultValue?: string[];
 }
 const ItemChild: FC<IItemChildProps> = ({ list = [], defaultValue, onChange }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     setValue(defaultValue);
   }, [defaultValue]);
-  const itemChange = (checkedValues: CheckboxValueType[]) => {
+  const itemChange = (checkedValues: string[]) => {
     setValue(checkedValues);
     onChange(checkedValues);
   };
-  return <Checkbox.Group value={value} onChange={itemChange}>
+  return <Checkbox.Group value={value} onChange={e => itemChange(e as string[])}>
     <Row>
       {list.map(val => {
         return <Col key={val.field} span={24}>
