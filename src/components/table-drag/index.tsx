@@ -84,7 +84,7 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total }) => {
                   <Text type={'secondary'}>{tar.label}</Text>
                 </div>
                 {/*'secondary' | 'success' | 'warning' | 'danger';*/}
-              </Table.Summary.Cell>
+              </Table.Summary.Cell>;
             })}
 
           </Table.Summary.Row>

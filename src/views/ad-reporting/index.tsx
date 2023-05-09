@@ -7,13 +7,12 @@ import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { baseInfoAsync, detailAdAsync, searchListAsync } from "@/store/modules/app.module";
+import { useAppDispatch } from "@/store";
+import { baseInfoAsync, searchListAsync } from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailListAd, netListAd } from "@/service/ads-reporting";
 import { INetDetailAd } from "@/service/index.interfaces";
-import { TableDragHeader } from "@/components/table-drag/table-drag-header";
 
 const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
@@ -23,10 +22,10 @@ const AdReporting = () => {
   const dispatch = useAppDispatch();
   const routeParams = useParams();
   const [page, setPage] = useState(0);
+
   useEffect(() => {
     dispatch(baseInfoAsync());
-    dispatch(detailAdAsync(routeParams.id as string));
-    dispatch(searchListAsync());
+    dispatch(searchListAsync(routeParams.id as string));
 
     windowBack();
     return () => {
@@ -38,7 +37,6 @@ const AdReporting = () => {
     };
   }, []);
 
-  const title = useAppSelector(state => state.app.detail.name);
 
   useEffect(() => {
     getList(routeParams.id as string, page);
@@ -109,7 +107,7 @@ const AdReporting = () => {
   return (
     <div className={styles.adReportWrap}>
       {contextMsgHolder}
-      <AdReportHeader title={title ?? ''} onSave={onSave} onBackTo={onBackTo}/>
+      <AdReportHeader onSave={onSave} onBackTo={onBackTo}/>
       <AdReportSearch onSearch={onSearch}/>
       <div className={styles.adReportMain}>
         <div className={styles.adReportBox}>

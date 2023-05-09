@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAppStore } from "@/store/store.interfaces";
 import { netBaseInfoList, netDetailAd, netSearchList } from "@/service/ads-reporting";
 import { INetBaseInfoList, INetDetailAd, INetSearchList } from "@/service/index.interfaces";
-import { EConsume, EOperator } from "@/views/ad-reporting/index.interfaces";
+import { EConsume } from "@/views/ad-reporting/index.interfaces";
 
 export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
   'app/netBaseInfoList',
@@ -11,10 +11,12 @@ export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
   }
 );
 
-export const searchListAsync = createAsyncThunk<INetSearchList>(
+export const searchListAsync = createAsyncThunk<{ searchList: INetSearchList, detail: INetDetailAd }, string>(
   'app/netSearchList',
-  async () => {
-    return await netSearchList();
+  async (id) => {
+    const detail = await netDetailAd(id);
+    const searchList = await netSearchList();
+    return { detail, searchList };
   }
 );
 
@@ -70,8 +72,9 @@ export const appSlice = createSlice({
         // state.device = device;
         state.baseInfoList = action.payload;
       })
-      .addCase(searchListAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetSearchList>) => {
-        state.searchList = action.payload;
+      .addCase(searchListAsync.fulfilled, (state: IAppStore, action: PayloadAction<{ searchList: INetSearchList, detail: INetDetailAd }>) => {
+        state.searchList = action.payload.searchList;
+        state.detail = action.payload.detail;
       })
       .addCase(detailAdAsync.fulfilled, (state: IAppStore, action: PayloadAction<INetDetailAd>) => {
         state.detail = action.payload;

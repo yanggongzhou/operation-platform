@@ -89,8 +89,8 @@ Service.interceptors.response.use(
         //   Service.redux.dispatch(resetToken());
         //   notification.error({ message: '登录失效', placement: 'topRight' });
         // }
-        notification.error({ message: response.data.msg, placement: 'topRight' });
-        return Promise.reject(response.data.msg);
+        notification.info({ message: response.data.message, placement: 'topRight' });
+        return Promise.reject(response.data.message);
       }
       return response.data.data;
     } catch (err) {
@@ -101,7 +101,7 @@ Service.interceptors.response.use(
     console.log('axios err--------------------------->', err);
     const navigator = window.navigator;
     if (!navigator.onLine) {
-      notification.error({ message: 'offline', placement: 'topRight' });
+      notification.error({ message: 'Offline', placement: 'topRight' });
     // } else if (err.response?.status === 401) {
       // notification.error({ message: '登录失效', placement: 'topRight' });
       // Service.navigate('/401')
@@ -112,7 +112,7 @@ Service.interceptors.response.use(
       // notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
 
     } else {
-      notification.error({ message: 'network error', placement: 'topRight' });
+      notification.error({ message: 'Network Error', placement: 'topRight' });
     }
     return Promise.reject(err);
   }
