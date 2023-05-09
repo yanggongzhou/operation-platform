@@ -1,10 +1,8 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Button, Popover, Space, Tag, Typography } from "antd";
+import { Button, Popover, Space, Tag } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { EOperator, IFieldItem, NGroupField } from "@/views/ad-reporting/index.interfaces";
 import styles from '@/components/search-pop/index.module.scss';
-
-const { Text } = Typography;
 
 interface IProps {
   fieldItem: IFieldItem;

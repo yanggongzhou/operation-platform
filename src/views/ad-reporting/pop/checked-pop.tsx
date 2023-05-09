@@ -1,10 +1,12 @@
 import React, { FC, useState } from 'react';
-import { Checkbox } from 'antd';
+import { Checkbox, Space, Tag, Typography } from 'antd';
 import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { EGroupField, EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 import SearchPop from "@/components/search-pop";
 import styles from '@/views/ad-reporting/pop/pop.module.scss';
 import { useAppSelector } from "@/store";
+const { CheckableTag } = Tag;
+const { Text } = Typography;
 
 interface IProps {
   fieldItem: ISearchFieldItem
@@ -49,6 +51,14 @@ const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
     setValue(checkedValues as string[]);
   };
 
+  const tagChange = (item: string, checked: boolean) => {
+    if (checked) {
+      setValue(prevState => [...prevState, item]);
+    } else {
+      setValue(prevState => prevState.filter(val => val !== item));
+    }
+  };
+
   const handleConfirm = () => {
     onConfirm({
       fieldName: fieldItem.fieldName,
@@ -69,11 +79,24 @@ const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
       onDelete={onDelete}
       onConfirm={handleConfirm}
       onCancel={handleCancel}>
-      <Checkbox.Group
-        value={value}
-        className={styles.checkedPop}
-        options={options}
-        onChange={handleChange} />
+      {/*<Checkbox.Group*/}
+      {/*  value={value}*/}
+      {/*  className={styles.checkedPop}*/}
+      {/*  options={options}*/}
+      {/*  onChange={handleChange} />*/}
+      <Space size={8} wrap>
+        {options.map((tag) => (
+          <CheckableTag
+            style={{ fontSize: '14px', padding: '2px 7px' }}
+            key={tag.value}
+            checked={value.includes(tag.value)}
+            onChange={(checked) => tagChange(tag.value, checked)}
+          >
+            {tag.label}
+          </CheckableTag>
+        ))}
+      </Space>
+
     </SearchPop>
   );
 };
