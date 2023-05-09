@@ -1,12 +1,10 @@
 import React, { FC, useState } from 'react';
-import { Checkbox, Space, Tag, Typography } from 'antd';
-import { CheckboxValueType } from "antd/es/checkbox/Group";
+import { Space, Tag, } from 'antd';
 import { EGroupField, EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 import SearchPop from "@/components/search-pop";
 import styles from '@/views/ad-reporting/pop/pop.module.scss';
 import { useAppSelector } from "@/store";
 const { CheckableTag } = Tag;
-const { Text } = Typography;
 
 interface IProps {
   fieldItem: ISearchFieldItem
@@ -47,9 +45,9 @@ const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
     return arr.map(val => ({ label: val.text, value: val.field }));
   });
 
-  const handleChange = (checkedValues: CheckboxValueType[]) => {
-    setValue(checkedValues as string[]);
-  };
+  // const handleChange = (checkedValues: CheckboxValueType[]) => {
+  //   setValue(checkedValues as string[]);
+  // };
 
   const tagChange = (item: string, checked: boolean) => {
     if (checked) {

@@ -52,6 +52,7 @@ export const appSlice = createSlice({
         indexColumnList: [] as string[], // 指标字段
         startDate: '',
         endDate: '',
+        showDetailedCondition: false, // 是否开启数据透视
         formRelatedDynamicDate: EFormRelatedDynamicDate.normal,
       },
     } as INetDetailAd,
@@ -80,9 +81,11 @@ export const appSlice = createSlice({
     setFormRelatedDynamicDate: (state: IAppStore, action: PayloadAction<EFormRelatedDynamicDate>) => {
       state.detail.structure.formRelatedDynamicDate = action.payload;
     },
-
     setSearchFieldList: (state: IAppStore, action: PayloadAction<ISearchFieldItem[]>) => {
       state.detail.structure.searchFieldList = action.payload;
+    },
+    setShowDetailedCondition: (state: IAppStore, action: PayloadAction<boolean>) => {
+      state.detail.structure.showDetailedCondition = action.payload;
     },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
@@ -109,5 +112,6 @@ export const setRangeDate = appSlice.actions.setRangeDate;
 export const setFormRelatedDynamicDate = appSlice.actions.setFormRelatedDynamicDate;
 export const setAdName = appSlice.actions.setAdName;
 export const setSearchFieldList = appSlice.actions.setSearchFieldList;
+export const setShowDetailedCondition = appSlice.actions.setShowDetailedCondition;
 
 export const appReducer = appSlice.reducer;
