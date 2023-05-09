@@ -65,7 +65,10 @@ const AdReporting = () => {
   const [totalRows, setTotalRows] = useState(0);
   // 报表详情(列表数据, 修改配置情况下)
   const getUnSaveList = debounce(300,async (page: number) => {
-    const data = await netListAd(bodyData, page);
+    const { offset, records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
+    setRows(records);
+    setSumData(sumData);
+    setTotalRows(total);
   });
 
   // 报表详情(列表数据, 未修改配置情况下)

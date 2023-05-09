@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
-import { Select, Space } from "antd";
+import React, { FC, useEffect, useState } from "react";
+import { Button, Select, Space, Tooltip } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
@@ -27,7 +27,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const [fieldList, setFieldList] = useState<IFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
   const searchFieldList = useAppSelector(state => state.app.detail.structure.searchFieldList || []);
-
+  const [isShowMenu, setIsShowMenu] = useState(true);
   useEffect(() => {
     setFieldList(searchFieldList);
   }, [searchFieldList]);
@@ -37,32 +37,50 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const onOptimizerConfirm = (params: ISearchFieldItem) => {
     const data = searchFieldList.filter(val => val.fieldName !== params.fieldName);
     dispatch(setSearchFieldList([...data, params]));
+    setIsShowMenu(true);
+    onSearch();
   };
   //
   // 消耗过滤
   const consumeSearch = (value: EConsume) => {
     dispatch(setCostType(value));
     onSearch();
+    setIsShowMenu(true);
   };
   // 日期范围搜索
   const onTimeSearch = (startDate: string, endDate: string) => {
     console.log('日期范围搜索 From: ', startDate, ', to: ', endDate);
     onSearch();
+    setIsShowMenu(true);
   };
   // 筛选类型
   const onChoose = (field: EGroupField) => {
     console.log(`筛选类型: ${field}`, NGroupField[field]);
-    setFieldList(prevState => ([...prevState, {
-      fieldName: field,
-      fieldValue: [],
-      operator: EOperator.In,
-      defaultOpen: true,
-    }]));
+    setIsShowMenu(false);
+    let isExist = false; // 是否存在
+    const list = fieldList.map((val) => {
+      if(val.fieldName === field) {
+        isExist = true;
+        return { ...val, defaultOpen: true };
+      }
+      return val;
+    });
+    if (isExist) {
+      setFieldList(list);
+    } else  {
+      setFieldList(prevState => ([...prevState, {
+        fieldName: field,
+        fieldValue: [],
+        operator: EOperator.In,
+        defaultOpen: true,
+      }]));
+    }
   };
   // 删除筛选条件
   const onDelete = (index: number) => {
     const list = fieldList.filter((_, ind) => ind !== index);
     setFieldList(list);
+    setIsShowMenu(true);
     onSearch();
   };
   // 取消
@@ -71,39 +89,47 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
       const list = fieldList.filter((_, ind) => ind !== index);
       setFieldList(list);
     }
+    setIsShowMenu(true);
+  };
+  // 取消组合条件
+  const onCancelAll = () => {
+    dispatch(setSearchFieldList([]));
+    onSearch();
+    setIsShowMenu(true);
   };
 
   return (
     <div className={styles.adSearchWrap}>
       <div className={styles.adSearchTop}>
-        {fieldList.map((fieldItem, index) => {
-          const popProps = {
-            fieldItem,
-            onConfirm: onOptimizerConfirm,
-            onDelete: () => onDelete(index),
-            onCancel: () => onCancel(fieldItem, index),
-          };
-          if (fieldItem.fieldName === EGroupField.Optimizer) {
-            return <OptimizerPop key={fieldItem.fieldName + index} { ...popProps }/>;
-          }
-          if (fieldItem.fieldName === EGroupField.AccountId
-            || fieldItem.fieldName === EGroupField.AdId
-            || fieldItem.fieldName === EGroupField.BookId
-            || fieldItem.fieldName === EGroupField.Url
-            || fieldItem.fieldName === EGroupField.Pixel
-          ) {
-            return (<AccountPop key={fieldItem.fieldName + index} { ...popProps }/>);
-          }
-          if (fieldItem.fieldName === EGroupField.Country) {
-            return <CountryPop key={fieldItem.fieldName + index} { ...popProps }/>;
-          }
-          return <CheckedPop
-            key={fieldItem.fieldName + index}
-            fieldItem={fieldItem}
-            onCancel={() => onCancel(fieldItem, index)}
-            onDelete={() => onDelete(index)}/>;
-        })}
-        <SearchMenu onChoose={onChoose}/>
+        <div className={styles.topDetail}>
+          {fieldList.map((fieldItem, index) => {
+            const popProps = {
+              fieldItem,
+              onConfirm: onOptimizerConfirm,
+              onDelete: () => onDelete(index),
+              onCancel: () => onCancel(fieldItem, index),
+            };
+            if (fieldItem.fieldName === EGroupField.Optimizer) {
+              return <OptimizerPop key={fieldItem.fieldName + index} { ...popProps }/>;
+            }
+            if (fieldItem.fieldName === EGroupField.AccountId
+              || fieldItem.fieldName === EGroupField.AdId
+              || fieldItem.fieldName === EGroupField.BookId
+              || fieldItem.fieldName === EGroupField.Url
+              || fieldItem.fieldName === EGroupField.Pixel
+            ) {
+              return (<AccountPop key={fieldItem.fieldName + index} { ...popProps }/>);
+            }
+            if (fieldItem.fieldName === EGroupField.Country) {
+              return <CountryPop key={fieldItem.fieldName + index} { ...popProps }/>;
+            }
+            return <CheckedPop key={fieldItem.fieldName + index} { ...popProps }/>;
+          })}
+          {isShowMenu ? <SearchMenu onChoose={onChoose}/> : null}
+        </div>
+        <Tooltip color={'grey'} placement="top" title={'清除组合条件'} arrow={false}>
+          <Button type="link" size="small" onClick={onCancelAll}>清除</Button>
+        </Tooltip>
       </div>
       <div className={styles.adSearchBottom}>
         <Space.Compact>

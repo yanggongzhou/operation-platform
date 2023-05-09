@@ -26,8 +26,9 @@ const AdReportHeader: FC<IProps> = ({ onSave, onBackTo }) => {
         <Button icon={<LeftOutlined/>} onClick={() => onBackTo()}>所有报告</Button>
         <Tooltip placement="bottom" title={adName}>
           <Input
-            bordered={false}
-            className={isFocus ? styles.adHeaderInputFocus : styles.adHeaderInput}
+            style={{ marginLeft: '20px' }}
+            // bordered={false}
+            // className={isFocus ? styles.adHeaderInputFocus : styles.adHeaderInput}
             value={adName}
             showCount={false}
             maxLength={100}

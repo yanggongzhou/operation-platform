@@ -64,7 +64,7 @@ export const netDetailListAd = async (id: string, page: number = 0): Promise<INe
  * @param page
  */
 export const netListAd = async (data: INetDetailAd, page: number = 0): Promise<INetDetailListAd> => {
-  return await Service.post('/hw-adserving/reportForm/getData', data,{ params: { page } } );
+  return await Service.post('/hw-adserving/reportForm/getDataByBody', data,{ params: { page } } );
 };
 
 /**

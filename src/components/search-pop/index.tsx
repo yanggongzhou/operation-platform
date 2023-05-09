@@ -1,8 +1,10 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Button, Popover, Space } from "antd";
+import { Button, Popover, Space, Tag, Typography } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import { IFieldItem, NGroupField } from "@/views/ad-reporting/index.interfaces";
+import { EOperator, IFieldItem, NGroupField } from "@/views/ad-reporting/index.interfaces";
 import styles from '@/components/search-pop/index.module.scss';
+
+const { Text } = Typography;
 
 interface IProps {
   fieldItem: IFieldItem;
@@ -17,6 +19,13 @@ const SearchPop: FC<IProps> = (
   { fieldItem, children, onDelete, onConfirm, onCancel, disabled }) => {
   const [isOpen, setIsOpen] = useState(fieldItem.defaultOpen && fieldItem.fieldValue.length === 0);
   const isUseful = useRef(false);
+
+  useEffect(() => {
+    if (fieldItem.defaultOpen) {
+      setIsOpen(true);
+    }
+  }, [fieldItem.defaultOpen]);
+
   useEffect(() => {
     setTimeout(() => isUseful.current = true, 1000);
   }, []);
@@ -33,6 +42,7 @@ const SearchPop: FC<IProps> = (
   return (
     <Space.Compact className={styles.popShowBox}>
       <Popover
+        arrow={false}
         className={styles.searchPopWrap}
         trigger={'click'}
         destroyTooltipOnHide
@@ -58,7 +68,19 @@ const SearchPop: FC<IProps> = (
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <div className={styles.popName} onClick={() => setIsOpen(true)}>{NGroupField[fieldItem.fieldName]}</div>
+        <div className={styles.popName} onClick={() => setIsOpen(true)}>
+          <Space size={8}>
+            <span>{NGroupField[fieldItem.fieldName]}</span>
+            <span>{fieldItem.operator === EOperator.In ? '是' : '非'}</span>
+            <Space size={3} className={styles.popTagBox}>
+              {fieldItem.fieldValue.slice(0, 3).map(val => {
+                return <Tag key={val} bordered={false} className={styles.popTag}>{val}</Tag>;
+              })}
+            </Space>
+          </Space>
+
+
+        </div>
       </Popover>
       <div className={styles.popCancel} onClick={() => onDelete()}><CloseOutlined/></div>
     </Space.Compact>

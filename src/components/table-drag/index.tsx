@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Table, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";

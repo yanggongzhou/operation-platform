@@ -7,10 +7,16 @@
 
   .adSearchTop {
     display: flex;
-    align-items: center;
+    justify-content: space-between;
     margin-bottom: 15px;
-    flex-direction: row;
-    flex-wrap: wrap;
+
+    .topDetail {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
   }
 
   .adSearchBottom {
@@ -37,7 +43,6 @@
     }
   }
 }
-
 
 .popBox {
 

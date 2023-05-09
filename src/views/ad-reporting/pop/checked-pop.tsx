@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Checkbox } from 'antd';
 import { CheckboxValueType } from "antd/es/checkbox/Group";
-import { EGroupField, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
+import { EGroupField, EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 import SearchPop from "@/components/search-pop";
 import styles from '@/views/ad-reporting/pop/pop.module.scss';
 import { useAppSelector } from "@/store";
@@ -10,10 +10,13 @@ interface IProps {
   fieldItem: ISearchFieldItem
   onDelete: () => void;
   onCancel: () => void;
+  onConfirm: (params: ISearchFieldItem) => void;
 }
 
-const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel }) => {
-  const [value, setValue] = useState<CheckboxValueType[]>();
+const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) => {
+
+  const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
+
   const options = useAppSelector(state => {
     let arr: any[] = [];
     switch (fieldItem.fieldName) {
@@ -42,19 +45,35 @@ const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel }) => {
     return arr.map(val => ({ label: val.text, value: val.field }));
   });
 
-  console.log(options);
-
   const handleChange = (checkedValues: CheckboxValueType[]) => {
-    setValue(checkedValues);
-    console.log('checked = ', checkedValues);
+    setValue(checkedValues as string[]);
   };
 
   const handleConfirm = () => {
+    onConfirm({
+      fieldName: fieldItem.fieldName,
+      fieldValue: value,
+      operator: EOperator.In,
+    });
+  };
 
-  }
+  const handleCancel = () => {
+    setValue(fieldItem.fieldValue);
+    onCancel();
+  };
+
   return (
-    <SearchPop fieldItem={fieldItem} onDelete={onDelete} onConfirm={handleConfirm} onCancel={onCancel}>
-      <Checkbox.Group className={styles.checkedPop} options={options} onChange={handleChange} />
+    <SearchPop
+      disabled={value.length === 0}
+      fieldItem={fieldItem}
+      onDelete={onDelete}
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}>
+      <Checkbox.Group
+        value={value}
+        className={styles.checkedPop}
+        options={options}
+        onChange={handleChange} />
     </SearchPop>
   );
 };

@@ -26,19 +26,39 @@
 
 .popShowBox {
   height: 30px;
-  margin-right: 10px;
 
   .popName {
-    background-color: rgba(0, 0, 0, .05);
+    border-left: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #00000019;
     padding: 0 10px;
     border-radius: 8px 0 0 8px;
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 500;
     display: flex;
     align-items: center;
     cursor: pointer;
+    transition: border-color 0.3s;
 
     &:hover {
-      background-color: rgba(0,0,0,0.1);;
+      border-color: #b9b9b9;
+      //background-color: rgba(0,0,0,0.1);;
+    }
+    .popTagBox {
+      max-width: 200px;
+      overflow: hidden;
+      height: 100%;
+      padding-top: 3px;
+
+      .popTag {
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        max-width: 100px;
+        margin: 0;
+      }
     }
   }
   .popCancel {
@@ -48,10 +68,10 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    transition: background-color 0.3s;
 
     &:hover {
-      background-color: rgba(0,0,0,0.15);;
+      background-color: #b9b9b9;
     }
   }
-
 }

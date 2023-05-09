@@ -53,7 +53,7 @@ export const NGroupField = {
   [EGroupField.AccountId]: '账户',
   [EGroupField.AdId]: '广告',
   [EGroupField.BookId]: '书籍',
-  [EGroupField.Url]: 'URL：落地页ID',
+  [EGroupField.Url]: 'URL',
   [EGroupField.Pixel]: '像素ID',
   [EGroupField.Device]: '设备',
   [EGroupField.Media]: '媒体',

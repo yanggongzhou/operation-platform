@@ -14,12 +14,13 @@ interface IProps {
 
 const CountryPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) => {
   const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
+
   const options = useAppSelector(state => {
     return state.app.baseInfoList.country;
   });
+
   const handleChange = (checkedValues: string[]) => {
     setValue(checkedValues);
-    console.log('checked = ', checkedValues);
   };
   const handleConfirm = () => {
     onConfirm({

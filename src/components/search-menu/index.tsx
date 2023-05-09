@@ -16,12 +16,13 @@ const SearchMenu: FC<IProps> = ({ onChoose }) => {
 
   const onChange = (newValue: EGroupField) => {
     onChoose(newValue);
-    setValue(undefined);
+    console.log('value', value);
   };
 
   return (
     <Select
-      style={{ width: '220px', marginLeft: '20px' }}
+      bordered={false}
+      style={{ width: '200px', marginLeft: '20px' }}
       showSearch
       value={value}
       placeholder="请搜索和筛选"
