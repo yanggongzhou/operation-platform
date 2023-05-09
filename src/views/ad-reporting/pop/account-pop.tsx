@@ -2,48 +2,79 @@ import React, { FC, useState } from 'react';
 import type { RadioChangeEvent, SelectProps } from 'antd';
 import { Select, Radio, Space } from 'antd';
 import { debounce } from 'throttle-debounce';
-import { EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
+import { EGroupField, EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 import SearchPop from "@/components/search-pop";
-import { netAccountList } from "@/service/ads-reporting";
+import { netAccountList, netBookList, netCampaignList, netLandPageConf, netPixelList } from "@/service/ads-reporting";
 import styles from '@/views/ad-reporting/pop/pop.module.scss';
 
 interface IProps {
   fieldItem: ISearchFieldItem;
   onDelete: () => void;
+  onCancel: () => void;
+  onConfirm: (params: ISearchFieldItem) => void;
 }
 
-const AccountPop: FC<IProps> = ({ fieldItem, onDelete }) => {
+const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) => {
   const [data, setData] = useState<SelectProps['options']>([]);
-  const [value, setValue] = useState<string>();
-
+  const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
   const [operatorValue, setOperatorValue] = useState(EOperator.In); // 包含不包含
 
   const onOperatorChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
     setOperatorValue(e.target.value);
   };
 
   const handleFocus = () => {
-
+    if (!data || data.length === 0) {
+      getAccountList();
+    }
   };
   // 获取广告账户数据
-  const getAccountList = async (search: string) => {
-    const accountList = await netAccountList(search);
-    console.log('accountList:', accountList);
-  };
+  const getAccountList = debounce( 300, async (search?: string) => {
+    let list: SelectProps['options'] = [];
 
-  const handleSearch = debounce(500, (newValue: string) => {
-    getAccountList(newValue);
-    console.log('121221');
+    switch (fieldItem.fieldName) {
+      case EGroupField.AccountId:
+        const accountData = await netAccountList(search);
+        list = (accountData.rows || []).map(val => ({ label: val.adAccountName, value: val.adAccountId }));
+        break;
+      case EGroupField.AdId:
+        const adData = await netCampaignList(search);
+        list = (adData.rows || []).map(val => ({ label: val.campaignName, value: val.campaignId })) || [];
+        break;
+      case EGroupField.BookId:
+        const bookData = await netBookList(search);
+        list = (bookData.rows || []).map(val => ({ label: val.bookName, value: val.bookId }));
+        break;
+      case EGroupField.Url:
+        const urlData = await netLandPageConf(search);
+        list = (urlData.rows || []).map(val => ({ label: val.url, value: val.url }));
+        break;
+      case EGroupField.Pixel:
+        const pixelData = await netPixelList(search);
+        list = (pixelData.rows || []).map(val => ({ label: val.number, value: val.number }));
+        break;
+    }
+    setData(list);
+  }, { atBegin: false });
+
+  const handleSearch = debounce(500, (search: string) => {
+    getAccountList(search);
   });
 
-  const handleChange = (newValue: string) => {
+  const handleChange = (newValue: string[]) => {
     setValue(newValue);
-    console.log('handleChange');
+  };
+
+  const handleConfirm = () => {
+    onConfirm({
+      fieldName: fieldItem.fieldName,
+      fieldValue: value,
+      operator: operatorValue,
+    });
   };
 
   return (
-    <SearchPop field={fieldItem.fieldName} onDelete={onDelete}>
+    <SearchPop disabled={value.length === 0} fieldItem={fieldItem} onDelete={onDelete} onConfirm={handleConfirm} onCancel={onCancel}>
       <Space className={styles.adPopBox}>
         <Radio.Group onChange={onOperatorChange} value={operatorValue}>
           <Radio value={EOperator.In}>包含</Radio>
@@ -61,10 +92,7 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete }) => {
           onSearch={handleSearch}
           onChange={handleChange}
           notFoundContent={null}
-          options={(data || []).map((d) => ({
-            value: d.value,
-            label: d.text,
-          }))}
+          options={data}
         />
       </Space>
     </SearchPop>

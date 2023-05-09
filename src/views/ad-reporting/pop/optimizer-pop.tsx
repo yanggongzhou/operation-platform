@@ -1,50 +1,60 @@
 import React, { FC, useState } from 'react';
-import type { RadioChangeEvent, SelectProps } from 'antd';
+import type { RadioChangeEvent } from 'antd';
 import { Select, Radio, Space } from 'antd';
 import { debounce } from 'throttle-debounce';
-import { EOperator, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
+import { DefaultOptionType } from "rc-select/lib/Select";
+import { EOperator, IFieldItem, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 import SearchPop from "@/components/search-pop";
 import { netOptimizerList } from "@/service/ads-reporting";
 import styles from '@/views/ad-reporting/pop/pop.module.scss';
 
 interface IProps {
-  fieldItem: ISearchFieldItem;
+  fieldItem: IFieldItem;
   onDelete: () => void;
+  onConfirm: (params: ISearchFieldItem) => void;
+  onCancel: () => void;
 }
 
-const OptimizerPop: FC<IProps> = ({ fieldItem, onDelete }) => {
-  const [data, setData] = useState<SelectProps['options']>([]);
-  const [value, setValue] = useState<string>();
-
+const OptimizerPop: FC<IProps> = ({ fieldItem, onDelete, onConfirm, onCancel }) => {
+  const [data, setData] = useState<DefaultOptionType[]>([]);
+  const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
   const [operatorValue, setOperatorValue] = useState(EOperator.In); // 包含不包含
 
+  const handleFocus = () => {
+    if (!data || data.length === 0) {
+      getOptimizerList();
+    }
+  };
+  // 获取优化师数据
+  const getOptimizerList = debounce( 300, async () => {
+    const list = await netOptimizerList();
+    const _list = (list || []).map(val => ({ label: val, value: val }));
+    setData(_list);
+  }, { atBegin: true });
+
   const onOperatorChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
     setOperatorValue(e.target.value);
   };
 
-  const handleFocus = () => {
-
-  };
-  // 获取优化师数据
-  const getOptimizerList = async () => {
-    const accountList = await netOptimizerList();
-    console.log('accountList:', accountList);
-
-  };
-
-  const handleSearch = debounce(500, () => {
-    getOptimizerList();
-    console.log('121221');
-  });
-
-  const handleChange = (newValue: string) => {
+  const handleChange = (newValue: string[]) => {
     setValue(newValue);
-    console.log('handleChange');
+  };
+
+  const handleConfirm = () => {
+    onConfirm({
+      fieldName: fieldItem.fieldName,
+      fieldValue: value,
+      operator: operatorValue,
+    });
   };
 
   return (
-    <SearchPop field={fieldItem.fieldName} onDelete={onDelete}>
+    <SearchPop
+      disabled={value.length === 0}
+      fieldItem={fieldItem}
+      onDelete={onDelete}
+      onConfirm={handleConfirm}
+      onCancel={onCancel}>
       <Space className={styles.adPopBox}>
         <Radio.Group onChange={onOperatorChange} value={operatorValue}>
           <Radio value={EOperator.In}>包含</Radio>
@@ -57,15 +67,11 @@ const OptimizerPop: FC<IProps> = ({ fieldItem, onDelete }) => {
           value={value}
           defaultActiveFirstOption={false}
           showArrow={false}
-          filterOption={false}
-          onFocus={handleFocus}
-          onSearch={handleSearch}
+          filterOption={true}
           onChange={handleChange}
+          onFocus={handleFocus}
           notFoundContent={null}
-          options={(data || []).map((d) => ({
-            value: d.value,
-            label: d.text,
-          }))}
+          options={data}
         />
       </Space>
     </SearchPop>

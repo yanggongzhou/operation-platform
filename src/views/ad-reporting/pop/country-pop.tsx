@@ -21,9 +21,12 @@ const CountryPop: FC<IProps> = ({ fieldItem, onDelete }) => {
     setValue(checkedValues);
     console.log('checked = ', checkedValues);
   };
+  const handleConfirm = () => {
+
+  }
 
   return (
-    <SearchPop field={fieldItem.fieldName} onDelete={onDelete}>
+    <SearchPop fieldItem={fieldItem} onDelete={onDelete} onConfirm={handleConfirm} onCancel={() => void 0}>
       <Select
         fieldNames={{
           label: "countryName",

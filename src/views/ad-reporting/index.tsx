@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { debounce } from "throttle-debounce";
@@ -11,7 +11,6 @@ import { baseInfoAsync, searchListAsync, setFilterFieldList, setIndexColumnList 
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
-import { INetDetailAd } from "@/service/index.interfaces";
 
 const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
@@ -20,6 +19,7 @@ const AdReporting = () => {
   const isPaint = useRef(true);
   const dispatch = useAppDispatch();
   const routeParams = useParams();
+  const id = useMemo(() => routeParams?.id as string, [routeParams]);
   const [page, setPage] = useState(0);
   const bodyData = useAppSelector(state => {
     const data = JSON.parse(JSON.stringify(state.app.detail));
@@ -64,9 +64,9 @@ const AdReporting = () => {
   const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
   const [totalRows, setTotalRows] = useState(0);
   // 报表详情(列表数据, 修改配置情况下)
-  const getUnSaveList = async (id: string, page: number) => {
-    const data = await netListAd({} as INetDetailAd, page);
-  };
+  const getUnSaveList = debounce(300,async (page: number) => {
+    const data = await netListAd(bodyData, page);
+  });
 
   // 报表详情(列表数据, 未修改配置情况下)
   const getList = debounce(500, async (id: string, page: number) => {
@@ -82,10 +82,11 @@ const AdReporting = () => {
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
     messageApi.success('已保存');
+    getList(id, 0);
   };
   // 搜索
   const onSearch = () => {
-
+    getUnSaveList(0);
   };
   // 返回
   const onBackTo = () => {

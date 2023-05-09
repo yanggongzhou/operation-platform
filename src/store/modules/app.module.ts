@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAppStore } from "@/store/store.interfaces";
 import { netBaseInfoList, netDetailAd, netSearchList } from "@/service/ads-reporting";
 import { EFormRelatedDynamicDate, INetBaseInfoList, INetDetailAd, INetSearchList } from "@/service/index.interfaces";
-import { EConsume } from "@/views/ad-reporting/index.interfaces";
+import { EConsume, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 
 export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
   'app/netBaseInfoList',
@@ -80,6 +80,10 @@ export const appSlice = createSlice({
     setFormRelatedDynamicDate: (state: IAppStore, action: PayloadAction<EFormRelatedDynamicDate>) => {
       state.detail.structure.formRelatedDynamicDate = action.payload;
     },
+
+    setSearchFieldList: (state: IAppStore, action: PayloadAction<ISearchFieldItem[]>) => {
+      state.detail.structure.searchFieldList = action.payload;
+    },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
   extraReducers: (builder) => {
@@ -104,5 +108,6 @@ export const setCostType = appSlice.actions.setCostType;
 export const setRangeDate = appSlice.actions.setRangeDate;
 export const setFormRelatedDynamicDate = appSlice.actions.setFormRelatedDynamicDate;
 export const setAdName = appSlice.actions.setAdName;
+export const setSearchFieldList = appSlice.actions.setSearchFieldList;
 
 export const appReducer = appSlice.reducer;

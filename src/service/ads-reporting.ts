@@ -1,10 +1,12 @@
 import { AnyObject } from "antd/es/table/Table";
 import Service from "@/utils/axios";
 import {
+  INetAccountList,
   INetAdsList,
-  INetBaseInfoList,
+  INetBaseInfoList, INetBookList,
+  INetCampaignList,
   INetDetailAd,
-  INetDetailListAd,
+  INetDetailListAd, INetLandPageConf, INetPixelList,
   INetSearchList
 } from "@/service/index.interfaces";
 
@@ -73,21 +75,6 @@ export const netUpdateAd = async (data: INetDetailAd) =>
   await Service.post('/hw-adserving/reportForm/update', data);
 
 /**
- * 广告账户列表
- * @param search 查询内容
- */
-export const netAccountList = async (search: string) => {
-  return await Service.post('/hw-adserving/dropList/accountList', { search, offset: 0, sort:"", order:"", limit: 20 });
-};
-
-/**
- * 计划列表
- */
-export const netCampaignList = async (search: string): Promise<INetSearchList> => {
-  return await Service.post('/hw-adserving/dropList/campaignList', { search, offset: 0, limit: 20 });
-};
-
-/**
  * 细分条件和指标列表
  */
 export const netSearchList = async (): Promise<INetSearchList> => {
@@ -109,22 +96,38 @@ export const netOptimizerList = async (): Promise<string[]> => {
 };
 
 /**
+ * 广告账户列表
+ * @param search 查询内容
+ */
+export const netAccountList = async (search: string = ''): Promise<INetAccountList> => {
+  return await Service.post('/hw-adserving/dropList/accountList', { search, offset: 0, sort:"", order:"", limit: 20 });
+};
+
+/**
+ * 计划列表
+ */
+export const netCampaignList = async (search: string = ''): Promise<INetCampaignList> => {
+  return await Service.post('/hw-adserving/dropList/campaignList', { search, offset: 0, limit: 20 });
+};
+
+/**
+ * 书单列表
+ */
+export const netBookList = async (bookName: string = ''): Promise<INetBookList> => {
+  return await Service.post('/hw-adserving/landpage/landPageConf/list', { bookName, offset: 0, limit: 20 });
+};
+
+/**
  * 落地页列表
  */
-export const netLandPageConf = async (name: string): Promise<{ rows: AnyObject[] }> => {
+export const netLandPageConf = async (name: string = ''): Promise<INetLandPageConf> => {
   return await Service.get('/hw-adserving/landpage/landPageConf/list', { params: { name, offset: 0, limit: 20 } });
 };
 
 /**
  * 像素代码列表
  */
-export const netPixelList = async (name: string): Promise<{ rows: AnyObject[] }> => {
+export const netPixelList = async (name: string = ''): Promise<INetPixelList> => {
   return await Service.get('/hw-adserving/landpage/pixel/list', { params: { name, offset: 0, limit: 20 } });
 };
 
-/**
- * 书单列表
- */
-export const netBookList = async (bookName: string): Promise<{ rows: AnyObject[] }> => {
-  return await Service.post('/hw-adserving/landpage/landPageConf/list', { bookName, offset: 0, limit: 20 });
-};

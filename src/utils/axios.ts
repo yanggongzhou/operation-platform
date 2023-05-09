@@ -82,6 +82,9 @@ Service.interceptors.request.use(
 Service.interceptors.response.use(
   (response: AxiosResponse): AxiosPromise<any> => {
     try {
+      if (!response.data.code) {
+        return response.data;
+      }
       if (response.data.code !== 200) {
         // if (response.data.code === 6) {
         //   Service.navigate('/login');

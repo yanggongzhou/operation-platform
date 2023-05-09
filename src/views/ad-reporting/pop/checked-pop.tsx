@@ -9,9 +9,10 @@ import { useAppSelector } from "@/store";
 interface IProps {
   fieldItem: ISearchFieldItem
   onDelete: () => void;
+  onCancel: () => void;
 }
 
-const CheckedPop: FC<IProps> = ({ fieldItem, onDelete }) => {
+const CheckedPop: FC<IProps> = ({ fieldItem, onDelete, onCancel }) => {
   const [value, setValue] = useState<CheckboxValueType[]>();
   const options = useAppSelector(state => {
     let arr: any[] = [];
@@ -48,8 +49,11 @@ const CheckedPop: FC<IProps> = ({ fieldItem, onDelete }) => {
     console.log('checked = ', checkedValues);
   };
 
+  const handleConfirm = () => {
+
+  }
   return (
-    <SearchPop field={fieldItem.fieldName} onDelete={onDelete}>
+    <SearchPop fieldItem={fieldItem} onDelete={onDelete} onConfirm={handleConfirm} onCancel={onCancel}>
       <Checkbox.Group className={styles.checkedPop} options={options} onChange={handleChange} />
     </SearchPop>
   );

@@ -1,25 +1,22 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Button, Popover, Space } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import { EGroupField, NGroupField } from "@/views/ad-reporting/index.interfaces";
+import { IFieldItem, NGroupField } from "@/views/ad-reporting/index.interfaces";
 import styles from '@/components/search-pop/index.module.scss';
+
 interface IProps {
-  field: EGroupField;
+  fieldItem: IFieldItem;
   children: React.ReactNode;
   onDelete: () => void;
+  onConfirm: () => void;
+  onCancel: () => void;
+  disabled?: boolean;
 }
 
-const SearchPop: FC<IProps> = ({ field, children, onDelete }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const SearchPop: FC<IProps> = (
+  { fieldItem, children, onDelete, onConfirm, onCancel, disabled }) => {
+  const [isOpen, setIsOpen] = useState(fieldItem.defaultOpen && fieldItem.fieldValue.length === 0);
   const isUseful = useRef(false);
-
-  const confirm = () => {
-    setIsOpen(false);
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(null), 3000);
-    });
-  };
-
   useEffect(() => {
     setTimeout(() => isUseful.current = true, 1000);
   }, []);
@@ -27,6 +24,9 @@ const SearchPop: FC<IProps> = ({ field, children, onDelete }) => {
   const handleOpenChange = (newOpen: boolean) => {
     if (isUseful.current) {
       setIsOpen(newOpen);
+      if (!newOpen) {
+        onCancel();
+      }
     }
   };
 
@@ -37,25 +37,30 @@ const SearchPop: FC<IProps> = ({ field, children, onDelete }) => {
         trigger={'click'}
         destroyTooltipOnHide
         placement={'bottomLeft'}
-        defaultOpen={true}
-        title={<div className={styles.popTitle}>{NGroupField[field]}</div>}
+        title={<div className={styles.popTitle}>{NGroupField[fieldItem.fieldName]}</div>}
         content={<div className={styles.popBox}>
           <div className={styles.popMain}>
             {children}
           </div>
           <div className={styles.popFooter}>
             <Space>
-              <Button onClick={() => setIsOpen(false)}>取消</Button>
-              <Button type="primary" onClick={() => setIsOpen(false)}>应用</Button>
+              <Button onClick={() => {
+                setIsOpen(false);
+                onCancel();
+              }}>取消</Button>
+              <Button type="primary" disabled={disabled} onClick={() => {
+                setIsOpen(false);
+                onConfirm();
+              }}>应用</Button>
             </Space>
           </div>
         </div>}
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <div className={styles.popName} onClick={() => setIsOpen(true)}>{NGroupField[field]}</div>
+        <div className={styles.popName} onClick={() => setIsOpen(true)}>{NGroupField[fieldItem.fieldName]}</div>
       </Popover>
-      <div className={styles.popCancel} onClick={() => onDelete()}><CloseOutlined /></div>
+      <div className={styles.popCancel} onClick={() => onDelete()}><CloseOutlined/></div>
     </Space.Compact>
   );
 };

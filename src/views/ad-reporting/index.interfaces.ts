@@ -81,6 +81,10 @@ export interface ISearchFieldItem {
   operator: EOperator;
 }
 
+export interface IFieldItem extends ISearchFieldItem {
+  defaultOpen?: boolean;
+}
+
 /** 表格条件
  * group 细分条件
  * target 指标
