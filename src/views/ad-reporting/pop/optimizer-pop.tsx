@@ -48,13 +48,18 @@ const OptimizerPop: FC<IProps> = ({ fieldItem, onDelete, onConfirm, onCancel }) 
     });
   };
 
+  const handleCancel = () => {
+    setValue(fieldItem.fieldValue);
+    onCancel();
+  };
+
   return (
     <SearchPop
       disabled={value.length === 0}
       fieldItem={fieldItem}
       onDelete={onDelete}
       onConfirm={handleConfirm}
-      onCancel={onCancel}>
+      onCancel={handleCancel}>
       <Space className={styles.adPopBox}>
         <Radio.Group onChange={onOperatorChange} value={operatorValue}>
           <Radio value={EOperator.In}>包含</Radio>

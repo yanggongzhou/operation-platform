@@ -73,8 +73,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
     }
   };
 
-
-
   return (
     <div className={styles.adSearchWrap}>
       <div className={styles.adSearchTop}>
@@ -85,6 +83,9 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
             onDelete: () => onDelete(index),
             onCancel: () => onCancel(fieldItem, index),
           };
+          if (fieldItem.fieldName === EGroupField.Optimizer) {
+            return <OptimizerPop key={fieldItem.fieldName + index} { ...popProps }/>;
+          }
           if (fieldItem.fieldName === EGroupField.AccountId
             || fieldItem.fieldName === EGroupField.AdId
             || fieldItem.fieldName === EGroupField.BookId
@@ -93,19 +94,14 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
           ) {
             return (<AccountPop key={fieldItem.fieldName + index} { ...popProps }/>);
           }
-
-          switch (fieldItem.fieldName) {
-            case EGroupField.Optimizer:
-              return <OptimizerPop key={fieldItem.fieldName + index} { ...popProps }/>;
-            case EGroupField.Country:
-              return <CountryPop key={fieldItem.fieldName + index} fieldItem={fieldItem} onDelete={() => onDelete(index)}/>;
-            default:
-              return <CheckedPop
-                key={fieldItem.fieldName + index}
-                fieldItem={fieldItem}
-                onCancel={() => onCancel(fieldItem, index)}
-                onDelete={() => onDelete(index)}/>;
+          if (fieldItem.fieldName === EGroupField.Country) {
+            return <CountryPop key={fieldItem.fieldName + index} { ...popProps }/>;
           }
+          return <CheckedPop
+            key={fieldItem.fieldName + index}
+            fieldItem={fieldItem}
+            onCancel={() => onCancel(fieldItem, index)}
+            onDelete={() => onDelete(index)}/>;
         })}
         <SearchMenu onChoose={onChoose}/>
       </div>
