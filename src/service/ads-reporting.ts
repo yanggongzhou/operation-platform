@@ -1,3 +1,4 @@
+import { AnyObject } from "antd/es/table/Table";
 import Service from "@/utils/axios";
 import {
   INetAdsList,
@@ -6,7 +7,6 @@ import {
   INetDetailListAd,
   INetSearchList
 } from "@/service/index.interfaces";
-
 
 /**
  * 报表列表
@@ -77,14 +77,14 @@ export const netUpdateAd = async (data: INetDetailAd) =>
  * @param search 查询内容
  */
 export const netAccountList = async (search: string) => {
-  return await Service.post('/hw-adserving/dropList/accountList', { search, offset: 1, sort:"", order:"", limit: 20 });
+  return await Service.post('/hw-adserving/dropList/accountList', { search, offset: 0, sort:"", order:"", limit: 20 });
 };
 
 /**
  * 计划列表
  */
 export const netCampaignList = async (search: string): Promise<INetSearchList> => {
-  return await Service.post('/hw-adserving/dropList/campaignList', { search, offset: 1, limit: 20 });
+  return await Service.post('/hw-adserving/dropList/campaignList', { search, offset: 0, limit: 20 });
 };
 
 /**
@@ -93,7 +93,6 @@ export const netCampaignList = async (search: string): Promise<INetSearchList> =
 export const netSearchList = async (): Promise<INetSearchList> => {
   return await Service.get('/hw-adserving/dropList/searchList');
 };
-
 
 /**
  * 搜索详情列表
@@ -109,4 +108,23 @@ export const netOptimizerList = async (): Promise<string[]> => {
   return await Service.get('/hw-adserving/dropList/optimizerList');
 };
 
+/**
+ * 落地页列表
+ */
+export const netLandPageConf = async (name: string): Promise<{ rows: AnyObject[] }> => {
+  return await Service.get('/hw-adserving/landpage/landPageConf/list', { params: { name, offset: 0, limit: 20 } });
+};
 
+/**
+ * 像素代码列表
+ */
+export const netPixelList = async (name: string): Promise<{ rows: AnyObject[] }> => {
+  return await Service.get('/hw-adserving/landpage/pixel/list', { params: { name, offset: 0, limit: 20 } });
+};
+
+/**
+ * 书单列表
+ */
+export const netBookList = async (bookName: string): Promise<{ rows: AnyObject[] }> => {
+  return await Service.post('/hw-adserving/landpage/landPageConf/list', { bookName, offset: 0, limit: 20 });
+};

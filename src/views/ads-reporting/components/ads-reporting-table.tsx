@@ -54,6 +54,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   // 复制
   const handleCopy = (record: IAdsListItem, e: any) => {
     e.stopPropagation();
+    console.log('record.name', record.name);
     setAdName(record.name + '副本');
     setCopyVisible(true);
     setDetail(Object.assign({}, record));
@@ -100,16 +101,16 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
           defaultCurrent: 1,
           defaultPageSize: 30,
           pageSize: pageInfo.pageSize,
-          current: pageInfo.page,
+          current: pageInfo.page + 1,
           total,
           pageSizeOptions: [30, 50, 100],
           onChange: (page, pageSize) => {
             if (pageSize === pageInfo.pageSize) {
-              setPageInfo({ page, pageSize });
+              setPageInfo({ page: page - 1, pageSize });
             }
           },
           onShowSizeChange: (current, size) => {
-            setPageInfo({ page: 1, pageSize: size });
+            setPageInfo({ page: 0, pageSize: size });
           }
         }}
         columns={columns}
@@ -154,7 +155,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
         }}
       >
         <h4>报告名称</h4>
-        <Input defaultValue={adName} showCount maxLength={100} onChange={(e) => onInputChange(e)} />
+        <Input value={adName} showCount maxLength={100} onChange={(e) => onInputChange(e)} />
       </Modal>
     </>
   );

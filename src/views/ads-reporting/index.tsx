@@ -11,7 +11,7 @@ const AdsReporting = () => {
   const navigate = useNavigate();
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [total, setTotal] = useState(0);
-  const [pageInfo, setPageInfo] = useState({ page: 1, pageSize: 30 });
+  const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 30 });
   const [rows, setRows] = useState<IAdsListItem[]>([]);
   // 创建报表
   const onCreate = async (name: string) => {
