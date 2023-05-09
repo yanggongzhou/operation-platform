@@ -70,7 +70,7 @@ export const netListAd = async (data: INetDetailAd, page: number = 0): Promise<I
  * @param data
  */
 export const netUpdateAd = async (data: INetDetailAd) =>
-  await Service.post('/hw-adserving/reportForm/add', data);
+  await Service.post('/hw-adserving/reportForm/update', data);
 
 /**
  * 广告账户列表

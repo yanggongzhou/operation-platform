@@ -6,11 +6,11 @@ import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
-import { useAppDispatch } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { baseInfoAsync, searchListAsync, setFilterFieldList, setIndexColumnList } from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
-import { netDetailListAd, netListAd } from "@/service/ads-reporting";
+import { netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
 import { INetDetailAd } from "@/service/index.interfaces";
 
 const AdReporting = () => {
@@ -21,6 +21,12 @@ const AdReporting = () => {
   const dispatch = useAppDispatch();
   const routeParams = useParams();
   const [page, setPage] = useState(0);
+  const bodyData = useAppSelector(state => {
+    const data = JSON.parse(JSON.stringify(state.app.detail));
+    Reflect.deleteProperty(data, 'updateTime');
+    Reflect.deleteProperty(data, 'createTime');
+    return data;
+  });
 
   useEffect(() => {
     dispatch(baseInfoAsync());
@@ -71,8 +77,9 @@ const AdReporting = () => {
   }, { atBegin: true });
 
   // 保存报表
-  const onSave = (name: string) => {
-    console.log('保存报表:', name);
+  const onSave = async () => {
+    console.log('保存报表', bodyData);
+    await netUpdateAd(bodyData);
     isNeedSave.current = false;
     messageApi.success('已保存');
   };

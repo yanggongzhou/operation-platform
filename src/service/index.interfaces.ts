@@ -42,8 +42,8 @@ export interface INetDetailAd {
     showDetailedCondition: boolean; // 是否开启数据透视
     sort: string; // 排序字段，从indexColumnList.columnName取值
   };
-  createTime: string;
-  updateTime: string;
+  createTime?: string;
+  updateTime?: string;
 }
 
 export enum EFormRelatedDynamicDate {

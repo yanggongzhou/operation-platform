@@ -60,6 +60,9 @@ export const appSlice = createSlice({
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
       // state.footerAdVisible = action.payload;
     },
+    setAdName: (state: IAppStore, action: PayloadAction<string>) => {
+      state.detail.name = action.payload;
+    },
     setIndexColumnList: (state: IAppStore, action: PayloadAction<string[]>) => {
       state.detail.structure.indexColumnList = action.payload;
     },
@@ -100,6 +103,6 @@ export const setFilterFieldList = appSlice.actions.setFilterFieldList;
 export const setCostType = appSlice.actions.setCostType;
 export const setRangeDate = appSlice.actions.setRangeDate;
 export const setFormRelatedDynamicDate = appSlice.actions.setFormRelatedDynamicDate;
-
+export const setAdName = appSlice.actions.setAdName;
 
 export const appReducer = appSlice.reducer;

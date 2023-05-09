@@ -1,26 +1,23 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { Button, Input, Space, Tooltip } from "antd";
 import { LeftOutlined, SaveOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/header/ad-report-header.module.scss";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setAdName } from "@/store/modules/app.module";
 
 interface IProps {
-  onSave: (name: string) => void;
+  onSave: () => void;
   onBackTo: () => void;
 }
 
 const AdReportHeader: FC<IProps> = ({ onSave, onBackTo }) => {
-  const title = useAppSelector(state => state.app.detail.name ?? '');
-  const updateTime = useAppSelector(state => state.app.detail.updateTime ?? '-');
-
+  const adName = useAppSelector(state => state.app.detail.name ?? '');
+  const updateTime = useAppSelector(state => state.app.detail?.updateTime ?? '-');
+  const dispatch = useAppDispatch();
   const [isFocus, setIsFocus] = useState(false);
-  const [adName, setAdName] = useState(title);
-  useEffect(() => {
-    setAdName(title);
-  }, [title]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAdName(e.target.value);
+    dispatch(setAdName(e.target.value));
   };
 
   return (
@@ -38,7 +35,7 @@ const AdReportHeader: FC<IProps> = ({ onSave, onBackTo }) => {
             onBlur={() => setIsFocus(false)}
             onChange={(e) => onInputChange(e)}/>
         </Tooltip>
-        <Button type={'primary'} icon={<SaveOutlined/>} onClick={() => onSave(adName)}>保存</Button>
+        <Button type={'primary'} icon={<SaveOutlined/>} onClick={() => onSave()}>保存</Button>
       </Space.Compact>
 
       <div className={styles.adHeaderRight}>
