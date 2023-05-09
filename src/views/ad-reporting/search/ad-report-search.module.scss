@@ -42,3 +42,15 @@
 .popBox {
 
 }
+
+// 时间选择器弹出框
+.searchTimePopBox {
+  :global {
+    .ant-picker-presets ul li {
+      padding: 0 !important;
+    }
+  }
+  .searchTimePopLabel {
+    padding: 4px 10px;
+  }
+}

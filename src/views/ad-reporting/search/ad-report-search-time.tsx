@@ -1,63 +1,98 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import { DatePicker } from 'antd';
-import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import { debounce } from "throttle-debounce";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setFormRelatedDynamicDate, setRangeDate } from "@/store/modules/app.module";
+import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
+import { EFormRelatedDynamicDate } from "@/service/index.interfaces";
 
-const { RangePicker } = DatePicker;
+type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 interface IProps {
   onSearch: (startDate: string, endDate: string) => void;
 }
 
-type RangeValue = [Dayjs | null, Dayjs | null] | null;
-
 const AdReportSearchTime: FC<IProps> = ({ onSearch }) => {
-  const [dates, setDates] = useState<RangeValue>(null);
-  const rangePresets: {
-    label: string;
-    value: [Dayjs, Dayjs];
-  }[] = [
-    { label: '今天', value: [dayjs(), dayjs()] },
-    { label: '昨天', value: [dayjs().add(-1, 'd'), dayjs().add(-1, 'd')] },
-    { label: '过去7天（不包含今天）', value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
-    { label: '过去14天（不包含今天）', value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
+  const dispatch = useAppDispatch();
+  const dates: RangeValue = useAppSelector(state => {
+    const startDate = state.app.detail.structure.startDate;
+    const s = startDate ? dayjs(startDate) : null;
+    const endDate = state.app.detail.structure.endDate;
+    const e = startDate ? dayjs(endDate) : null;
+    return (s || e) ? [s, e] : null;
+  });
+
+  const [rangeDates, setRangeDates] = useState<RangeValue>(null);
+  useCallback(() => {
+    setRangeDates(dates);
+  }, [dates]);
+
+  // 利用防抖延迟修改formRelatedDynamicDate, 改动时切记数据变化
+  const onPresetsLabelClick = debounce(500,(title: string) => {
+    switch (title) {
+      case "今天":
+        dispatch(setFormRelatedDynamicDate(EFormRelatedDynamicDate.today));
+        break;
+      case "昨天":
+        dispatch(setFormRelatedDynamicDate(EFormRelatedDynamicDate.lastDay));
+        break;
+      case "过去7天":
+        dispatch(setFormRelatedDynamicDate(EFormRelatedDynamicDate.lastSeven));
+        break;
+      case "过去14天":
+        dispatch(setFormRelatedDynamicDate(EFormRelatedDynamicDate.lastFourteen));
+        break;
+    }
+  });
+
+  const PresetsLabel = ({ title }: { title: string; }) => {
+    return <div className={styles.searchTimePopLabel} onClick={() => onPresetsLabelClick(title)}>{title}</div>;
+  };
+
+  const rangePresets: { label: React.ReactNode; value: [Dayjs, Dayjs]; }[] = [
+    { label: <PresetsLabel title="今天" />, value: [dayjs(), dayjs()] },
+    { label: <PresetsLabel title="昨天" />, value: [dayjs().add(-1, 'd'), dayjs().add(-1, 'd')] },
+    { label: <PresetsLabel title="过去7天" />, value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
+    { label: <PresetsLabel title="过去14天" />, value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
   ];
   const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
     if (dates) {
+      dispatch(setRangeDate(dateStrings));
       onSearch(dateStrings[0], dateStrings[1]);
     } else {
-      console.log('Clear');
+      dispatch(setRangeDate(dateStrings));
+      onSearch(dateStrings[0], dateStrings[1]);
     }
   };
   // 限制动态的日期区间选择
   const disabledDate = (current: Dayjs) => {
     const range = current.isAfter(dayjs(), 'days');
-    if (!dates) {
+    if (!rangeDates || (!rangeDates[0] && !rangeDates[1])) {
       return range;
     }
-    const tooLate = dates[0] && current.diff(dates[0], 'days') >= 15;
-    const tooEarly = dates[1] && (dates[1] as Dayjs).diff(current, 'days') >= 15;
+    const tooLate = rangeDates && rangeDates?.[0] && current.diff(rangeDates[0], 'days') >= 15;
+    const tooEarly = rangeDates && rangeDates?.[1] && (dayjs(rangeDates[1])).diff(current, 'days') >= 15;
     return range || !!tooEarly || !!tooLate;
   };
 
-  const onOpenChange = (open: boolean) => {
-    if (open) {
-      setDates([null, null]);
-    } else {
-      setDates(null);
-    }
+  // 待选日期发生变化的回调
+  const onDateChange = (dates: RangeValue) => {
+    setRangeDates(dates);
   };
 
   return (
-    <RangePicker
+    <DatePicker.RangePicker
+      value={dates}
+      popupClassName={styles.searchTimePopBox}
       presets={rangePresets}
-      onCalendarChange={(val) => setDates(val)}
+      format={'YYYY-MM-DD'}
+      onCalendarChange={onDateChange}
       onChange={onRangeChange}
       disabledDate={disabledDate}
-      onOpenChange={onOpenChange}
     />
   );
 };
 
 export default AdReportSearchTime;
-

@@ -35,7 +35,7 @@ export interface INetDetailAd {
       fieldValue: string[]; // 字段具体值，类型为list
       operator: EOperator; // 操作类型 in为包含，nin为不包含，eq为相等，neq为不相等
     }[] | never[]; // 搜索字段
-    formRelatedDynamicDate: string; // 动态时间字段，优先级高于endDate和startDate，0为今天，-1为昨天，-7为过去7天（不包含今天），-15为过去15天（不包含今天）
+    formRelatedDynamicDate: EFormRelatedDynamicDate; // 动态时间字段，优先级高于endDate和startDate，0为今天，-1为昨天，-7为过去7天（不包含今天），-15为过去15天（不包含今天）
     indexColumnList: string[]; // 指标字段 详情见详情见/hw-adserving/dropList/searchList接口的data.target.field字段
     order: "desc" | "asc"; // 排序类型 desc为从大到小，asc为从小到大
     filterFieldList: string[]; // 细分条件
@@ -44,6 +44,14 @@ export interface INetDetailAd {
   };
   createTime: string;
   updateTime: string;
+}
+
+export enum EFormRelatedDynamicDate {
+  normal = '',
+  today = '0',
+  lastDay = '-1',
+  lastSeven = '-7',
+  lastFourteen = '-14',
 }
 
 export interface INetDetailListAd {

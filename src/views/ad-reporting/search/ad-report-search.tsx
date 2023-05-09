@@ -26,6 +26,7 @@ interface IProps {
 const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const [fieldList, setFieldList] = useState<ISearchFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
+
   const dispatch = useAppDispatch();
   // 消耗过滤
   const consumeSearch = (value: EConsume) => {
