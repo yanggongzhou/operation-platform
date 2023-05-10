@@ -7,10 +7,17 @@ import { TableDrag } from "@/components/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { baseInfoAsync, searchListAsync, setFilterFieldList, setIndexColumnList } from "@/store/modules/app.module";
+import {
+  baseInfoAsync,
+  searchListAsync,
+  setFilterFieldList,
+  setIndexColumnList,
+  setTableLoading
+} from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
+import { INetDetailAd } from "@/service/index.interfaces";
 
 const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
@@ -20,9 +27,14 @@ const AdReporting = () => {
   const dispatch = useAppDispatch();
   const routeParams = useParams();
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
-  const [page, setPage] = useState(0);
+  const [rows, setRows] = useState<IRecordsItem[]>([]);
+  const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
+  const [totalRows, setTotalRows] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
+  const [pageInfo, setPageInfo] = useState({ page: 0, total: 0, pages: 1 });
+
   const bodyData = useAppSelector(state => {
-    const data = JSON.parse(JSON.stringify(state.app.detail));
+    const data = JSON.parse(JSON.stringify(state.app.detail)) as INetDetailAd;
     Reflect.deleteProperty(data, 'updateTime');
     Reflect.deleteProperty(data, 'createTime');
     return data;
@@ -32,6 +44,7 @@ const AdReporting = () => {
     dispatch(baseInfoAsync());
     dispatch(searchListAsync(routeParams.id as string));
     windowBack();
+    getList(routeParams.id as string, 0);
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
         isPaint.current = false;
@@ -41,9 +54,6 @@ const AdReporting = () => {
     };
   }, []);
 
-  useEffect(() => {
-    getList(routeParams.id as string, page);
-  }, [page]);
   // 保存挽留
   const windowBack = () => {
     window.onpopstate = function () {
@@ -60,23 +70,25 @@ const AdReporting = () => {
     window.history.pushState('forward', '', '');
     window.history.forward();
   };
-  const [rows, setRows] = useState<IRecordsItem[]>([]);
-  const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
-  const [totalRows, setTotalRows] = useState(0);
+
   // 报表详情(列表数据, 修改配置情况下)
-  const getUnSaveList = debounce(300,async (page: number) => {
+  const getUnSaveList = debounce(500,async (page: number) => {
+    dispatch(setTableLoading(true));
     const { offset, records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
     setRows(records);
     setSumData(sumData);
-    setTotalRows(total);
+    setPageInfo(prevState => ({ ...prevState, total, pages }));
+    dispatch(setTableLoading(false));
   });
 
   // 报表详情(列表数据, 未修改配置情况下)
-  const getList = debounce(500, async (id: string, page: number) => {
-    const { offset, records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
-    setRows(prevState => [ ...prevState, ...records ]);
+  const getList = debounce(300, async (id: string, page: number) => {
+    dispatch(setTableLoading(true));
+    const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
+    setRows(prevState => [...prevState, ...records]);
     setSumData(sumData);
-    setTotalRows(total);
+    setPageInfo(prevState => ({ ...prevState, total, pages }));
+    dispatch(setTableLoading(false));
   }, { atBegin: true });
 
   // 保存报表
@@ -91,6 +103,22 @@ const AdReporting = () => {
   const onSearch = () => {
     getUnSaveList(0);
   };
+
+  const getMoreList = () => {
+    setPageNo(prevState => ++prevState);
+  };
+
+  useEffect(() => {
+    if (pageNo > 0) {
+      if (pageNo >= pageInfo.pages) {
+        return messageApi.info('已加载全部数据');
+      }
+      console.log("pageNo=================>:", pageNo);
+      getList(id, pageNo);
+    }
+  }, [pageNo]);
+
+
   // 返回
   const onBackTo = () => {
     if (isNeedSave.current) {
@@ -117,7 +145,12 @@ const AdReporting = () => {
       <AdReportSearch onSearch={onSearch}/>
       <div className={styles.adReportMain}>
         <div className={styles.adReportBox}>
-          <TableDrag dataSource={rows} sumData={sumData} total={totalRows}/>
+          <TableDrag
+            dataSource={rows}
+            sumData={sumData}
+            total={pageInfo.total}
+            onMore={() => getMoreList()}
+          />
         </div>
         <div className={styles.adReportRight}>
           <AdReportRight onChange={onChange}/>

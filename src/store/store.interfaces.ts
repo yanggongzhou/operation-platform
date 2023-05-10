@@ -4,4 +4,5 @@ export interface IAppStore {
   baseInfoList: INetBaseInfoList;
   searchList: INetSearchList;
   detail: INetDetailAd;
+  loading: boolean;
 }

@@ -56,6 +56,7 @@ export const appSlice = createSlice({
         formRelatedDynamicDate: EFormRelatedDynamicDate.normal,
       },
     } as INetDetailAd,
+    loading: false,
   }),
   reducers: {
     setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
@@ -87,6 +88,9 @@ export const appSlice = createSlice({
     setShowDetailedCondition: (state: IAppStore, action: PayloadAction<boolean>) => {
       state.detail.structure.showDetailedCondition = action.payload;
     },
+    setTableLoading: (state: IAppStore, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
   extraReducers: (builder) => {
@@ -113,5 +117,6 @@ export const setFormRelatedDynamicDate = appSlice.actions.setFormRelatedDynamicD
 export const setAdName = appSlice.actions.setAdName;
 export const setSearchFieldList = appSlice.actions.setSearchFieldList;
 export const setShowDetailedCondition = appSlice.actions.setShowDetailedCondition;
+export const setTableLoading = appSlice.actions.setTableLoading;
 
 export const appReducer = appSlice.reducer;
