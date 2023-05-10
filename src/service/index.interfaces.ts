@@ -5,14 +5,13 @@ import {
   IRecordsItem,
   ISearchFieldItem
 } from "@/views/ad-reporting/index.interfaces";
-import { netLandPageConf } from "@/service/ads-reporting";
 
 export interface INetAdsList {
   rows: IAdsListItem[];
   total: number;
 }
 
-interface IItem { code: string; field: string; text: string; }
+export interface IItem { code: string; field: string; text: string; }
 
 export interface INetBaseInfoList {
   app: IItem[];

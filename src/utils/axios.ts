@@ -111,8 +111,8 @@ Service.interceptors.response.use(
     // } else if (err.response?.status === 404) {
     //   Service.navigate('/404')
     } else if (err.response) {
-      // const { data } = err.response;
-      // notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
+      const { data } = err.response;
+      notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
 
     } else {
       notification.error({ message: 'Network Error', placement: 'topRight' });

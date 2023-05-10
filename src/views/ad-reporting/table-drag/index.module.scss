@@ -1,0 +1,56 @@
+.sortableItem, .sortableTargetItem {
+  width: 160px;
+  padding: 8px;
+  //border: 1px solid #f0f0f0;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 99;
+  //background: #fafafa;
+  background: #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  border-inline-end: 1px solid #f0f0f0;
+  line-height: 1;
+  text-align: center !important;
+  cursor: pointer;
+}
+
+.sortableItem {
+  z-index: 100;
+}
+
+@for $i from 1 through 14 {
+  .sortableItem:nth-child(#{$i}) {
+    left: 160px * ($i - 1) ;
+  }
+}
+
+.tableBox {
+
+  :global {
+    .ant-table-thead >tr>th {
+    //  display: flex;
+    //  flex-direction: row;
+      position: sticky;
+    }
+
+  }
+}
+
+.moreMenu {
+  //display: flex;
+  //flex-direction: row;
+  width: 100%;
+  position: sticky;
+  top: 56px;
+
+  .moreItem {
+    width: 160px;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #f0f0f0;
+    border-inline-end: 1px solid #f0f0f0;
+    text-align: center !important;
+    cursor: pointer;
+  }
+}

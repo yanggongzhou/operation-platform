@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, Select, Space, Switch, Tag, Tooltip } from "antd";
+import { Button, Select, Space, Switch, Tooltip } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
@@ -18,7 +18,6 @@ import OptimizerPop from "@/views/ad-reporting/pop/optimizer-pop";
 import AccountPop from "@/views/ad-reporting/pop/account-pop";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setCostType, setSearchFieldList, setShowDetailedCondition } from "@/store/modules/app.module";
-const { CheckableTag } = Tag;
 
 interface IProps {
   onSearch: () => void;
@@ -153,20 +152,11 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
           <div className={styles.adSearchBottomLabel}>时间范围: </div>
           <AdReportSearchTime onSearch={onTimeSearch}/>
         </Space.Compact>
-        <Space size={0}>
-          <CheckableTag
-            style={{ fontSize: '14px', margin: 0, borderRadius: '100px 0 0 100px' }}
-            checked={showDetailedCondition}
-            onChange={(checked) => onShowDetailedCondition(checked)}>
-            数据透视
-          </CheckableTag>
-          <Switch
-            style={showDetailedCondition ? { borderRadius: '0 100px 100px 0' } : {}}
-            checkedChildren="开启"
-            unCheckedChildren="关闭"
-            checked={showDetailedCondition}
-            onChange={(c) => onShowDetailedCondition(c)} />
-        </Space>
+        <Switch
+          checkedChildren="数据透视"
+          unCheckedChildren="数据透视"
+          checked={showDetailedCondition}
+          onChange={(c) => onShowDetailedCondition(c)} />
       </div>
     </div>
   );

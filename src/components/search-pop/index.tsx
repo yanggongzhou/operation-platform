@@ -1,8 +1,10 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Button, Popover, Space, Tag } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import { EOperator, IFieldItem, NGroupField } from "@/views/ad-reporting/index.interfaces";
+import { EGroupField, EOperator, IFieldItem, NGroupField } from "@/views/ad-reporting/index.interfaces";
 import styles from '@/components/search-pop/index.module.scss';
+import { useAppSelector } from "@/store";
+import { IItem } from "@/service/index.interfaces";
 
 interface IProps {
   fieldItem: IFieldItem;
@@ -17,6 +19,29 @@ const SearchPop: FC<IProps> = (
   { fieldItem, children, onDelete, onConfirm, onCancel, disabled }) => {
   const [isOpen, setIsOpen] = useState(fieldItem.defaultOpen && fieldItem.fieldValue.length === 0);
   const isUseful = useRef(false);
+
+
+  const options = useAppSelector(state => {
+    switch (fieldItem.fieldName) {
+      case EGroupField.AppId:
+        return state.app.baseInfoList.app;
+      case EGroupField.Device:
+        return state.app.baseInfoList.device;
+      case EGroupField.Media:
+        return state.app.baseInfoList.media;
+      case EGroupField.AdType:
+        return state.app.baseInfoList.type;
+      case EGroupField.Language:
+        return state.app.baseInfoList.language;
+      case EGroupField.Pline:
+        return state.app.baseInfoList.pline;
+      case EGroupField.Country:
+        return state.app.baseInfoList.country.map(val => ({ code: '', field: val.countryCode2, text: val.countryName })) as IItem[];
+      default:
+        return undefined;
+    }
+  });
+
 
   useEffect(() => {
     if (fieldItem.defaultOpen) {
@@ -71,13 +96,24 @@ const SearchPop: FC<IProps> = (
             <span>{NGroupField[fieldItem.fieldName]}</span>
             <span>{fieldItem.operator === EOperator.In ? '是' : '非'}</span>
             <Space size={3} className={styles.popTagBox}>
-              {fieldItem.fieldValue.slice(0, 3).map(val => {
+              {fieldItem.fieldValue.slice(0, 2).map(val => {
+                if (fieldItem.fieldName === EGroupField.AdType
+                  || fieldItem.fieldName === EGroupField.Language
+                  || fieldItem.fieldName === EGroupField.AppId
+                  || fieldItem.fieldName === EGroupField.Device
+                  || fieldItem.fieldName === EGroupField.Media
+                  || fieldItem.fieldName === EGroupField.Pline
+                  || fieldItem.fieldName === EGroupField.Country
+                ) {
+                  const baseInfo = options && options.find(item => (item.field as string) === val);
+                  if (baseInfo) {
+                    return <Tag key={val} bordered={false} className={styles.popTag}>{baseInfo.text}</Tag>;
+                  }
+                }
                 return <Tag key={val} bordered={false} className={styles.popTag}>{val}</Tag>;
               })}
             </Space>
           </Space>
-
-
         </div>
       </Popover>
       <div className={styles.popCancel} onClick={() => onDelete()}><CloseOutlined/></div>

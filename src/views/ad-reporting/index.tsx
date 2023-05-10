@@ -3,10 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { debounce } from "throttle-debounce";
 import styles from "@/views/ad-reporting/index.module.scss";
-import { TableDrag } from "@/components/table-drag";
+import { TableDrag } from "@/views/ad-reporting/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
 import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { store, useAppDispatch, useAppSelector } from "@/store";
 import {
   baseInfoAsync,
   searchListAsync,
@@ -29,7 +29,6 @@ const AdReporting = () => {
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
   const [rows, setRows] = useState<IRecordsItem[]>([]);
   const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
-  const [totalRows, setTotalRows] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageInfo, setPageInfo] = useState({ page: 0, total: 0, pages: 1 });
 
@@ -138,6 +137,19 @@ const AdReporting = () => {
     }
   };
 
+  // 拖拽 指标｜细分条件
+  const onTableDrag = (oldIndex: number, newIndex: number, filterType: EFilterType) => {
+    if (filterType === EFilterType.Group) {
+      const list = [ ...store.getState().app.detail.structure.filterFieldList ];
+      list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
+      dispatch(setFilterFieldList(list));
+    } else {
+      const list = [ ...store.getState().app.detail.structure.indexColumnList ];
+      list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
+      dispatch(setIndexColumnList(list));
+    }
+  };
+
   return (
     <div className={styles.adReportWrap}>
       {contextMsgHolder}
@@ -150,6 +162,7 @@ const AdReporting = () => {
             sumData={sumData}
             total={pageInfo.total}
             onMore={() => getMoreList()}
+            onDrag={onTableDrag}
           />
         </div>
         <div className={styles.adReportRight}>

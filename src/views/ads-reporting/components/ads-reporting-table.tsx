@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { CopyOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Input, message, Modal, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
@@ -36,12 +36,16 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
     { title: '操作', width: 200, align: 'center', key: 'operation', render: (value: any, record: IAdsListItem) => (
       <Space size="small">
         <Button
-          type={'primary'}
+          size={'small'}
+          icon={<CopyOutlined />}
+          type={'text'}
           onClick={(e) => handleCopy(record, e)}
         >复制</Button>
         <Button
+          size={'small'}
+          icon={<DeleteOutlined />}
           onClick={(e) => handleDelete(record, e)}
-          type={'primary'}
+          type={'text'}
           danger>删除</Button>
       </Space>)
     },
