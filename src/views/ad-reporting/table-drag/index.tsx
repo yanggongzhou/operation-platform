@@ -3,10 +3,11 @@ import { Table, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
 import { throttle } from "throttle-debounce";
+import { ColumnsType, ColumnType } from "antd/es/table/interface";
 import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";
-import { SortableList, TableDragHeader } from "@/views/ad-reporting/table-drag/table-drag-header";
-import { EFilterType } from "@/views/ad-reporting/index.interfaces";
+import { TableDragHeader } from "@/views/ad-reporting/table-drag/table-drag-header";
+import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 
 const { Text } = Typography;
 
@@ -16,7 +17,6 @@ interface IProps {
   total: number;
   onMore: () => void;
   onDrag: (oldIndex: number, newIndex: number, filterType: EFilterType) => void;
-  onOrderSort: (dataIndex: string) => void;
 }
 
 export interface IColItem {
@@ -26,11 +26,13 @@ export interface IColItem {
   width: number;
   fixed?: FixedType;
   ellipsis?: boolean;
+  rowScope?: string;
 }
 
-export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDrag, onOrderSort }) => {
+export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDrag }) => {
   const loading = useAppSelector(state => state.app.loading);
   const tableRef = useRef<HTMLTableElement | null>(null);
+  const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const tbodyOnscroll = throttle(300, (e: Event) => {
     const { scrollHeight = 0, scrollTop = 0, offsetHeight = 0 } = (e.target as HTMLDivElement) || {};
     if (scrollTop > scrollHeight - offsetHeight - 30) {
@@ -59,11 +61,42 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
   const groupColumns = useAppSelector(state => {
     const filterFieldList = state.app.detail.structure.filterFieldList;
     const groupData = state.app.searchList.group;
-    return filterFieldList.map(val => {
-      const groupItem = groupData.find(item => item.field === val) || { text: '-', filed: '-' };
-      return { title: groupItem.text, dataIndex: val, key: val, width: 160, fixed: 'left' };
-    });
-  }) as IColItem[];
+
+    // 列 fieldInd 横 index
+    return filterFieldList.map((field, fieldInd) => {
+      const groupItem = groupData.find(item => item.field === field) || { text: '-', filed: '-' };
+      return {
+        title: groupItem.text,
+        dataIndex: field,
+        key: field,
+        width: 160,
+        fixed: 'left',
+        onCell: (record: IRecordsItem, index: number) => {
+          if (showDetailedCondition) {
+            const groupByFieldsArr = record.groupByFields.split(',');
+            // 首行排序
+            if (groupByFieldsArr.length === 1) {
+              if (record.groupByFields === field) {
+                if (fieldInd === 0) {
+                  return {
+                    rowSpan: record.RowSpan ?? 1,
+                  };
+                }
+              } else  {
+                // return { colSpan: 1 };
+              }
+            }
+
+            if (record.groupByFields !== field) {
+              if (fieldInd === 0) {
+                return  { rowSpan: 0 };
+              }
+            }
+          }
+        },
+      };
+    }) as IColItem[];
+  });
 
   const targetColumns = useAppSelector(state => {
     const indexColumnList = state.app.detail.structure.indexColumnList;
@@ -87,17 +120,6 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
     return [...groupColumns, ...targetColumns];
   }, [groupColumns, targetColumns]);
 
-
-  const MenuBox = () => {
-    return <tr className={styles.moreMenu}>
-      { columns.map((val, ind) => {
-        return <th key={val.title} className={styles.moreItem} onClick={() => onOrderSort(val.dataIndex)}>
-          {val.title}
-        </th>;
-      })}
-    </tr>;
-  };
-
   return (
     <Table
       className={styles.tableBox}
@@ -105,26 +127,21 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
       components={{
         header: {
           row: () => (
-            <>
-              <MenuBox/>
-              <tr>
-                <TableDragHeader
-                  onOrderSort={() => onOrderSort('test')}
-                  getContainer={() => {
-                    return document.querySelector('.ant-table-thead') as HTMLElement;
-                  }}
-                  columns={groupColumns}
-                  onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Group)}/>
-                <TableDragHeader
-                  onOrderSort={() => onOrderSort('test')}
-                  getContainer={() => {
-                    return document.querySelector('.ant-table-thead') as HTMLElement;
-                  }}
-                  isSort={true}
-                  columns={targetColumns}
-                  onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Target)}/>
-              </tr>
-            </>
+            <tr>
+              <TableDragHeader
+                getContainer={() => {
+                  return document.querySelector('.ant-table-thead') as HTMLElement;
+                }}
+                columns={groupColumns}
+                onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Group)}/>
+              <TableDragHeader
+                getContainer={() => {
+                  return document.querySelector('.ant-table-thead') as HTMLElement;
+                }}
+                isSort={true}
+                columns={targetColumns}
+                onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Target)}/>
+            </tr>
           )
         }
       }}

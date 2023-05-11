@@ -165,4 +165,6 @@ export interface IRecordsItem {
   "type": string;
   "url": string;
   "uv": number;
+
+  RowSpan: number;
 }

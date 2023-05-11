@@ -86,10 +86,6 @@ export const appSlice = createSlice({
     setShowDetailedCondition: (state: IAppStore, action: PayloadAction<boolean>) => {
       state.detail.structure.showDetailedCondition = action.payload;
     },
-    setOrderSort: (state: IAppStore, action: PayloadAction<string>) => {
-      state.detail.structure.sort = action.payload;
-      state.detail.structure.order = state.detail.structure.order === "desc" ? "asc" : "desc";
-    },
     setTableLoading: (state: IAppStore, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -118,7 +114,6 @@ export const setFormRelatedDynamicDate = appSlice.actions.setFormRelatedDynamicD
 export const setAdName = appSlice.actions.setAdName;
 export const setSearchFieldList = appSlice.actions.setSearchFieldList;
 export const setShowDetailedCondition = appSlice.actions.setShowDetailedCondition;
-export const setOrderSort = appSlice.actions.setOrderSort;
 export const setTableLoading = appSlice.actions.setTableLoading;
 
 export const appReducer = appSlice.reducer;

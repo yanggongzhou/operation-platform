@@ -11,7 +11,7 @@ import {
   baseInfoAsync,
   searchListAsync,
   setFilterFieldList,
-  setIndexColumnList, setOrderSort,
+  setIndexColumnList,
   setTableLoading
 } from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
@@ -22,7 +22,7 @@ import { INetDetailAd } from "@/service/index.interfaces";
 const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
-  const isNeedSave = useRef(true);
+  const isNeedSave = useRef(false); // 是否需要保存
   const isPaint = useRef(true);
   const dispatch = useAppDispatch();
   const routeParams = useParams();
@@ -31,7 +31,7 @@ const AdReporting = () => {
   const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
   const [pageNo, setPageNo] = useState(0);
   const [pageInfo, setPageInfo] = useState({ page: 0, total: 0, pages: 1 });
-
+  const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const bodyData = useAppSelector(state => {
     const data = JSON.parse(JSON.stringify(state.app.detail)) as INetDetailAd;
     Reflect.deleteProperty(data, 'updateTime');
@@ -72,6 +72,7 @@ const AdReporting = () => {
 
   // 报表详情(列表数据, 修改配置情况下)
   const getUnSaveList = debounce(500,async (page: number) => {
+    isNeedSave.current = true;
     dispatch(setTableLoading(true));
     const { offset, records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
     setRows(records);
@@ -84,6 +85,32 @@ const AdReporting = () => {
   const getList = debounce(300, async (id: string, page: number) => {
     dispatch(setTableLoading(true));
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
+    const filterFieldList = bodyData.structure.filterFieldList || [];
+
+    let fieldName = '';
+    let fieldHeight = 1;
+    let tagIndex = 0;
+    const _rows = [...rows, ...records]
+    _rows.forEach((val, ind) => {
+      if (ind === 0) {
+        fieldName = val.groupByFields;
+        fieldHeight = 1;
+        tagIndex = ind;
+      } else {
+        if (fieldName === val.groupByFields) {
+          _rows[tagIndex].RowSpan = fieldHeight;
+          fieldHeight = 1;
+          tagIndex = ind;
+        } else {
+
+        }
+
+        if (val.groupByFields.includes(fieldName)) {
+          fieldHeight += 1;
+        }
+      }
+    });
+
     setRows(prevState => [...prevState, ...records]);
     setSumData(sumData);
     setPageInfo(prevState => ({ ...prevState, total, pages }));
@@ -128,9 +155,13 @@ const AdReporting = () => {
   };
   // 指标｜细分条件
   const onChange = (checkedValues: string[], filterType: EFilterType) => {
+    isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
       console.log('checked = ', checkedValues, filterType);
       dispatch(setFilterFieldList(checkedValues));
+      if(showDetailedCondition) {
+        getUnSaveList(0);
+      }
     } else {
       console.log('checked = ', checkedValues, filterType);
       dispatch(setIndexColumnList(checkedValues));
@@ -139,6 +170,7 @@ const AdReporting = () => {
 
   // 拖拽 指标｜细分条件
   const onTableDrag = (oldIndex: number, newIndex: number, filterType: EFilterType) => {
+    isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
       const list = [ ...store.getState().app.detail.structure.filterFieldList ];
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
@@ -148,13 +180,6 @@ const AdReporting = () => {
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
       dispatch(setIndexColumnList(list));
     }
-  };
-
-  // 升序降序
-  const onOrderSort = (dataIndex: string) => {
-    console.log('升序降序', dataIndex);
-    dispatch(setOrderSort(dataIndex));
-    getUnSaveList(0);
   };
 
   return (
@@ -170,7 +195,6 @@ const AdReporting = () => {
             total={pageInfo.total}
             onMore={() => getMoreList()}
             onDrag={onTableDrag}
-            onOrderSort={onOrderSort}
           />
         </div>
         <div className={styles.adReportRight}>
