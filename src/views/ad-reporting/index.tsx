@@ -11,7 +11,7 @@ import {
   baseInfoAsync,
   searchListAsync,
   setFilterFieldList,
-  setIndexColumnList,
+  setIndexColumnList, setOrderSort,
   setTableLoading
 } from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
@@ -150,6 +150,13 @@ const AdReporting = () => {
     }
   };
 
+  // 升序降序
+  const onOrderSort = (dataIndex: string) => {
+    console.log('升序降序', dataIndex);
+    dispatch(setOrderSort(dataIndex));
+    getUnSaveList(0);
+  };
+
   return (
     <div className={styles.adReportWrap}>
       {contextMsgHolder}
@@ -163,6 +170,7 @@ const AdReporting = () => {
             total={pageInfo.total}
             onMore={() => getMoreList()}
             onDrag={onTableDrag}
+            onOrderSort={onOrderSort}
           />
         </div>
         <div className={styles.adReportRight}>

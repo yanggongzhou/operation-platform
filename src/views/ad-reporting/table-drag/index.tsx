@@ -16,6 +16,7 @@ interface IProps {
   total: number;
   onMore: () => void;
   onDrag: (oldIndex: number, newIndex: number, filterType: EFilterType) => void;
+  onOrderSort: (dataIndex: string) => void;
 }
 
 export interface IColItem {
@@ -27,7 +28,7 @@ export interface IColItem {
   ellipsis?: boolean;
 }
 
-export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDrag }) => {
+export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDrag, onOrderSort }) => {
   const loading = useAppSelector(state => state.app.loading);
   const tableRef = useRef<HTMLTableElement | null>(null);
   const tbodyOnscroll = throttle(300, (e: Event) => {
@@ -64,11 +65,6 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
     });
   }) as IColItem[];
 
-  // 升序降序
-  const onOrderSort = () => {
-    console.log('升序降序');
-  };
-
   const targetColumns = useAppSelector(state => {
     const indexColumnList = state.app.detail.structure.indexColumnList;
     const targetData = state.app.searchList.target;
@@ -95,12 +91,12 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
   const MenuBox = () => {
     return <tr className={styles.moreMenu}>
       { columns.map((val, ind) => {
-        return <th key={val.title} className={styles.moreItem}>
+        return <th key={val.title} className={styles.moreItem} onClick={() => onOrderSort(val.dataIndex)}>
           {val.title}
         </th>;
       })}
-    </tr>
-  }
+    </tr>;
+  };
 
   return (
     <Table
@@ -113,14 +109,14 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
               <MenuBox/>
               <tr>
                 <TableDragHeader
-                  onOrderSort={() => onOrderSort()}
+                  onOrderSort={() => onOrderSort('test')}
                   getContainer={() => {
                     return document.querySelector('.ant-table-thead') as HTMLElement;
                   }}
                   columns={groupColumns}
                   onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Group)}/>
                 <TableDragHeader
-                  onOrderSort={() => onOrderSort()}
+                  onOrderSort={() => onOrderSort('test')}
                   getContainer={() => {
                     return document.querySelector('.ant-table-thead') as HTMLElement;
                   }}

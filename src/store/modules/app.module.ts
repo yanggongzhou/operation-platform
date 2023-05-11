@@ -48,6 +48,7 @@ export const appSlice = createSlice({
         costType: EConsume.All, //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
         searchFieldList: [], // 搜索字段
         order: "desc",
+        sort: '',
         filterFieldList: [] as string[], // 细分条件
         indexColumnList: [] as string[], // 指标字段
         startDate: '',
@@ -59,9 +60,6 @@ export const appSlice = createSlice({
     loading: false,
   }),
   reducers: {
-    setFooterAdVisible: (state: IAppStore, action: PayloadAction<boolean>) => {
-      // state.footerAdVisible = action.payload;
-    },
     setAdName: (state: IAppStore, action: PayloadAction<string>) => {
       state.detail.name = action.payload;
     },
@@ -88,6 +86,10 @@ export const appSlice = createSlice({
     setShowDetailedCondition: (state: IAppStore, action: PayloadAction<boolean>) => {
       state.detail.structure.showDetailedCondition = action.payload;
     },
+    setOrderSort: (state: IAppStore, action: PayloadAction<string>) => {
+      state.detail.structure.sort = action.payload;
+      state.detail.structure.order = state.detail.structure.order === "desc" ? "asc" : "desc";
+    },
     setTableLoading: (state: IAppStore, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -108,7 +110,6 @@ export const appSlice = createSlice({
   }
 });
 
-export const { setFooterAdVisible } = appSlice.actions;
 export const setIndexColumnList = appSlice.actions.setIndexColumnList;
 export const setFilterFieldList = appSlice.actions.setFilterFieldList;
 export const setCostType = appSlice.actions.setCostType;
@@ -117,6 +118,7 @@ export const setFormRelatedDynamicDate = appSlice.actions.setFormRelatedDynamicD
 export const setAdName = appSlice.actions.setAdName;
 export const setSearchFieldList = appSlice.actions.setSearchFieldList;
 export const setShowDetailedCondition = appSlice.actions.setShowDetailedCondition;
+export const setOrderSort = appSlice.actions.setOrderSort;
 export const setTableLoading = appSlice.actions.setTableLoading;
 
 export const appReducer = appSlice.reducer;
