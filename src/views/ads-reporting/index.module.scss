@@ -13,6 +13,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    height: calc(100% - 32px);
   }
 
   .adsHeader {
@@ -20,13 +21,15 @@
     margin-bottom: 8px;
     background-color: #FFFFFF;
     box-shadow: 0 0 5px 0 rgba(0,0,0,.1), 0 0 1px 0 rgba(0,0,0,.1);
-    border-radius: 8px;
+    border-radius: 3px;
   }
 
   .adsBox {
+    flex: 1;
+    overflow: scroll;
     background-color: #FFFFFF;
     box-shadow: 0 0 5px 0 rgba(0,0,0,.1), 0 0 1px 0 rgba(0,0,0,.1);
-    border-radius: 8px;
+    border-radius: 3px;
     padding: 15px;
   }
 }
@@ -35,4 +38,8 @@
   display: flex;
   align-items: center;
   justify-content: right;
+}
+
+.adsReportingTable {
+  height: 100%;
 }

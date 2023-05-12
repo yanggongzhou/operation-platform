@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { debounce } from "throttle-debounce";
+import { AnyObject } from "antd/es/table/Table";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/views/ad-reporting/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
@@ -82,34 +83,52 @@ const AdReporting = () => {
   });
 
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
+  const fieldNames = useMemo(() => {
+    const _fieldNames: string[] = [];
+    filterFieldList.reduce((accumulator, currentValue, currentIndex, array) => {
+      const sum = accumulator ? accumulator + ',' + currentValue : currentValue;
+      _fieldNames.push(sum);
+      return sum;
+    }, '');
+    return _fieldNames;
+  }, [filterFieldList]);
+
+  const getLength = (groupByFields: string, ind: number): number => {
+    const arrRow = rows.slice(ind, rows.length);
+    for (let i = 1; i < arrRow.length; i ++) {
+      if(arrRow[i].groupByFields === groupByFields || arrRow[i].groupByFields.length <= groupByFields.length) {
+        return i;
+      }
+    }
+    return arrRow.length;
+  };
+
+  const dataSource = useMemo(() => {
+    if (rows.length > 0 && fieldNames.length > 0) {
+      // 数据处理
+      const _rows = [...rows];
+      _rows.forEach((val, ind) => {
+        const index = fieldNames.indexOf(val.groupByFields);
+        for (let i = 0; i < fieldNames.length; i ++ ) {
+          Reflect.set(val, `a_row_${i}`, i < index ? 0 : 1);
+        }
+        if (index === fieldNames.length - 1) {
+          Reflect.set(val, `a_row_${fieldNames.length - 1}`, 1);
+        } else {
+          const height = getLength(val.groupByFields, ind);
+          Reflect.set(val, `a_row_${index}`, height);
+        }
+      });
+      console.log('_rows====>', _rows);
+      return _rows;
+    }
+    return [];
+  }, [rows, filterFieldList, fieldNames]);
 
   // 报表详情(列表数据, 未修改配置情况下)
   const getList = debounce(300, async (page: number = 0) => {
     dispatch(setTableLoading(true));
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
-
-    // 数据处理
-    const fieldNames = new Map();
-    filterFieldList.reduce((accumulator, currentValue, currentIndex, array) => {
-      const sum = accumulator ? accumulator + ',' + currentValue : currentValue;
-      fieldNames.set(sum, 0);
-      return sum;
-    }, '');
-    console.log(fieldNames);
-    let tagIndex = 0;
-    const _rows = [...rows, ...records];
-    _rows.forEach((val, ind) => {
-      console.log('=================>', val.groupByFields, val.appName, val.RowSpan);
-      if (val.groupByFields === filterFieldList[0]) {
-        _rows[tagIndex].RowSpan = fieldNames.get(val.groupByFields);
-        fieldNames.set(val.groupByFields, 1);
-        tagIndex = ind;
-      }
-      if (fieldNames.has(val.groupByFields)) {
-        fieldNames.set(val.groupByFields, fieldNames.get(val.groupByFields) + 1);
-      }
-    });
-    console.log(_rows);
     setRows(prevState => [...prevState, ...records]);
     setSumData(sumData);
     setPageInfo(prevState => ({ ...prevState, total, pages }));
@@ -192,7 +211,7 @@ const AdReporting = () => {
       <div className={styles.adReportMain}>
         <div className={styles.adReportBox}>
           <TableDrag
-            dataSource={rows}
+            dataSource={dataSource}
             sumData={sumData}
             total={pageInfo.total}
             onMore={() => getMoreList()}

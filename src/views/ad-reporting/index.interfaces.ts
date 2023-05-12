@@ -19,6 +19,8 @@
 // }
 
 // 消耗
+import { AnyObject } from "antd/es/table/Table";
+
 export enum EConsume {
   All = 2,
   FWC = 3,
@@ -94,7 +96,7 @@ export enum EFilterType {
   Target = 'target',
 }
 
-export interface IRecordsItem {
+export interface IRecordsItem extends AnyObject {
   uuid: string;
   accountId: string;
   accountIds: string;
@@ -165,6 +167,4 @@ export interface IRecordsItem {
   "type": string;
   "url": string;
   "uv": number;
-
-  RowSpan: number;
 }

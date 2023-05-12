@@ -52,7 +52,7 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
     if (tableRef.current) {
       setTimeout(() => {
         // @ts-ignore
-        setScrollY(tableRef.current?.parentNode?.offsetHeight - 140 || 300);
+        setScrollY(tableRef.current?.parentNode?.offsetHeight - 130 || 300);
       }, 200);
     }
     return () => {
@@ -64,7 +64,6 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
   const groupColumns = useAppSelector(state => {
     const filterFieldList = state.app.detail.structure.filterFieldList;
     const groupData = state.app.searchList.group;
-
     // 列 fieldInd 横 index
     return filterFieldList.map((field, fieldInd) => {
       const groupItem = groupData.find(item => item.field === field) || { text: '-', filed: '-' };
@@ -74,27 +73,16 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
         key: field,
         width: 160,
         fixed: 'left',
-        // onCell: (record: IRecordsItem, index: number) => {
-        //   if (showDetailedCondition) {
-        //     const groupByFieldsArr = record.groupByFields.split(',');
-        //     // 首行排序
-        //     if (groupByFieldsArr.length === 1) {
-        //       if (record.groupByFields === field) {
-        //         return {
-        //           rowSpan: record.RowSpan ?? 1,
-        //         };
-        //       } else  {
-        //         // return { colSpan: 1 };
-        //       }
-        //     }
-        //
-        //     if (record.groupByFields !== field) {
-        //       if (fieldInd === 0) {
-        //         return  { rowSpan: 0 };
-        //       }
-        //     }
-        //   }
-        // },
+        onCell: (record: IRecordsItem, index: number) => {
+          if (showDetailedCondition) {
+            const groupByFieldsArr = record.groupByFields.split(',');
+            const fieldIndex = groupByFieldsArr.indexOf(field);
+            // console.log(index, '=======>', record[`a_row_${fieldIndex}`]);
+            return {
+              rowSpan: record[`a_row_${fieldIndex}`] ?? 1,
+            };
+          }
+        },
       };
     }) as IColItem[];
   });

@@ -14,7 +14,7 @@ const LayoutCom: FC<{ children: React.ReactNode }> = ({ children }) => {
         {children}
       </Content>
     </Layout>
-  </Layout>
+  </Layout>;
 };
 
 export default LayoutCom;
