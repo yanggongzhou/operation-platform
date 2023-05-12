@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
 import { Spin } from "antd";
 import Routers from "./router";
+import LayoutCom from "@/components/layout";
 
 const RouterView = () => {
   return (
@@ -14,13 +15,13 @@ const RouterView = () => {
         <Spin />
       </div>}>
         <Routes>
-          {/*react-router-dom  版本V6 中弃了Redirect，需要用Navigate实现重定向。*/}
           <Route path={'/'} element={<Navigate to="/adsReporting" />}/>
           {Routers.map((item) => {
             const TempComponent = item.component;
             // 根据组件是否需要权限验证以及登录状态控制页面显示
-            return <Route key={item.key} path={item.path} element={<TempComponent />} />;
-          })}
+            return <Route key={item.key} path={item.path} element={ <LayoutCom><TempComponent /></LayoutCom>} />;
+          })})
+          {/*react-router-dom  版本V6 中弃了Redirect，需要用Navigate实现重定向。*/}
         </Routes>
       </Suspense>
     </HashRouter>

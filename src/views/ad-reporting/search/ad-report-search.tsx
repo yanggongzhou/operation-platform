@@ -126,7 +126,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
               return <OptimizerPop key={fieldItem.fieldName + index} { ...popProps }/>;
             }
             if (fieldItem.fieldName === EGroupField.AccountId
-              || fieldItem.fieldName === EGroupField.AdId
+              || fieldItem.fieldName === EGroupField.CampaignId
               || fieldItem.fieldName === EGroupField.BookId
               || fieldItem.fieldName === EGroupField.Url
               || fieldItem.fieldName === EGroupField.Pixel

@@ -22,14 +22,10 @@ const ItemChild: FC<IItemChildProps> = ({ list = [], defaultValue, onChange }) =
     setValue(checkedValues);
     onChange(checkedValues);
   };
-  return <Checkbox.Group value={value} onChange={e => itemChange(e as string[])}>
-    <Row>
-      {list.map(val => {
-        return <Col key={val.field} span={24}>
-          <Checkbox value={val.field}>{val.text}</Checkbox>
-        </Col>;
-      })}
-    </Row>
+  return <Checkbox.Group value={value} className={styles.rightCheckBox} onChange={e => itemChange(e as string[])}>
+    {list.map(val => {
+      return <Checkbox className={styles.rightCheckBoxItem} key={val.field} value={val.field}>{val.text}</Checkbox>;
+    })}
   </Checkbox.Group>;
 };
 

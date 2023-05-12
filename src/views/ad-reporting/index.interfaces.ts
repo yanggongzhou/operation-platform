@@ -32,9 +32,9 @@ export const ConsumeOptions = [
 // 筛选条件
 export enum EGroupField {
   AppId = 'appId',
-  // CampaignId = 'campaignId',
+  CampaignId = 'campaignId',
   // SetId = 'setId',
-  AdId = 'adId',
+  // AdId = 'adId',
   Optimizer = 'optimizer',
   AccountId = 'accountId',
   Language = 'language',
@@ -51,7 +51,7 @@ export enum EGroupField {
 export const NGroupField = {
   [EGroupField.Optimizer]: '优化师',
   [EGroupField.AccountId]: '账户',
-  [EGroupField.AdId]: '广告',
+  // [EGroupField.AdId]: '广告',
   [EGroupField.BookId]: '书籍',
   [EGroupField.Url]: 'URL',
   [EGroupField.Pixel]: '像素ID',
@@ -62,7 +62,7 @@ export const NGroupField = {
   [EGroupField.AdType]: '投放类型',
   [EGroupField.Country]: '国家',
   [EGroupField.Pline]: '业务线',
-  // [EGroupField.CampaignId]: '广告计划',
+  [EGroupField.CampaignId]: '广告计划',
   // [EGroupField.SetId]: '广告组',
 };
 

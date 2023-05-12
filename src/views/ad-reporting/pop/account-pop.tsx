@@ -37,7 +37,7 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
         const accountData = await netAccountList(search);
         list = (accountData.rows || []).map(val => ({ label: val.adAccountName, value: val.adAccountId }));
         break;
-      case EGroupField.AdId:
+      case EGroupField.CampaignId:
         const adData = await netCampaignList(search);
         list = (adData.rows || []).map(val => ({ label: val.campaignName, value: val.campaignId })) || [];
         break;

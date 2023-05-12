@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import ComLayout from "@/components/layout";
 
 const Home = () => {
   return <div>
-    <ComLayout/>
     This is Home Page!!
     <br/>
     Jump to:

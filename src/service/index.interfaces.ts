@@ -97,6 +97,8 @@ export interface INetLandPageConf {
   rows:  {
     id: string;
     url: string;
+    pixelType: number;
+    confType: number;
   }[] | AnyObject[]
 }
 export interface INetPixelList {

@@ -50,14 +50,17 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
       tbodyDom && tbodyDom?.addEventListener('scroll', tbodyOnscroll);
     }
     if (tableRef.current) {
-      // @ts-ignore
-      setScrollY(tableRef.current?.parentNode?.offsetHeight - 200 || 300);
+      setTimeout(() => {
+        // @ts-ignore
+        setScrollY(tableRef.current?.parentNode?.offsetHeight - 140 || 300);
+      }, 200);
     }
     return () => {
       const tbodyDom = (tableRef.current as HTMLTableElement)?.querySelector(".ant-table-body");
       tbodyDom && tbodyDom?.removeEventListener('scroll', tbodyOnscroll);
     };
   }, []);
+
   const groupColumns = useAppSelector(state => {
     const filterFieldList = state.app.detail.structure.filterFieldList;
     const groupData = state.app.searchList.group;

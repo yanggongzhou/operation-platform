@@ -4,6 +4,32 @@
   user-select: none;
 
   .rightBoxTabs {
+    font-weight: 500;
+  }
+}
 
+.rightCheckBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  flex-wrap: wrap;
+  grid-gap: 8px 5px;
+  .rightCheckBoxItem {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    align-items: flex-end;
+    height: 22px;
+    white-space: nowrap;
+
+
+    :global {
+      .ant-checkbox-inner {
+        width: 20px;
+        height: 20px;
+        &:after {
+          inset-inline-start: 30%;
+        }
+      }
+    }
   }
 }

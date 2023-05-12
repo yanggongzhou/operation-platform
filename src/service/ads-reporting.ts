@@ -1,4 +1,3 @@
-import { AnyObject } from "antd/es/table/Table";
 import Service from "@/utils/axios";
 import {
   INetAccountList,
@@ -114,14 +113,14 @@ export const netCampaignList = async (search: string = ''): Promise<INetCampaign
  * 书单列表
  */
 export const netBookList = async (bookName: string = ''): Promise<INetBookList> => {
-  return await Service.post('/hw-adserving/landpage/landPageConf/list', { bookName, offset: 0, limit: 20 });
+  return await Service.post('/hw-adserving/book/list', { bookName, offset: 0, limit: 20 });
 };
 
 /**
  * 落地页列表
  */
-export const netLandPageConf = async (name: string = ''): Promise<INetLandPageConf> => {
-  return await Service.get('/hw-adserving/landpage/landPageConf/list', { params: { name, offset: 0, limit: 20 } });
+export const netLandPageConf = async (search: string = ''): Promise<INetLandPageConf> => {
+  return await Service.post('/hw-adserving/landpage/landPageConf/conf/urls', { search });
 };
 
 /**
