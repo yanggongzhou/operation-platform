@@ -71,29 +71,27 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
         key: field,
         width: 160,
         fixed: 'left',
-        onCell: (record: IRecordsItem, index: number) => {
-          if (showDetailedCondition) {
-            const groupByFieldsArr = record.groupByFields.split(',');
-            // 首行排序
-            if (groupByFieldsArr.length === 1) {
-              if (record.groupByFields === field) {
-                if (fieldInd === 0) {
-                  return {
-                    rowSpan: record.RowSpan ?? 1,
-                  };
-                }
-              } else  {
-                // return { colSpan: 1 };
-              }
-            }
-
-            if (record.groupByFields !== field) {
-              if (fieldInd === 0) {
-                return  { rowSpan: 0 };
-              }
-            }
-          }
-        },
+        // onCell: (record: IRecordsItem, index: number) => {
+        //   if (showDetailedCondition) {
+        //     const groupByFieldsArr = record.groupByFields.split(',');
+        //     // 首行排序
+        //     if (groupByFieldsArr.length === 1) {
+        //       if (record.groupByFields === field) {
+        //         return {
+        //           rowSpan: record.RowSpan ?? 1,
+        //         };
+        //       } else  {
+        //         // return { colSpan: 1 };
+        //       }
+        //     }
+        //
+        //     if (record.groupByFields !== field) {
+        //       if (fieldInd === 0) {
+        //         return  { rowSpan: 0 };
+        //       }
+        //     }
+        //   }
+        // },
       };
     }) as IColItem[];
   });

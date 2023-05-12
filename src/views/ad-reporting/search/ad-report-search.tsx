@@ -36,8 +36,14 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const dispatch = useAppDispatch();
   // 确认：优化师 | 账户
   const onOptimizerConfirm = (params: ISearchFieldItem) => {
-    const data = searchFieldList.filter(val => val.fieldName !== params.fieldName);
-    dispatch(setSearchFieldList([...data, params]));
+    const index = searchFieldList.findIndex(val => val.fieldName === params.fieldName);
+    if (index !== -1) {
+      const data = JSON.parse(JSON.stringify(searchFieldList));
+      data[index] = { ...params };
+      dispatch(setSearchFieldList(data));
+    } else {
+      dispatch(setSearchFieldList([...searchFieldList, params]));
+    }
     setIsShowMenu(true);
     onSearch();
   };
@@ -80,7 +86,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   // 删除筛选条件
   const onDelete = (index: number) => {
     const list = fieldList.filter((_, ind) => ind !== index);
-    setFieldList(list);
+    dispatch(setSearchFieldList(list));
     setIsShowMenu(true);
     onSearch();
   };

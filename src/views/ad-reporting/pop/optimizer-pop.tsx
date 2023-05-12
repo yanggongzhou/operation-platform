@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import type { RadioChangeEvent } from 'antd';
 import { Select, Radio, Space } from 'antd';
 import { debounce } from 'throttle-debounce';
@@ -18,7 +18,7 @@ interface IProps {
 const OptimizerPop: FC<IProps> = ({ fieldItem, onDelete, onConfirm, onCancel }) => {
   const [data, setData] = useState<DefaultOptionType[]>([]);
   const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
-  const [operatorValue, setOperatorValue] = useState(EOperator.In); // 包含不包含
+  const [operatorValue, setOperatorValue] = useState(fieldItem.operator || EOperator.In); // 包含不包含
 
   const handleFocus = () => {
     if (!data || data.length === 0) {

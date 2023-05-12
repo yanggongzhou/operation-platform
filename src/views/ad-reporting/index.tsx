@@ -43,7 +43,7 @@ const AdReporting = () => {
     dispatch(baseInfoAsync());
     dispatch(searchListAsync(routeParams.id as string));
     windowBack();
-    getList(routeParams.id as string, 0);
+    getList(0);
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
         isPaint.current = false;
@@ -81,41 +81,40 @@ const AdReporting = () => {
     dispatch(setTableLoading(false));
   });
 
+  const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
+
   // 报表详情(列表数据, 未修改配置情况下)
-  const getList = debounce(300, async (id: string, page: number) => {
+  const getList = debounce(300, async (page: number = 0) => {
     dispatch(setTableLoading(true));
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
-    const filterFieldList = bodyData.structure.filterFieldList || [];
 
-    let fieldName = '';
-    let fieldHeight = 1;
+    // 数据处理
+    const fieldNames = new Map();
+    filterFieldList.reduce((accumulator, currentValue, currentIndex, array) => {
+      const sum = accumulator ? accumulator + ',' + currentValue : currentValue;
+      fieldNames.set(sum, 0);
+      return sum;
+    }, '');
+    console.log(fieldNames);
     let tagIndex = 0;
-    const _rows = [...rows, ...records]
+    const _rows = [...rows, ...records];
     _rows.forEach((val, ind) => {
-      if (ind === 0) {
-        fieldName = val.groupByFields;
-        fieldHeight = 1;
+      console.log('=================>', val.groupByFields, val.appName, val.RowSpan);
+      if (val.groupByFields === filterFieldList[0]) {
+        _rows[tagIndex].RowSpan = fieldNames.get(val.groupByFields);
+        fieldNames.set(val.groupByFields, 1);
         tagIndex = ind;
-      } else {
-        if (fieldName === val.groupByFields) {
-          _rows[tagIndex].RowSpan = fieldHeight;
-          fieldHeight = 1;
-          tagIndex = ind;
-        } else {
-
-        }
-
-        if (val.groupByFields.includes(fieldName)) {
-          fieldHeight += 1;
-        }
+      }
+      if (fieldNames.has(val.groupByFields)) {
+        fieldNames.set(val.groupByFields, fieldNames.get(val.groupByFields) + 1);
       }
     });
-
+    console.log(_rows);
     setRows(prevState => [...prevState, ...records]);
     setSumData(sumData);
     setPageInfo(prevState => ({ ...prevState, total, pages }));
     dispatch(setTableLoading(false));
-  }, { atBegin: true });
+  }, { atBegin: false });
 
   // 保存报表
   const onSave = async () => {
@@ -123,7 +122,7 @@ const AdReporting = () => {
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
     messageApi.success('已保存');
-    getList(id, 0);
+    getList();
   };
   // 搜索
   const onSearch = () => {
@@ -140,7 +139,7 @@ const AdReporting = () => {
         return messageApi.info('已加载全部数据');
       }
       console.log("pageNo=================>:", pageNo);
-      getList(id, pageNo);
+      getList(pageNo);
     }
   }, [pageNo]);
 
@@ -175,6 +174,9 @@ const AdReporting = () => {
       const list = [ ...store.getState().app.detail.structure.filterFieldList ];
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
       dispatch(setFilterFieldList(list));
+      if(showDetailedCondition) {
+        getUnSaveList(0);
+      }
     } else {
       const list = [ ...store.getState().app.detail.structure.indexColumnList ];
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);

@@ -17,7 +17,7 @@ interface IProps {
 const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) => {
   const [data, setData] = useState<SelectProps['options']>([]);
   const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
-  const [operatorValue, setOperatorValue] = useState(EOperator.In); // 包含不包含
+  const [operatorValue, setOperatorValue] = useState(fieldItem.operator || EOperator.In); // 包含不包含
 
   const onOperatorChange = (e: RadioChangeEvent) => {
     setOperatorValue(e.target.value);

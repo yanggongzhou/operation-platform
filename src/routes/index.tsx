@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
-import { Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
+import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
 import { Spin } from "antd";
 import Routers from "./router";
 
 const RouterView = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       {/* 导航跳转必须包裹在router中，不然组件无法使用useHistory和useLocation */}
       {/*<Navbar />*/}
       {/* fallback控制异步加载组件时等待的动画 */}
@@ -23,7 +23,7 @@ const RouterView = () => {
           })}
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
