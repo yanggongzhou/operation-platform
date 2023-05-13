@@ -15,9 +15,6 @@
 
 .sortableItem {
   z-index: 100;
-
-  &:last-child {
-  }
 }
 
 @for $i from 1 through 14 {
@@ -29,25 +26,30 @@
 .tableBox {
 
   :global {
-    .ant-table-thead >tr>th {
+    .ant-table-thead > tr > th {
       background: rgba(236, 236, 236, 0.95);
       padding: 8px 12px;
-    //  display: flex;
-    //  flex-direction: row;
+      //  display: flex;
+      //  flex-direction: row;
       position: sticky;
       border-bottom: 1px solid #ddd;
       border-inline-end: 1px solid #ddd !important;
+
+      &[data-title = 'group'] {
+        border-right: 3px solid #ddd !important;
+      }
     }
 
     .ant-table-cell {
       vertical-align: top;
       font-size: 12px;
     }
-    .ant-table-row:hover>td {
-      background-color: rgba(0, 187, 166, 0.2) !important;
+
+    .ant-table-row:hover > td {
+      background-color: #ddd !important;
     }
 
-    .ant-table-tbody>tr>td {
+    .ant-table-tbody > tr > td {
       padding: 0 !important;
       border-bottom: 1px solid #ddd;
       border-inline-end: 1px solid #ddd !important;
@@ -83,8 +85,16 @@
   background-color: #fafafa;
 }
 
+.tbodyTdItemLast {
+  border-right: 2px solid #ddd;
+}
+
 .tbodyTdTarget {
   height: 34px;
   line-height: 34px;
   padding: 0 8px;
+}
+
+.summaryTotal {
+  border-right: 3px solid #ddd !important;
 }

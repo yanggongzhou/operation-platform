@@ -3,7 +3,7 @@ import { Table, Tooltip, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
 import { throttle } from "throttle-debounce";
-import { ColumnsType, ColumnType } from "antd/es/table/interface";
+import { ColumnsType } from "antd/es/table/interface";
 import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";
 import { TableDragHeader } from "@/views/ad-reporting/table-drag/table-drag-header";
@@ -62,9 +62,12 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
     };
   }, []);
 
-  const groupColumns = useAppSelector(state => {
+  const groupColumns = useAppSelector((state) => {
     const filterFieldList = state.app.detail.structure.filterFieldList;
     const groupData = state.app.searchList.group;
+    if (filterFieldList.length === 0 || groupData.length === 0) {
+      return [] as IColItem[];
+    }
     // 列 fieldInd 横 index
     return filterFieldList.map((field, fieldInd) => {
       const groupItem = groupData.find(item => item.field === field) || { text: '-', filed: '-' };
@@ -86,16 +89,18 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         render: (text: string, record: IRecordsItem, index: number) => {
           const groupByFieldsArr = record.groupByFields.split(',');
           const fieldIndex = groupByFieldsArr.indexOf(field);
-          const backgroundColor = `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`
+          const backgroundColor = `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`;
+          const borderRight = (fieldInd === filterFieldList.length - 1) ? '2px solid #ddd' : "none";
+
           if (record[field] === '全部') {
             return <div
-              style={{ backgroundColor, fontWeight: 500 }}
+              style={{ backgroundColor, fontWeight: 500, borderRight }}
               className={styles.tbodyThItem} title={text}>{text}</div>;
           }
-
+          // 最后一项
           if ((record[`a_row_${fieldIndex}`] ?? 1) === 1) {
             return <Tooltip title={text} color={'#1ab394'}>
-              <div className={styles.tbodyTdItemLast} title={text}>{text || '-'}</div>
+              <div style={{ borderRight }} className={styles.tbodyTdItemLast} title={text}>{text || '-'}</div>
             </Tooltip>;
           }
           return <Tooltip title={text} color={'#1ab394'}>
@@ -123,11 +128,15 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
             const groupByFieldsArr = record.groupByFields.split(',');
             const filterFieldList = state.app.detail.structure.filterFieldList;
             return <div
-              style={{ backgroundColor: `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`, fontWeight: 500 }}
+              style={{
+                backgroundColor: `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`,
+                fontWeight: 500
+              }}
               className={styles.tbodyTdTarget}>{!text && text !== 0 ? '-' : text}</div>;
           }
           return <div className={styles.tbodyTdTarget}>{!text && text !== 0 ? '-' : text}</div>;
-        } };
+        }
+      };
     }) as IColItem[];
   });
 
@@ -180,7 +189,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
       summary={() => (
         <Table.Summary fixed>
           <Table.Summary.Row>
-            <Table.Summary.Cell index={0} colSpan={groupColumns.length}>
+            <Table.Summary.Cell className={styles.summaryTotal} index={0} colSpan={groupColumns.length}>
               <Text strong>{total}</Text>
               <br/>
               <Text type={'secondary'}>总行数</Text>

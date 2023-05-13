@@ -11,11 +11,12 @@ import { IColItem } from "@/views/ad-reporting/table-drag/index";
 interface IItemProps extends SortableElementProps {
   name: string;
   isSort?: boolean;
+  isGroupLast?: boolean;
 }
 
 // @ts-ignore
-const SortableItem: React.ComponentClass<IItemProps> = SortableElement(({ name, isSort}) => {
-  return <th className={isSort ? styles.sortableTargetItem : styles.sortableItem}>
+const SortableItem: React.ComponentClass<IItemProps> = SortableElement(({ name, isSort, isGroupLast}) => {
+  return <th data-title={isGroupLast ? 'group' : ''} className={isSort ? styles.sortableTargetItem : styles.sortableItem}>
     {name}
   </th>;
 });
@@ -29,6 +30,7 @@ export const SortableList: React.ComponentClass<IProps> = SortableContainer((pro
   <>
     {props.columns.map((val, ind) => {
       return <SortableItem
+        isGroupLast={ind === props.columns.length - 1 && !props.isSort}
         key={val.dataIndex}
         name={val.title}
         isSort={props.isSort}

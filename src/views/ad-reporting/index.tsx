@@ -70,9 +70,12 @@ const AdReporting = () => {
   };
 
   // 报表详情(列表数据, 修改配置情况下)
-  const getUnSaveList = debounce(500,async (page: number) => {
+  const getUnSaveList = debounce(500, async (page: number) => {
     isNeedSave.current = true;
     dispatch(setTableLoading(true));
+    if (page === 0) {
+      setRows([]);
+    }
     const { records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
     if (page === 0) {
       setRows(records);
@@ -97,8 +100,8 @@ const AdReporting = () => {
 
   const getLength = (groupByFields: string, ind: number): number => {
     const arrRow = rows.slice(ind, rows.length);
-    for (let i = 1; i < arrRow.length; i ++) {
-      if(arrRow[i].groupByFields === groupByFields || arrRow[i].groupByFields.length <= groupByFields.length) {
+    for (let i = 1; i < arrRow.length; i++) {
+      if (arrRow[i].groupByFields === groupByFields || arrRow[i].groupByFields.length <= groupByFields.length) {
         return i;
       }
     }
@@ -108,10 +111,10 @@ const AdReporting = () => {
   const dataSource = useMemo(() => {
     if (rows.length > 0 && fieldNames.length > 0) {
       // 数据处理
-      const _rows = [...rows];
-      _rows.forEach((val, ind) => {
+      const _rows = rows.map((item, ind) => {
+        const val = Object.assign({}, item);
         const index = fieldNames.indexOf(val.groupByFields);
-        for (let i = 0; i < fieldNames.length; i ++ ) {
+        for (let i = 0; i < fieldNames.length; i++) {
           Reflect.set(val, `a_row_${i}`, i < index ? 0 : 1);
           // 设置 "全部"
           if (i > val.groupByFields.split(',').length - 1) {
@@ -126,12 +129,13 @@ const AdReporting = () => {
           const height = getLength(val.groupByFields, ind);
           Reflect.set(val, `a_row_${index}`, height);
         }
+        return val;
       });
       console.log('_rows====>', _rows);
       return _rows;
     }
     return [];
-  }, [rows, filterFieldList, fieldNames]);
+  }, [rows, fieldNames]);
 
   // 报表详情(列表数据, 未修改配置情况下)
   const getList = debounce(300, async (page: number = 0) => {
@@ -157,7 +161,11 @@ const AdReporting = () => {
   };
   // 搜索
   const onSearch = () => {
-    setPageNo(0);
+    if (pageNo !== 0) {
+      setPageNo(0);
+    } else {
+      getUnSaveList(0);
+    }
   };
   // 更多数据
   const getMoreList = () => {
@@ -191,13 +199,15 @@ const AdReporting = () => {
   const onChange = (checkedValues: string[], filterType: EFilterType) => {
     isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
-      console.log('checked = ', checkedValues, filterType);
       dispatch(setFilterFieldList(checkedValues));
-      if(showDetailedCondition) {
-        setPageNo(0);
+      if (showDetailedCondition) {
+        if (pageNo !== 0) {
+          setPageNo(0);
+        } else {
+          getUnSaveList(0);
+        }
       }
     } else {
-      console.log('checked = ', checkedValues, filterType);
       dispatch(setIndexColumnList(checkedValues));
     }
   };
@@ -206,18 +216,28 @@ const AdReporting = () => {
   const onTableDrag = (oldIndex: number, newIndex: number, filterType: EFilterType) => {
     isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
-      const list = [ ...store.getState().app.detail.structure.filterFieldList ];
+      const list = [...store.getState().app.detail.structure.filterFieldList];
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
       dispatch(setFilterFieldList(list));
-      if(showDetailedCondition) {
-        setPageNo(0);
-      }
     } else {
-      const list = [ ...store.getState().app.detail.structure.indexColumnList ];
+      const list = [...store.getState().app.detail.structure.indexColumnList];
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
       dispatch(setIndexColumnList(list));
     }
   };
+  // 拖拽细分条件刷新数据
+  useEffect(() => {
+    if (filterFieldList.length > 0 && isNeedSave.current) {
+      if (showDetailedCondition) {
+        if (pageNo !== 0) {
+          setPageNo(0);
+        } else {
+          getUnSaveList(0);
+        }
+      }
+    }
+  }, [filterFieldList]);
+
 
   return (
     <div className={styles.adReportWrap}>
