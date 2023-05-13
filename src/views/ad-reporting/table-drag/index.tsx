@@ -77,11 +77,16 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
           if (showDetailedCondition) {
             const groupByFieldsArr = record.groupByFields.split(',');
             const fieldIndex = groupByFieldsArr.indexOf(field);
-            // console.log(index, '=======>', record[`a_row_${fieldIndex}`]);
             return {
               rowSpan: record[`a_row_${fieldIndex}`] ?? 1,
             };
           }
+        },
+        render: (text: string, record: IRecordsItem, index: number) => {
+          if (record[field] === '全部') {
+            return <div >{text}</div>;
+          }
+          return <a>{text}</a>;
         },
       };
     }) as IColItem[];

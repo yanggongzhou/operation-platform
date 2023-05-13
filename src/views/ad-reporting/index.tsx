@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { debounce } from "throttle-debounce";
-import { AnyObject } from "antd/es/table/Table";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/views/ad-reporting/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
@@ -85,7 +84,7 @@ const AdReporting = () => {
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
   const fieldNames = useMemo(() => {
     const _fieldNames: string[] = [];
-    filterFieldList.reduce((accumulator, currentValue, currentIndex, array) => {
+    filterFieldList.reduce((accumulator, currentValue) => {
       const sum = accumulator ? accumulator + ',' + currentValue : currentValue;
       _fieldNames.push(sum);
       return sum;
@@ -111,13 +110,19 @@ const AdReporting = () => {
         const index = fieldNames.indexOf(val.groupByFields);
         for (let i = 0; i < fieldNames.length; i ++ ) {
           Reflect.set(val, `a_row_${i}`, i < index ? 0 : 1);
+          // 设置 "全部"
+          if (i > val.groupByFields.split(',').length - 1) {
+            Reflect.set(val, filterFieldList[i], '全部');
+          }
         }
+        // 获取高度
         if (index === fieldNames.length - 1) {
           Reflect.set(val, `a_row_${fieldNames.length - 1}`, 1);
         } else {
           const height = getLength(val.groupByFields, ind);
           Reflect.set(val, `a_row_${index}`, height);
         }
+
       });
       console.log('_rows====>', _rows);
       return _rows;

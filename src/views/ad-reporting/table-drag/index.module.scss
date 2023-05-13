@@ -1,5 +1,5 @@
 .sortableItem, .sortableTargetItem {
-  width: 160px;
+  min-width: 120px;
   padding: 8px 12px !important;
   //border: 1px solid #f0f0f0;
   font-size: 14px;
@@ -34,5 +34,8 @@
       position: sticky;
     }
 
+    .ant-table-cell {
+      vertical-align: baseline;
+    }
   }
 }
