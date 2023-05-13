@@ -84,9 +84,14 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
         },
         render: (text: string, record: IRecordsItem, index: number) => {
           if (record[field] === '全部') {
-            return <div >{text}</div>;
+            return <div className={styles.tbodyThItem}>{text}</div>;
           }
-          return <a>{text}</a>;
+          const groupByFieldsArr = record.groupByFields.split(',');
+          const fieldIndex = groupByFieldsArr.indexOf(field);
+          if (record[`a_row_${fieldIndex}`] ?? 1 === 1) {
+            return <div className={styles.tbodyTdItemLast}>{text}</div>;
+          }
+          return <div className={styles.tbodyTdItem}>{text}</div>;
         },
       };
     }) as IColItem[];
