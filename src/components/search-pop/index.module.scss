@@ -1,0 +1,89 @@
+.searchPopWrap {
+  position: relative;
+}
+
+.popCardBox {
+  color: red;
+  :global {
+    .ant-popover-title {
+      padding: 0;
+      border-radius: 3px 3px 0 0;
+      overflow: hidden;
+    }
+  }
+}
+
+.popTitle {
+  background: rgba(0, 0, 0, .15);
+  padding: 9px 12px 10px;
+  font-size: 13px;
+  line-height: 17px;
+  letter-spacing: normal;
+  overflow-wrap: normal;
+  text-align: left;
+  color: rgb(28, 30, 33);
+  font-weight: bold;
+}
+
+.popBox {
+  max-width: 300px;
+  .popMain {
+
+  }
+  .popFooter {
+    margin-top: 15px;
+    text-align: right;
+  }
+}
+
+.popShowBox {
+  height: 30px;
+
+  .popName {
+    border-left: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #00000019;
+    padding: 0 10px;
+    border-radius: 3px 0 0 3px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: #b9b9b9;
+      //background-color: rgba(0,0,0,0.1);;
+    }
+    .popTagBox {
+      max-width: 200px;
+      overflow: hidden;
+      height: 100%;
+      padding-top: 3px;
+
+      .popTag {
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        max-width: 100px;
+        margin: 0;
+      }
+    }
+  }
+  .popCancel {
+    border-radius: 0 3px 3px 0;
+    background-color: rgba(0, 0, 0, .1);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #b9b9b9;
+    }
+  }
+}

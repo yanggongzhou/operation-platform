@@ -2,7 +2,9 @@
   "name": "operation-platform",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
@@ -20,6 +22,7 @@
     "react-scripts": "5.0.1",
     "react-sortable-hoc": "^2.0.0",
     "sass-loader": "^13.2.2",
+    "throttle-debounce": "^5.0.0",
     "typescript": "^5.0.4"
   },
   "scripts": {
@@ -41,10 +44,10 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
-    "@reduxjs/toolkit": "^1.9.5",
+    "@reduxjs/toolkit": "^1.9.3",
     "@types/js-cookie": "^3.0.3",
     "@types/nprogress": "^0.2.0",
     "@types/react-virtualized": "^9.21.21",
-    "eslint-plugin-unicorn": "^46.0.0"
+    "@types/throttle-debounce": "^5.0.0"
   }
 }

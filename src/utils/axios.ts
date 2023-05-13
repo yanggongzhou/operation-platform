@@ -10,8 +10,7 @@ import { Store } from "redux";
 import { HashHistory } from "history";
 import { NavigateFunction } from "react-router";
 import { AppState } from "@/store";
-import { resetToken } from '@/store/modules/user.module';
-import { getToken, getUserId } from '@/utils/cookies';
+import { getToken } from '@/utils/cookies';
 
 // 定义接口
 interface PendingType {
@@ -35,9 +34,9 @@ declare module 'axios' {
 const pending: PendingType[] = [];
 const CancelToken = axios.CancelToken;
 const Service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '/dzapi' : '/dzapi',
+  baseURL: '/api',
   withCredentials: true,
-  timeout: 5000,
+  timeout: 10000,
 } as CreateAxiosDefaults);
 
 export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {
@@ -63,7 +62,6 @@ export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {
 Service.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     Reflect.set(request.headers, 'userToken', getToken() || '');
-    Reflect.set(request.headers, 'userId', getUserId() || '');
     request.cancelToken = new CancelToken((c: any) => {
       pending.push({
         url: request.url,
@@ -84,15 +82,18 @@ Service.interceptors.request.use(
 Service.interceptors.response.use(
   (response: AxiosResponse): AxiosPromise<any> => {
     try {
-      if (response.data.retCode !== 0) {
-        if (response.data.retCode === 6) {
-          // Service.navigate('/login');
-          // // 清除用户信息
-          // Service.redux.dispatch(resetToken());
-          notification.error({ message: '登录失效', placement: 'topRight' });
-        }
-        notification.error({ message: response.data.retMsg, placement: 'topRight' });
-        return Promise.reject(response.data.retMsg);
+      if (!response.data.code) {
+        return response.data;
+      }
+      if (response.data.code !== 200) {
+        // if (response.data.code === 6) {
+        //   Service.navigate('/login');
+        //   // 清除用户信息
+        //   Service.redux.dispatch(resetToken());
+        //   notification.error({ message: '登录失效', placement: 'topRight' });
+        // }
+        notification.info({ message: response.data.message, placement: 'topRight' });
+        return Promise.reject(response.data.message);
       }
       return response.data.data;
     } catch (err) {
@@ -103,7 +104,7 @@ Service.interceptors.response.use(
     console.log('axios err--------------------------->', err);
     const navigator = window.navigator;
     if (!navigator.onLine) {
-      notification.error({ message: 'offline', placement: 'topRight' });
+      notification.error({ message: 'Offline', placement: 'topRight' });
     // } else if (err.response?.status === 401) {
       // notification.error({ message: '登录失效', placement: 'topRight' });
       // Service.navigate('/401')
@@ -111,10 +112,10 @@ Service.interceptors.response.use(
     //   Service.navigate('/404')
     } else if (err.response) {
       const { data } = err.response;
-      // notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
+      notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
 
     } else {
-      notification.error({ message: 'network error', placement: 'topRight' });
+      notification.error({ message: 'Network Error', placement: 'topRight' });
     }
     return Promise.reject(err);
   }

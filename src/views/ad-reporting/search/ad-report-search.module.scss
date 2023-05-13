@@ -1,0 +1,62 @@
+.adSearchWrap {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,.1), 0 0 1px 0 rgba(0,0,0,.1);
+  border-radius: 3px;
+
+  .adSearchTop {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    .topDetail {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+
+  .adSearchBottom {
+    border-top: 1px dashed #e8e8e8;
+    padding-top: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    .timeRange {
+      margin: 0 20px;
+    }
+
+    .adSearchBottomLabel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-top: 1px solid #d9d9d9;
+      border-bottom: 1px solid #d9d9d9;
+      border-left: 1px solid #d9d9d9;
+      border-radius: 2px 0 0 2px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+}
+
+.popBox {
+
+}
+
+// 时间选择器弹出框
+.searchTimePopBox {
+  :global {
+    .ant-picker-presets ul li {
+      padding: 0 !important;
+    }
+  }
+  .searchTimePopLabel {
+    padding: 4px 10px;
+  }
+}

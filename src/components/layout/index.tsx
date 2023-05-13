@@ -1,19 +1,20 @@
-import React from "react";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { userInfoAsync } from "@/store/modules/user.module";
-import { AppDispatch } from "@/store";
+import React, { FC } from "react";
+import { Layout } from "antd";
+const { Header, Sider, Content, Footer } = Layout;
 
-const Layout = () => {
 
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    dispatch(userInfoAsync());
-  }, []);
-  return <div>
-    Layout
-  </div>;
+const LayoutCom: FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <Layout style={{ height: '100%' }}>
+    <Header>
+      <h1 style={{ color: "white", textAlign: "center" }}>header</h1>
+    </Header>
+    <Layout>
+      <Sider><h1 style={{ color: "white" }}>Menu</h1></Sider>
+      <Content>
+        {children}
+      </Content>
+    </Layout>
+  </Layout>;
 };
 
-export default Layout;
+export default LayoutCom;

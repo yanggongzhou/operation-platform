@@ -1,0 +1,34 @@
+.rightBox {
+  width: 100%;
+  height: 50px;
+  user-select: none;
+
+  .rightBoxTabs {
+    font-weight: 500;
+  }
+}
+
+.rightCheckBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  flex-wrap: wrap;
+  grid-gap: 8px 5px;
+  .rightCheckBoxItem {
+    margin: 0;
+    font-weight: 500;
+    align-items: flex-end;
+    height: 20px;
+    white-space: nowrap;
+
+
+    :global {
+      .ant-checkbox-inner {
+        width: 18px;
+        height: 18px;
+        &:after {
+          inset-inline-start: 25%;
+        }
+      }
+    }
+  }
+}

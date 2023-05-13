@@ -12,13 +12,12 @@ function AsyncComponent(
 }
 // const Home = AsyncComponent(() => import("@/views/home"));
 // const Login = AsyncComponent(() => import("@/views/login"));
-const AdReport = AsyncComponent(() => import("@/views/ad-report"));
+const AdReporting = AsyncComponent(() => import("@/views/ad-reporting"));
+const AdsReporting = AsyncComponent(() => import("@/views/ads-reporting"));
 
 const Routers = [
-  { path: "/", key: 0, component: AdReport }, // 广告管理
-  // { path: "/", key: 1, component: Home }, // 首页
-  // { path: "/home", key: 2, component: Home }, // 首页
-  // { path: "/Login", key: 3, component: Login }, // 登陆
+  { path: "/adsReporting", key: 1, component: AdsReporting }, // 广告报告
+  { path: "/adReporting/:id", key: 0, component: AdReporting }, // 广告报告详情
 ];
 
 export default Routers;
