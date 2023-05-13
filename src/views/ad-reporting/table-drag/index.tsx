@@ -90,18 +90,18 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
           if (record[field] === '全部') {
             return <div
               style={{ backgroundColor, fontWeight: 500 }}
-              className={styles.tbodyThItem} title={text}>全部</div>;
+              className={styles.tbodyThItem} title={text}>{text}</div>;
           }
 
           if ((record[`a_row_${fieldIndex}`] ?? 1) === 1) {
             return <Tooltip title={text} color={'#1ab394'}>
-              <div className={styles.tbodyTdItemLast} title={text}>{text}</div>
+              <div className={styles.tbodyTdItemLast} title={text}>{text || '-'}</div>
             </Tooltip>;
           }
           return <Tooltip title={text} color={'#1ab394'}>
             <div
               style={{ backgroundColor }}
-              className={styles.tbodyTdItem} title={text}>{text}</div>
+              className={styles.tbodyTdItem} title={text}>{text || '-'}</div>
           </Tooltip>;
         },
       };
@@ -118,16 +118,15 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         dataIndex: val,
         key: val,
         width: 100,
-        render: (text: string, record) => {
+        render: (text: string | number, record) => {
           if (record.isAll) {
             const groupByFieldsArr = record.groupByFields.split(',');
             const filterFieldList = state.app.detail.structure.filterFieldList;
             return <div
               style={{ backgroundColor: `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`, fontWeight: 500 }}
-              className={styles.tbodyTdTarget}
-              title={text}>{text}</div>;
+              className={styles.tbodyTdTarget}>{!text && text !== 0 ? '-' : text}</div>;
           }
-          return <div className={styles.tbodyTdTarget} title={text}>{text}</div>;
+          return <div className={styles.tbodyTdTarget}>{!text && text !== 0 ? '-' : text}</div>;
         } };
     }) as IColItem[];
   });

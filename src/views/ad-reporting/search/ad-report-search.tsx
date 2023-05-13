@@ -51,8 +51,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
     onSearch();
   }, [searchFieldList, costType, showDetailedCondition]);
 
-
-  //
   // 消耗过滤
   const consumeSearch = (value: EConsume) => {
     dispatch(setCostType(value));

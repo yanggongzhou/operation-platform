@@ -30,7 +30,7 @@
 
   :global {
     .ant-table-thead >tr>th {
-      background: rgba(243, 243, 243, 0.95);
+      background: rgba(236, 236, 236, 0.95);
       padding: 8px 12px;
     //  display: flex;
     //  flex-direction: row;
@@ -42,6 +42,9 @@
     .ant-table-cell {
       vertical-align: top;
       font-size: 12px;
+    }
+    .ant-table-row:hover>td {
+      background-color: rgba(0, 187, 166, 0.2) !important;
     }
 
     .ant-table-tbody>tr>td {

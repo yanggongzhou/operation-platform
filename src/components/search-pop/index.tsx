@@ -70,6 +70,7 @@ const SearchPop: FC<IProps> = (
         trigger={'click'}
         destroyTooltipOnHide
         placement={'bottomLeft'}
+        overlayClassName={styles.popCardBox}
         title={<div className={styles.popTitle}>{NGroupField[fieldItem.fieldName]}</div>}
         content={<div className={styles.popBox}>
           <div className={styles.popMain}>
@@ -116,7 +117,7 @@ const SearchPop: FC<IProps> = (
           </Space>
         </div>
       </Popover>
-      <div className={styles.popCancel} onClick={() => onDelete()}><CloseOutlined/></div>
+      <div className={styles.popCancel} onClick={() => onDelete()} title={'删除此项'}><CloseOutlined/></div>
     </Space.Compact>
   );
 };
