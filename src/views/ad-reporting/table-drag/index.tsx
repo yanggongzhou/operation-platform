@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { Table, Typography } from 'antd';
+import { Table, Tooltip, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
 import { throttle } from "throttle-debounce";
@@ -12,7 +12,7 @@ import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces
 const { Text } = Typography;
 
 interface IProps {
-  dataSource: AnyObject[];
+  dataSource: IRecordsItem[];
   sumData: AnyObject;
   total: number;
   onMore: () => void;
@@ -23,13 +23,14 @@ export interface IColItem {
   title: string;
   dataIndex: string;
   key: string;
-  width: number;
+  width?: number | string;
   fixed?: FixedType;
   ellipsis?: boolean;
   rowScope?: string;
+  render: (text: string, record: IRecordsItem, index: number) => React.ReactNode;
 }
 
-export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDrag }) => {
+export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore, onDrag }) => {
   const loading = useAppSelector(state => state.app.loading);
   const tableRef = useRef<HTMLTableElement | null>(null);
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
@@ -52,7 +53,7 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
     if (tableRef.current) {
       setTimeout(() => {
         // @ts-ignore
-        setScrollY(tableRef.current?.parentNode?.offsetHeight - 130 || 300);
+        setScrollY(tableRef.current?.parentNode?.offsetHeight - 140 || 300);
       }, 200);
     }
     return () => {
@@ -71,7 +72,7 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
         title: groupItem.text,
         dataIndex: field,
         key: field,
-        width: 160,
+        width: 120,
         fixed: 'left',
         onCell: (record: IRecordsItem, index: number) => {
           if (showDetailedCondition) {
@@ -83,15 +84,25 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
           }
         },
         render: (text: string, record: IRecordsItem, index: number) => {
-          if (record[field] === '全部') {
-            return <div className={styles.tbodyThItem}>{text}</div>;
-          }
           const groupByFieldsArr = record.groupByFields.split(',');
           const fieldIndex = groupByFieldsArr.indexOf(field);
-          if (record[`a_row_${fieldIndex}`] ?? 1 === 1) {
-            return <div className={styles.tbodyTdItemLast}>{text}</div>;
+          const backgroundColor = `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`
+          if (record[field] === '全部') {
+            return <div
+              style={{ backgroundColor, fontWeight: 500 }}
+              className={styles.tbodyThItem} title={text}>全部</div>;
           }
-          return <div className={styles.tbodyTdItem}>{text}</div>;
+
+          if ((record[`a_row_${fieldIndex}`] ?? 1) === 1) {
+            return <Tooltip title={text} color={'#1ab394'}>
+              <div className={styles.tbodyTdItemLast} title={text}>{text}</div>
+            </Tooltip>;
+          }
+          return <Tooltip title={text} color={'#1ab394'}>
+            <div
+              style={{ backgroundColor }}
+              className={styles.tbodyTdItem} title={text}>{text}</div>
+          </Tooltip>;
         },
       };
     }) as IColItem[];
@@ -102,8 +113,23 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
     const targetData = state.app.searchList.target;
     return indexColumnList.map(val => {
       const targetItem = targetData.find(item => item.field === val) || { text: '-', filed: '-' };
-      return { title: targetItem.text, dataIndex: val, key: val, width: 160 };
-    });
+      return {
+        title: targetItem.text,
+        dataIndex: val,
+        key: val,
+        width: 100,
+        render: (text: string, record) => {
+          if (record.isAll) {
+            const groupByFieldsArr = record.groupByFields.split(',');
+            const filterFieldList = state.app.detail.structure.filterFieldList;
+            return <div
+              style={{ backgroundColor: `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`, fontWeight: 500 }}
+              className={styles.tbodyTdTarget}
+              title={text}>{text}</div>;
+          }
+          return <div className={styles.tbodyTdTarget} title={text}>{text}</div>;
+        } };
+    }) as IColItem[];
   });
 
   const targetSum = useAppSelector(state => {
@@ -150,7 +176,7 @@ export const TableDrag: FC<IProps> = ({ dataSource, sumData, total, onMore, onDr
       loading={loading}
       pagination={false}
       bordered
-      columns={columns}
+      columns={columns as ColumnsType<IRecordsItem>}
       dataSource={dataSource}
       summary={() => (
         <Table.Summary fixed>

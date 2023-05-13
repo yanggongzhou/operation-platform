@@ -22,7 +22,14 @@ const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ConfigProvider locale={zhCN}>
+      <ConfigProvider locale={zhCN} theme={{
+        "token": {
+          "colorPrimary": "#1ab394",
+          "fontSize": 12,
+          "borderRadius": 3,
+          "wireframe": true
+        }
+      }}>
         <RouterView/>
       </ConfigProvider>
     </Provider>

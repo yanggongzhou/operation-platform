@@ -167,4 +167,6 @@ export interface IRecordsItem extends AnyObject {
   "type": string;
   "url": string;
   "uv": number;
+
+  isAll: boolean;
 }

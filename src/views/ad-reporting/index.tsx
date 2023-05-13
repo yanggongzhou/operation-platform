@@ -29,8 +29,8 @@ const AdReporting = () => {
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
   const [rows, setRows] = useState<IRecordsItem[]>([]);
   const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
-  const [pageNo, setPageNo] = useState(0);
-  const [pageInfo, setPageInfo] = useState({ page: 0, total: 0, pages: 1 });
+  const [pageNo, setPageNo] = useState(-1);
+  const [pageInfo, setPageInfo] = useState({ total: 0, pages: 1 });
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const bodyData = useAppSelector(state => {
     const data = JSON.parse(JSON.stringify(state.app.detail)) as INetDetailAd;
@@ -43,7 +43,6 @@ const AdReporting = () => {
     dispatch(baseInfoAsync());
     dispatch(searchListAsync(routeParams.id as string));
     windowBack();
-    getList(0);
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
         isPaint.current = false;
@@ -74,10 +73,14 @@ const AdReporting = () => {
   const getUnSaveList = debounce(500,async (page: number) => {
     isNeedSave.current = true;
     dispatch(setTableLoading(true));
-    const { offset, records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
-    setRows(records);
+    const { records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
+    if (page === 0) {
+      setRows(records);
+    } else {
+      setRows(prevState => [...prevState, ...records]);
+    }
     setSumData(sumData);
-    setPageInfo(prevState => ({ ...prevState, total, pages }));
+    setPageInfo({ total, pages });
     dispatch(setTableLoading(false));
   });
 
@@ -113,6 +116,7 @@ const AdReporting = () => {
           // 设置 "全部"
           if (i > val.groupByFields.split(',').length - 1) {
             Reflect.set(val, filterFieldList[i], '全部');
+            Reflect.set(val, 'isAll', true);
           }
         }
         // 获取高度
@@ -122,7 +126,6 @@ const AdReporting = () => {
           const height = getLength(val.groupByFields, ind);
           Reflect.set(val, `a_row_${index}`, height);
         }
-
       });
       console.log('_rows====>', _rows);
       return _rows;
@@ -134,9 +137,13 @@ const AdReporting = () => {
   const getList = debounce(300, async (page: number = 0) => {
     dispatch(setTableLoading(true));
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
-    setRows(prevState => [...prevState, ...records]);
+    if (page === 0) {
+      setRows(records);
+    } else {
+      setRows(prevState => [...prevState, ...records]);
+    }
     setSumData(sumData);
-    setPageInfo(prevState => ({ ...prevState, total, pages }));
+    setPageInfo({ total, pages });
     dispatch(setTableLoading(false));
   }, { atBegin: false });
 
@@ -150,20 +157,24 @@ const AdReporting = () => {
   };
   // 搜索
   const onSearch = () => {
-    getUnSaveList(0);
+    setPageNo(0);
   };
-
+  // 更多数据
   const getMoreList = () => {
     setPageNo(prevState => ++prevState);
   };
 
   useEffect(() => {
-    if (pageNo > 0) {
+    if (pageNo >= 0) {
       if (pageNo >= pageInfo.pages) {
         return messageApi.info('已加载全部数据');
       }
       console.log("pageNo=================>:", pageNo);
-      getList(pageNo);
+      if (isNeedSave.current) {
+        getUnSaveList(pageNo);
+      } else {
+        getList(pageNo);
+      }
     }
   }, [pageNo]);
 
@@ -183,7 +194,7 @@ const AdReporting = () => {
       console.log('checked = ', checkedValues, filterType);
       dispatch(setFilterFieldList(checkedValues));
       if(showDetailedCondition) {
-        getUnSaveList(0);
+        setPageNo(0);
       }
     } else {
       console.log('checked = ', checkedValues, filterType);
@@ -199,7 +210,7 @@ const AdReporting = () => {
       list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
       dispatch(setFilterFieldList(list));
       if(showDetailedCondition) {
-        getUnSaveList(0);
+        setPageNo(0);
       }
     } else {
       const list = [ ...store.getState().app.detail.structure.indexColumnList ];
@@ -216,7 +227,7 @@ const AdReporting = () => {
       <div className={styles.adReportMain}>
         <div className={styles.adReportBox}>
           <TableDrag
-            dataSource={dataSource}
+            dataSource={showDetailedCondition ? dataSource : rows}
             sumData={sumData}
             total={pageInfo.total}
             onMore={() => getMoreList()}

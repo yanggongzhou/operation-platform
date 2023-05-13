@@ -44,15 +44,19 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
     } else {
       dispatch(setSearchFieldList([...searchFieldList, params]));
     }
+  };
+
+  useEffect(() => {
     setIsShowMenu(true);
     onSearch();
-  };
+  }, [searchFieldList, costType, showDetailedCondition]);
+
+
   //
   // 消耗过滤
   const consumeSearch = (value: EConsume) => {
     dispatch(setCostType(value));
-    onSearch();
-    setIsShowMenu(true);
+
   };
   // 日期范围搜索
   const onTimeSearch = (startDate: string, endDate: string) => {
@@ -87,8 +91,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   const onDelete = (index: number) => {
     const list = fieldList.filter((_, ind) => ind !== index);
     dispatch(setSearchFieldList(list));
-    setIsShowMenu(true);
-    onSearch();
   };
   // 取消
   const onCancel = (fieldItem: ISearchFieldItem, index: number) => {
@@ -96,19 +98,14 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
       const list = fieldList.filter((_, ind) => ind !== index);
       setFieldList(list);
     }
-    setIsShowMenu(true);
   };
   // 取消组合条件
   const onCancelAll = () => {
     dispatch(setSearchFieldList([]));
-    onSearch();
-    setIsShowMenu(true);
   };
   // 数据透视
   const onShowDetailedCondition = (checked: boolean) => {
     dispatch(setShowDetailedCondition(checked));
-    onSearch();
-    setIsShowMenu(true);
   };
 
   return (

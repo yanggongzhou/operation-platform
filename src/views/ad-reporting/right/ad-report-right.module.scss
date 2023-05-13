@@ -15,19 +15,18 @@
   grid-gap: 8px 5px;
   .rightCheckBoxItem {
     margin: 0;
-    font-size: 13px;
     font-weight: 500;
     align-items: flex-end;
-    height: 22px;
+    height: 20px;
     white-space: nowrap;
 
 
     :global {
       .ant-checkbox-inner {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         &:after {
-          inset-inline-start: 30%;
+          inset-inline-start: 25%;
         }
       }
     }
