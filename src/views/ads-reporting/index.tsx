@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { debounce } from "throttle-debounce";
 import styles from "@/views/ads-reporting/index.module.scss";
 import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
 import AdsReportingTable from "@/views/ads-reporting/components/ads-reporting-table";
@@ -16,7 +17,6 @@ const AdsReporting = () => {
   // 创建报表
   const onCreate = async (name: string) => {
     await netAddAd(name);
-    console.log('创建报表', name);
     await getList(pageInfo);
   };
   // 复制报表
@@ -28,22 +28,19 @@ const AdsReporting = () => {
   // 删除报表
   const onDeleteAd = async (id: string) => {
     await netDeleteAd([id]);
-    console.log('删除报表：', id);
     await getList(pageInfo);
   };
   // 查看报表
   const onCheck = (detail: IAdsListItem) => {
-    console.log('查看报表：', detail);
     navigate(`/adReporting/${detail.id}`);
   };
   // 获取报表列表
-  const getList = async (pageData: { page: number; pageSize: number; }) => {
+  const getList = debounce(300, async (pageData: { page: number; pageSize: number; }) => {
     setPageInfo({ ...pageData });
     const { total = 0, rows = [] } = await netAdsList(pageData.page, pageData.pageSize);
-    console.log('获取报表列表:', pageData.page, pageData.pageSize, total, rows);
     setRows(rows);
     setTotal(total);
-  };
+  }, { atBegin: true });
 
   return (
     <div className={styles.adsReportingWrap}>

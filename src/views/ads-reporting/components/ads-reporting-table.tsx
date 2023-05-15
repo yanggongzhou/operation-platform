@@ -91,7 +91,6 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
     <>
       <Table<IAdsListItem>
         className={styles.adsReportingTable}
-        scroll={{ y: 600}}
         bordered
         rowKey={'id'}
         size={'small'}

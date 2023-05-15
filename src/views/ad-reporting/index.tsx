@@ -62,14 +62,13 @@ const AdReporting = () => {
   const windowBack = () => {
     window.onpopstate = function () {
       if (isNeedSave.current) {
-        // messageApi.warning('提示保存');
         onSave(true);
         window.history.pushState('forward', '', '');
         window.history.forward();
       } else {
-        window.onpopstate = null;
-        window.history.go(-2);
-        // navigate('/adsReporting', { replace: true });
+        // window.onpopstate = null;
+        // window.history.go(-2);
+        navigate('/adsReporting', { replace: true });
       }
     };
     window.history.pushState('forward', '', '');
@@ -195,6 +194,9 @@ const AdReporting = () => {
   };
   // 更多数据
   const getMoreList = () => {
+    if (pageNo >= pageInfo.pages) {
+      return messageApi.info('已加载全部数据');
+    }
     setPageNo(prevState => ++prevState);
   };
 
