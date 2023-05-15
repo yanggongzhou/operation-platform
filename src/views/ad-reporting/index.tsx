@@ -42,7 +42,6 @@ const AdReporting = () => {
     Reflect.deleteProperty(data, 'createTime');
     return data;
   });
-
   useEffect(() => {
     initData();
     windowBack();
@@ -66,8 +65,7 @@ const AdReporting = () => {
         window.history.pushState('forward', '', '');
         window.history.forward();
       } else {
-        // window.onpopstate = null;
-        // window.history.go(-2);
+        // window.onpopstate = null; window.history.go(-2);
         navigate('/adsReporting', { replace: true });
       }
     };
@@ -78,20 +76,19 @@ const AdReporting = () => {
   const getUnSaveList = debounce(500, async (page: number) => {
     isNeedSave.current = true;
     dispatch(setTableLoading(true));
-    if (page === 0) {
-      setRows([]);
-    }
-    const { records = [], total = 0, sumData, pages } = await netListAd(bodyData, page);
+    const { records = [], total = 0, sumData, pages = 1 } = await netListAd(bodyData, page);
     if (page === 0) {
       setRows(records);
     } else {
       setRows(prevState => [...prevState, ...records]);
     }
+    if (page >= pages) {
+      messageApi.info('已加载全部数据');
+    }
     setSumData(sumData);
     setPageInfo({ total, pages });
     dispatch(setTableLoading(false));
-  });
-
+  }, { atBegin: true });
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
   const fieldNames = useMemo(() => {
     const _fieldNames: string[] = [];
@@ -102,7 +99,6 @@ const AdReporting = () => {
     }, '');
     return _fieldNames;
   }, [filterFieldList]);
-
   const getLength = (groupByFields: string, ind: number): number => {
     const arrRow = rows.slice(ind, rows.length);
     for (let i = 1; i < arrRow.length; i++) {
@@ -112,13 +108,22 @@ const AdReporting = () => {
     }
     return arrRow.length;
   };
-
   const dataSource = useMemo(() => {
+    if (!showDetailedCondition) {
+      return rows.map((item) => {
+        const val = Object.assign({}, item);
+        for (let i = 1; i < filterFieldList.length; i++) {
+          Reflect.set(val, filterFieldList[i], '全部');  // 设置 "全部"
+          Reflect.set(val, 'isAll', true);
+        }
+        return val;
+      });
+    }
     if (rows.length > 0 && fieldNames.length > 0) {
-      // 数据处理
       return rows.map((item, ind) => {
         const val = Object.assign({}, item);
         const index = fieldNames.indexOf(val.groupByFields);
+        if (index === -1) return val;
         for (let i = 0; i < fieldNames.length; i++) {
           Reflect.set(val, `a_row_${i}`, i < index ? 0 : 1);
           // 设置 "全部"
@@ -137,8 +142,8 @@ const AdReporting = () => {
         return val;
       });
     }
-    return [];
-  }, [rows, fieldNames]);
+    return rows;
+  }, [rows, fieldNames, showDetailedCondition]);
 
   // 报表详情(列表数据, 未修改配置情况下)
   const getList = debounce(300, async (page: number = 0) => {
@@ -149,6 +154,9 @@ const AdReporting = () => {
       setRows(records);
     } else {
       setRows(prevState => [...prevState, ...records]);
+    }
+    if (page >= pages) {
+      messageApi.info('已加载全部数据');
     }
     setSumData(sumData);
     setPageInfo({ total, pages });
@@ -164,9 +172,6 @@ const AdReporting = () => {
       content: `确认保存「${adName}」？此操作无法撤销`,
       okText: '确认',
       cancelText: '取消',
-      okButtonProps: {
-        type: "primary",
-      },
       onOk: () => handleSave(isBack),
       onCancel: () => {
         if (isBack) navigate('/adsReporting', { replace: true });
@@ -194,9 +199,7 @@ const AdReporting = () => {
   };
   // 更多数据
   const getMoreList = () => {
-    if (pageNo >= pageInfo.pages) {
-      return messageApi.info('已加载全部数据');
-    }
+    if (pageNo >= pageInfo.pages) return;
     setPageNo(prevState => ++prevState);
   };
 
@@ -237,7 +240,6 @@ const AdReporting = () => {
       dispatch(setIndexColumnList(checkedValues));
     }
   };
-
   // 拖拽 指标｜细分条件
   const onTableDrag = (oldIndex: number, newIndex: number, filterType: EFilterType) => {
     isNeedSave.current = true;
@@ -264,33 +266,25 @@ const AdReporting = () => {
     }
   }, [filterFieldList]);
 
-
-  return (
-    <div className={styles.adReportWrap}>
-      {contextHolder}
-      {contextMsgHolder}
-      <AdReportHeader
-        onChange={() => {
-          isNeedSave.current = true;
-        }}
-        adName={adName} onSave={onSave} onBackTo={onBackTo}/>
-      <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
-      <div className={styles.adReportMain}>
-        <div className={styles.adReportBox}>
-          <TableDrag
-            dataSource={showDetailedCondition ? dataSource : rows}
-            sumData={sumData}
-            total={pageInfo.total}
-            onMore={() => getMoreList()}
-            onDrag={onTableDrag}
-          />
-        </div>
-        <div className={styles.adReportRight}>
-          <AdReportRight onChange={onChange}/>
-        </div>
+  return <div className={styles.adReportWrap}>
+    {contextHolder}
+    {contextMsgHolder}
+    <AdReportHeader onChange={() => {isNeedSave.current = true;}} adName={adName} onSave={onSave} onBackTo={onBackTo}/>
+    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
+    <div className={styles.adReportMain}>
+      <div className={styles.adReportBox}>
+        <TableDrag
+          dataSource={dataSource}
+          sumData={sumData}
+          total={pageInfo.total}
+          onMore={() => getMoreList()}
+          onDrag={onTableDrag}/>
+      </div>
+      <div className={styles.adReportRight}>
+        <AdReportRight onChange={onChange}/>
       </div>
     </div>
-  );
+  </div>;
 };
 
 export default AdReporting;

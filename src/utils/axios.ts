@@ -36,7 +36,7 @@ const CancelToken = axios.CancelToken;
 const Service = axios.create({
   baseURL: '/hw-adserving',
   withCredentials: true,
-  timeout: 10000,
+  // timeout: 10000,
 } as CreateAxiosDefaults);
 
 export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {

@@ -12,7 +12,7 @@ const AdsReporting = () => {
   const navigate = useNavigate();
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [total, setTotal] = useState(0);
-  const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 30 });
+  const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 15 });
   const [rows, setRows] = useState<IAdsListItem[]>([]);
   const [loading, setLoading] = useState(true);
   // 创建报表

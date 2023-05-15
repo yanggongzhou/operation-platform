@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { Table, Tooltip, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
-import { debounce } from "throttle-debounce";
+import { debounce, throttle } from "throttle-debounce";
 import { ColumnsType } from "antd/es/table/interface";
 import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";
@@ -35,13 +35,13 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
   const [isFixed, setIsFixed] = useState(true); // 是否粘性布局
   const tableRef = useRef<HTMLTableElement | null>(null);
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
-  const tbodyOnscroll = debounce(500, (e: Event) => {
+  const tbodyOnscroll = throttle(300, (e: Event) => {
     const { scrollHeight = 0, scrollTop = 0, offsetHeight = 0 } = (e.target as HTMLDivElement) || {};
     if (scrollTop > scrollHeight - offsetHeight - 30) {
       console.log('==========距离底部距离低于 30===========>');
       onMore();
     }
-  }, { atBegin: true });
+  }, { noLeading: true });
 
   const [scrollY, setScrollY] = useState(300);
 
@@ -117,7 +117,6 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
   useEffect(() => {
     if (tableRef.current) {
       if (tableRef.current?.clientWidth) {
-        console.log('tableRef.current?.clientWidth/2', tableRef.current?.clientWidth/2, groupColumns.length * 120);
         if (tableRef.current?.clientWidth/2 < groupColumns.length * 120) {
           if (isFixed) {
             setIsFixed(false);
