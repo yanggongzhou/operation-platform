@@ -34,7 +34,7 @@ declare module 'axios' {
 const pending: PendingType[] = [];
 const CancelToken = axios.CancelToken;
 const Service = axios.create({
-  baseURL: '/api',
+  baseURL: '/hw-adserving',
   withCredentials: true,
   timeout: 10000,
 } as CreateAxiosDefaults);

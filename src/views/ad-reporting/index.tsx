@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import { debounce } from "throttle-debounce";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/views/ad-reporting/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
@@ -20,6 +21,8 @@ import { netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting
 import { INetDetailAd } from "@/service/index.interfaces";
 
 const AdReporting = () => {
+  const [modal, contextHolder] = Modal.useModal();
+  const [isPaintData, setIsPaintData] = useState(false); // 初次渲染数据
   const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
   const isNeedSave = useRef(false); // 是否需要保存
@@ -29,8 +32,9 @@ const AdReporting = () => {
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
   const [rows, setRows] = useState<IRecordsItem[]>([]);
   const [sumData, setSumData] = useState<IRecordsItem>({} as IRecordsItem);
-  const [pageNo, setPageNo] = useState(-1);
+  const [pageNo, setPageNo] = useState(0);
   const [pageInfo, setPageInfo] = useState({ total: 0, pages: 1 });
+  const adName = useAppSelector(state => state.app.detail.name ?? '');
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const bodyData = useAppSelector(state => {
     const data = JSON.parse(JSON.stringify(state.app.detail)) as INetDetailAd;
@@ -40,8 +44,7 @@ const AdReporting = () => {
   });
 
   useEffect(() => {
-    dispatch(baseInfoAsync());
-    dispatch(searchListAsync(routeParams.id as string));
+    initData();
     windowBack();
     return () => {
       if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
@@ -51,12 +54,16 @@ const AdReporting = () => {
       window.onpopstate = null;
     };
   }, []);
-
+  const initData = debounce(300, () => {
+    dispatch(baseInfoAsync());
+    dispatch(searchListAsync(routeParams.id as string));
+  }, { atBegin: true });
   // 保存挽留
   const windowBack = () => {
     window.onpopstate = function () {
       if (isNeedSave.current) {
-        messageApi.warning('提示保存');
+        // messageApi.warning('提示保存');
+        onSave(true);
         window.history.pushState('forward', '', '');
         window.history.forward();
       } else {
@@ -68,7 +75,6 @@ const AdReporting = () => {
     window.history.pushState('forward', '', '');
     window.history.forward();
   };
-
   // 报表详情(列表数据, 修改配置情况下)
   const getUnSaveList = debounce(500, async (page: number) => {
     isNeedSave.current = true;
@@ -111,7 +117,7 @@ const AdReporting = () => {
   const dataSource = useMemo(() => {
     if (rows.length > 0 && fieldNames.length > 0) {
       // 数据处理
-      const _rows = rows.map((item, ind) => {
+      return rows.map((item, ind) => {
         const val = Object.assign({}, item);
         const index = fieldNames.indexOf(val.groupByFields);
         for (let i = 0; i < fieldNames.length; i++) {
@@ -131,14 +137,13 @@ const AdReporting = () => {
         }
         return val;
       });
-      console.log('_rows====>', _rows);
-      return _rows;
     }
     return [];
   }, [rows, fieldNames]);
 
   // 报表详情(列表数据, 未修改配置情况下)
   const getList = debounce(300, async (page: number = 0) => {
+    setIsPaintData(true);
     dispatch(setTableLoading(true));
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
     if (page === 0) {
@@ -152,15 +157,36 @@ const AdReporting = () => {
   }, { atBegin: false });
 
   // 保存报表
-  const onSave = async () => {
-    console.log('保存报表', bodyData);
+  const onSave = (isBack?: boolean) => {
+    modal.confirm({
+      title: '保存报表',
+      direction: 'ltr',
+      icon: <ExclamationCircleOutlined />,
+      content: `确认保存「${adName}」？此操作无法撤销`,
+      okText: '确认',
+      cancelText: '取消',
+      okButtonProps: {
+        type: "primary",
+      },
+      onOk: () => handleSave(isBack),
+      onCancel: () => {
+        if (isBack) navigate('/adsReporting', { replace: true });
+      }
+    });
+  };
+
+  const handleSave = async (isBack?: boolean) => {
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
     messageApi.success('已保存');
-    getList();
+    if (isBack) {
+      navigate('/adsReporting', { replace: true });
+    } else { getList(); }
   };
+
   // 搜索
   const onSearch = () => {
+    isNeedSave.current = true;
     if (pageNo !== 0) {
       setPageNo(0);
     } else {
@@ -177,7 +203,6 @@ const AdReporting = () => {
       if (pageNo >= pageInfo.pages) {
         return messageApi.info('已加载全部数据');
       }
-      console.log("pageNo=================>:", pageNo);
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
       } else {
@@ -186,11 +211,10 @@ const AdReporting = () => {
     }
   }, [pageNo]);
 
-
   // 返回
   const onBackTo = () => {
     if (isNeedSave.current) {
-      messageApi.warning('提示保存');
+      onSave(true);
     } else {
       navigate('/adsReporting', { replace: true });
     }
@@ -241,9 +265,14 @@ const AdReporting = () => {
 
   return (
     <div className={styles.adReportWrap}>
+      {contextHolder}
       {contextMsgHolder}
-      <AdReportHeader onSave={onSave} onBackTo={onBackTo}/>
-      <AdReportSearch onSearch={onSearch}/>
+      <AdReportHeader
+        onChange={() => {
+          isNeedSave.current = true;
+        }}
+        adName={adName} onSave={onSave} onBackTo={onBackTo}/>
+      <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
       <div className={styles.adReportMain}>
         <div className={styles.adReportBox}>
           <TableDrag
