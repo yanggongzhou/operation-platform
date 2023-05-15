@@ -14,6 +14,7 @@ const AdsReporting = () => {
   const [total, setTotal] = useState(0);
   const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 30 });
   const [rows, setRows] = useState<IAdsListItem[]>([]);
+  const [loading, setLoading] = useState(true);
   // 创建报表
   const onCreate = async (name: string) => {
     await netAddAd(name);
@@ -36,10 +37,12 @@ const AdsReporting = () => {
   };
   // 获取报表列表
   const getList = debounce(300, async (pageData: { page: number; pageSize: number; }) => {
+    setLoading(true);
     setPageInfo({ ...pageData });
     const { total = 0, rows = [] } = await netAdsList(pageData.page, pageData.pageSize);
     setRows(rows);
     setTotal(total);
+    setLoading(false);
   }, { atBegin: true });
 
   return (
@@ -52,6 +55,7 @@ const AdsReporting = () => {
         </div>
         <div className={styles.adsBox}>
           <AdsReportingTable
+            loading={loading}
             pageData={pageInfo}
             dataSource={rows}
             total={total}

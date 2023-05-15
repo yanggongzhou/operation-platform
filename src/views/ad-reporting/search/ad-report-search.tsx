@@ -101,10 +101,12 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
       const list = fieldList.filter((_, ind) => ind !== index);
       setFieldList(list);
     }
+    setIsShowMenu(true);
   };
   // 取消组合条件
   const onCancelAll = () => {
     dispatch(setSearchFieldList([]));
+    setIsShowMenu(true);
   };
   // 数据透视
   const onShowDetailedCondition = (checked: boolean) => {

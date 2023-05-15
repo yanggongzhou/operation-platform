@@ -92,7 +92,7 @@ const SearchPop: FC<IProps> = (
         open={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <div className={styles.popName} onClick={() => setIsOpen(true)}>
+        <div className={isOpen ? styles.popNameActive : styles.popName} onClick={() => setIsOpen(true)}>
           <Space size={8}>
             <span>{NGroupField[fieldItem.fieldName]}</span>
             <span>{fieldItem.operator === EOperator.In ? '是' : '非'}</span>

@@ -6,6 +6,7 @@ import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
 import styles from '@/views/ads-reporting/index.module.scss';
 
 interface IProps {
+  loading: boolean;
   pageData: { page: number; pageSize: number; }
   dataSource: IAdsListItem[];
   total: number;
@@ -15,7 +16,7 @@ interface IProps {
   onDeleteAd: (id: string) => void;
 }
 
-const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, onDeleteAd, onCheck, pageData }) => {
+const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, getList, onDeleteAd, onCheck, pageData }) => {
   const [modal, contextHolder] = Modal.useModal();
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [pageInfo, setPageInfo] = useState({
@@ -58,7 +59,6 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   // 复制
   const handleCopy = (record: IAdsListItem, e: any) => {
     e.stopPropagation();
-    console.log('record.name', record.name);
     setAdName(record.name + '副本');
     setCopyVisible(true);
     setDetail(Object.assign({}, record));
@@ -90,6 +90,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   return (
     <>
       <Table<IAdsListItem>
+        loading={loading}
         className={styles.adsReportingTable}
         bordered
         rowKey={'id'}

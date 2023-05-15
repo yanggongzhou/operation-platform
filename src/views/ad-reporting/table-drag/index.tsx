@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { Table, Tooltip, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
@@ -32,6 +32,7 @@ export interface IColItem {
 
 export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore, onDrag }) => {
   const loading = useAppSelector(state => state.app.loading);
+  const [isFixed, setIsFixed] = useState(true); // 是否粘性布局
   const tableRef = useRef<HTMLTableElement | null>(null);
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const tbodyOnscroll = debounce(500, (e: Event) => {
@@ -76,7 +77,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         dataIndex: field,
         key: field,
         width: 120,
-        fixed: 'left',
+        fixed: isFixed ? 'left' : undefined,
         onCell: (record: IRecordsItem, index: number) => {
           if (showDetailedCondition) {
             const groupByFieldsArr = record.groupByFields.split(',');
@@ -112,6 +113,24 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
       };
     }) as IColItem[];
   });
+
+  useEffect(() => {
+    if (tableRef.current) {
+      if (tableRef.current?.clientWidth) {
+        console.log('tableRef.current?.clientWidth/2', tableRef.current?.clientWidth/2, groupColumns.length * 120);
+        if (tableRef.current?.clientWidth/2 < groupColumns.length * 120) {
+          if (isFixed) {
+            setIsFixed(false);
+          }
+        } else {
+          if (!isFixed) {
+            setIsFixed(true);
+          }
+        }
+      }
+    }
+  }, [groupColumns.length]);
+
 
   const targetColumns = useAppSelector(state => {
     const indexColumnList = state.app.detail.structure.indexColumnList;
@@ -149,10 +168,6 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
     });
   });
 
-  const columns = useMemo(() => {
-    return [...groupColumns, ...targetColumns];
-  }, [groupColumns, targetColumns]);
-
   return (
     <Table
       className={styles.tableBox}
@@ -165,6 +180,8 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
                 getContainer={() => {
                   return document.querySelector('.ant-table-thead') as HTMLElement;
                 }}
+                isGroup={true}
+                isSort={!isFixed}
                 columns={groupColumns}
                 onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Group)}/>
               <TableDragHeader
@@ -184,27 +201,31 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
       loading={loading}
       pagination={false}
       bordered
-      columns={columns as ColumnsType<IRecordsItem>}
+      columns={[...groupColumns, ...targetColumns] as ColumnsType<IRecordsItem>}
       dataSource={dataSource}
       summary={() => (
         <Table.Summary fixed>
-          <Table.Summary.Row>
-            <Table.Summary.Cell className={styles.summaryTotal} index={0} colSpan={groupColumns.length}>
-              <Text strong>{total}</Text>
-              <br/>
-              <Text type={'secondary'}>总行数</Text>
-            </Table.Summary.Cell>
-            {targetSum.map(tar => {
-              return <Table.Summary.Cell key={tar.key} index={groupColumns.length}>
-                <div>
-                  <Text strong>{tar.sum}</Text>
-                  <br/>
-                  <Text type={'secondary'}>{tar.label}</Text>
-                </div>
-                {/*'secondary' | 'success' | 'warning' | 'danger';*/}
-              </Table.Summary.Cell>;
-            })}
-          </Table.Summary.Row>
+          {(groupColumns.length > 0 || targetSum.length > 0) ?
+            <Table.Summary.Row>
+              <Table.Summary.Cell className={styles.summaryTotal} index={0} colSpan={groupColumns.length}>
+                <Text strong>{total}</Text>
+                <br/>
+                <Text type={'secondary'}>总行数</Text>
+              </Table.Summary.Cell>
+              {targetSum.map(tar => {
+                return <Table.Summary.Cell key={tar.key} index={groupColumns.length}>
+                  <div>
+                    <Text strong>{tar.sum}</Text>
+                    <br/>
+                    <Text type={'secondary'}>{tar.label}</Text>
+                  </div>
+                  {/*'secondary' | 'success' | 'warning' | 'danger';*/}
+                </Table.Summary.Cell>;
+              })}
+            </Table.Summary.Row>
+            : null
+          }
+
         </Table.Summary>
       )}
     />
