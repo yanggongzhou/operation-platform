@@ -39,11 +39,11 @@
 .popShowBox {
   height: 30px;
 
-  .popName {
+  .popName, .popNameActive{
     border-left: 1px solid;
     border-top: 1px solid;
     border-bottom: 1px solid;
-    border-color: #00000019;
+    border-color: #00000019 !important;
     padding: 0 10px;
     border-radius: 3px 0 0 3px;
     font-size: 12px;
@@ -54,7 +54,7 @@
     transition: border-color 0.3s;
 
     &:hover {
-      border-color: #b9b9b9;
+      border-color: #b9b9b9 !important;
       //background-color: rgba(0,0,0,0.1);;
     }
     .popTagBox {
@@ -72,6 +72,9 @@
         margin: 0;
       }
     }
+  }
+  .popNameActive {
+    border-color: #1ab394 !important;
   }
   .popCancel {
     border-radius: 0 3px 3px 0;

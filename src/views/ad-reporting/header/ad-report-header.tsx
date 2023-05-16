@@ -6,25 +6,27 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { setAdName } from "@/store/modules/app.module";
 
 interface IProps {
+  adName: string;
   onSave: () => void;
   onBackTo: () => void;
+  onChange: () => void;
 }
 
-const AdReportHeader: FC<IProps> = ({ onSave, onBackTo }) => {
-  const adName = useAppSelector(state => state.app.detail.name ?? '');
+const AdReportHeader: FC<IProps> = ({ adName = '', onSave, onBackTo, onChange }) => {
   const updateTime = useAppSelector(state => state.app.detail?.updateTime ?? '-');
   const dispatch = useAppDispatch();
   const [isFocus, setIsFocus] = useState(false);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setAdName(e.target.value));
+    onChange();
   };
 
   return (
     <div className={styles.adHeaderBox}>
       <Space.Compact className={styles.adHeaderLeft}>
         <Button type="text" icon={<LeftOutlined/>} onClick={() => onBackTo()}>所有报告</Button>
-        <Tooltip placement="bottom" title={adName}>
+        <Tooltip placement="bottom" arrow={false} title={adName} color={'grey'}>
           <Input
             style={{ marginLeft: '20px' }}
             // bordered={false}

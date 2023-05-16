@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { debounce } from "throttle-debounce";
 import styles from "@/views/ads-reporting/index.module.scss";
 import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
 import AdsReportingTable from "@/views/ads-reporting/components/ads-reporting-table";
@@ -13,37 +14,36 @@ const AdsReporting = () => {
   const [total, setTotal] = useState(0);
   const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 30 });
   const [rows, setRows] = useState<IAdsListItem[]>([]);
+  const [loading, setLoading] = useState(true);
   // 创建报表
   const onCreate = async (name: string) => {
     await netAddAd(name);
-    console.log('创建报表', name);
     await getList(pageInfo);
   };
   // 复制报表
   const onCopyAd = async (detail: IAdsListItem, name: string) => {
     await netCopyAd(detail.id, name);
-    messageApi.success(`复制成功: ${name}`);
     await getList(pageInfo);
   };
   // 删除报表
-  const onDeleteAd = async (id: string) => {
+  const onDeleteAd = async (id: string, name: string) => {
     await netDeleteAd([id]);
-    console.log('删除报表：', id);
+    messageApi.info(`已删除「${name}」报告。`);
     await getList(pageInfo);
   };
   // 查看报表
   const onCheck = (detail: IAdsListItem) => {
-    console.log('查看报表：', detail);
     navigate(`/adReporting/${detail.id}`);
   };
   // 获取报表列表
-  const getList = async (pageData: { page: number; pageSize: number; }) => {
+  const getList = debounce(300, async (pageData: { page: number; pageSize: number; }) => {
+    setLoading(true);
     setPageInfo({ ...pageData });
     const { total = 0, rows = [] } = await netAdsList(pageData.page, pageData.pageSize);
-    console.log('获取报表列表:', pageData.page, pageData.pageSize, total, rows);
     setRows(rows);
     setTotal(total);
-  };
+    setLoading(false);
+  }, { atBegin: true });
 
   return (
     <div className={styles.adsReportingWrap}>
@@ -55,6 +55,7 @@ const AdsReporting = () => {
         </div>
         <div className={styles.adsBox}>
           <AdsReportingTable
+            loading={loading}
             pageData={pageInfo}
             dataSource={rows}
             total={total}

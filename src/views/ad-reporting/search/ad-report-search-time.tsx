@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC } from "react";
 import { DatePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
@@ -23,11 +23,6 @@ const AdReportSearchTime: FC<IProps> = ({ onSearch }) => {
     const e = startDate ? dayjs(endDate) : null;
     return (s || e) ? [s, e] : null;
   });
-
-  const [rangeDates, setRangeDates] = useState<RangeValue>(null);
-  useCallback(() => {
-    setRangeDates(dates);
-  }, [dates]);
 
   // 利用防抖延迟修改formRelatedDynamicDate, 改动时切记数据变化
   const onPresetsLabelClick = debounce(500,(title: string) => {
@@ -68,18 +63,14 @@ const AdReportSearchTime: FC<IProps> = ({ onSearch }) => {
   };
   // 限制动态的日期区间选择
   const disabledDate = (current: Dayjs) => {
-    const range = current.isAfter(dayjs(), 'days');
-    if (!rangeDates || (!rangeDates[0] && !rangeDates[1])) {
-      return range;
-    }
-    const tooLate = rangeDates && rangeDates?.[0] && current.diff(rangeDates[0], 'days') >= 15;
-    const tooEarly = rangeDates && rangeDates?.[1] && (dayjs(rangeDates[1])).diff(current, 'days') >= 15;
-    return range || !!tooEarly || !!tooLate;
-  };
-
-  // 待选日期发生变化的回调
-  const onDateChange = (dates: RangeValue) => {
-    setRangeDates(dates);
+    return current.isAfter(dayjs(), 'days');
+    // const range = current.isAfter(dayjs(), 'days');
+    // if (!rangeDates || (!rangeDates[0] && !rangeDates[1])) {
+    //   return range;
+    // }
+    // const tooLate = rangeDates && rangeDates?.[0] && current.diff(rangeDates[0], 'days') >= 15;
+    // const tooEarly = rangeDates && rangeDates?.[1] && (dayjs(rangeDates[1])).diff(current, 'days') >= 15;
+    // return range || !!tooEarly || !!tooLate;
   };
 
   return (
@@ -88,7 +79,6 @@ const AdReportSearchTime: FC<IProps> = ({ onSearch }) => {
       popupClassName={styles.searchTimePopBox}
       presets={rangePresets}
       format={'YYYY-MM-DD'}
-      onCalendarChange={onDateChange}
       onChange={onRangeChange}
       disabledDate={disabledDate}
     />

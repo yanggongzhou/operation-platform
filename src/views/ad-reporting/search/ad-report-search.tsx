@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, Select, Space, Switch, Tooltip } from "antd";
+import { Button, message, Select, Space, Switch, Tooltip } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
@@ -20,14 +20,20 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { setCostType, setSearchFieldList, setShowDetailedCondition } from "@/store/modules/app.module";
 
 interface IProps {
+  isPaintData: boolean;
   onSearch: () => void;
 }
 
-const AdReportSearch: FC<IProps> = ({ onSearch }) => {
+const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
+  const [messageApi, contextMsgHolder] = message.useMessage();
   const [fieldList, setFieldList] = useState<IFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const searchFieldList = useAppSelector(state => state.app.detail.structure.searchFieldList || []);
+  const startDate = useAppSelector(state => state.app.detail.structure.startDate);
+  const endDate = useAppSelector(state => state.app.detail.structure.endDate);
+  const formRelatedDynamicDate = useAppSelector(state => state.app.detail.structure.formRelatedDynamicDate);
+
   const [isShowMenu, setIsShowMenu] = useState(true);
   useEffect(() => {
     setFieldList(searchFieldList);
@@ -47,9 +53,15 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   };
 
   useEffect(() => {
-    setIsShowMenu(true);
-    onSearch();
-  }, [searchFieldList, costType, showDetailedCondition]);
+    if (isPaintData) {
+      setIsShowMenu(true);
+      if ((startDate && endDate) || formRelatedDynamicDate) {
+        onSearch();
+      } else {
+        messageApi.warning('请选择时间范围');
+      }
+    }
+  }, [searchFieldList, costType, showDetailedCondition, startDate, endDate, formRelatedDynamicDate]);
 
   // 消耗过滤
   const consumeSearch = (value: EConsume) => {
@@ -59,8 +71,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
   // 日期范围搜索
   const onTimeSearch = (startDate: string, endDate: string) => {
     console.log('日期范围搜索 From: ', startDate, ', to: ', endDate);
-    onSearch();
-    setIsShowMenu(true);
   };
   // 筛选类型
   const onChoose = (field: EGroupField) => {
@@ -96,10 +106,12 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
       const list = fieldList.filter((_, ind) => ind !== index);
       setFieldList(list);
     }
+    setIsShowMenu(true);
   };
   // 取消组合条件
   const onCancelAll = () => {
     dispatch(setSearchFieldList([]));
+    setIsShowMenu(true);
   };
   // 数据透视
   const onShowDetailedCondition = (checked: boolean) => {
@@ -108,6 +120,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
 
   return (
     <div className={styles.adSearchWrap}>
+      {contextMsgHolder}
       <div className={styles.adSearchTop}>
         <div className={styles.topDetail}>
           {fieldList.map((fieldItem, index) => {
@@ -136,7 +149,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch }) => {
           {isShowMenu ? <SearchMenu onChoose={onChoose}/> : null}
         </div>
         <Tooltip color={'grey'} placement="top" title={'清除组合条件'} arrow={false}>
-          <Button type="link" size="small" onClick={onCancelAll}>清除</Button>
+          <Button type="link" size="small" danger onClick={onCancelAll}>清除</Button>
         </Tooltip>
       </div>
       <div className={styles.adSearchBottom}>

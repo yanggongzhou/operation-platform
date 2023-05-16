@@ -24,13 +24,14 @@ const SortableItem: React.ComponentClass<IItemProps> = SortableElement(({ name, 
 interface IProps extends SortableContainerProps {
   columns: IColItem[];
   isSort?: boolean;
+  isGroup?: boolean;
 }
 
 export const SortableList: React.ComponentClass<IProps> = SortableContainer((props: IProps) => (
   <>
     {props.columns.map((val, ind) => {
       return <SortableItem
-        isGroupLast={ind === props.columns.length - 1 && !props.isSort}
+        isGroupLast={props.isGroup && ind === props.columns.length - 1}
         key={val.dataIndex}
         name={val.title}
         isSort={props.isSort}

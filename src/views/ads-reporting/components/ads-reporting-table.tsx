@@ -1,21 +1,22 @@
 import React, { FC, useEffect, useState } from "react";
 import { CopyOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import { Button, Input, message, Modal, Space, Table } from "antd";
+import { Button, Input, message, Modal, Space, Table, Tooltip } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { IAdsListItem } from "@/views/ads-reporting/index.interfaces";
 import styles from '@/views/ads-reporting/index.module.scss';
 
 interface IProps {
+  loading: boolean;
   pageData: { page: number; pageSize: number; }
   dataSource: IAdsListItem[];
   total: number;
   onCopyAd: (detail: IAdsListItem, name: string) => void;
   onCheck: (detail: IAdsListItem) => void;
   getList: (pageInfo: { page: number; pageSize: number; }) => void;
-  onDeleteAd: (id: string) => void;
+  onDeleteAd: (id: string, name: string) => void;
 }
 
-const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, onDeleteAd, onCheck, pageData }) => {
+const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, getList, onDeleteAd, onCheck, pageData }) => {
   const [modal, contextHolder] = Modal.useModal();
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [pageInfo, setPageInfo] = useState({
@@ -30,9 +31,17 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   }, [pageInfo]);
 
   const columns = [
-    { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name' },
-    { title: '编辑时间', align: 'center', dataIndex: 'updateTime', key: 'updateTime' },
-    { title: '创建时间', align: 'center', dataIndex: 'createTime', key: 'createTime' },
+    { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name', width: 200,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (name) => (
+        <Tooltip arrow={false} color={'grey'} placement="topLeft" title={name}>
+          {name}
+        </Tooltip>
+      ), },
+    { title: '编辑时间', align: 'center', dataIndex: 'updateTime', key: 'updateTime', width: 200 },
+    { title: '创建时间', align: 'center', dataIndex: 'createTime', key: 'createTime', width: 200 },
     { title: '操作', width: 200, align: 'center', key: 'operation', render: (value: any, record: IAdsListItem) => (
       <Space size="small">
         <Button
@@ -58,7 +67,6 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   // 复制
   const handleCopy = (record: IAdsListItem, e: any) => {
     e.stopPropagation();
-    console.log('record.name', record.name);
     setAdName(record.name + '副本');
     setCopyVisible(true);
     setDetail(Object.assign({}, record));
@@ -68,6 +76,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   const handleDelete = (record: IAdsListItem, e: any) => {
     e.stopPropagation();
     modal.confirm({
+      bodyStyle: { padding: 20 },
       title: '删除报表',
       icon: <ExclamationCircleOutlined />,
       content: `确认删除「${record.name}」？此操作无法撤销`,
@@ -77,7 +86,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
         type: "primary",
         danger: true,
       },
-      onOk: () => onDeleteAd(record.id)
+      onOk: () => onDeleteAd(record.id, record.name)
     });
     console.log('删除');
   };
@@ -90,8 +99,9 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
   return (
     <>
       <Table<IAdsListItem>
+        loading={loading}
         className={styles.adsReportingTable}
-        scroll={{ y: 600}}
+        scroll={{ y: 600 }}
         bordered
         rowKey={'id'}
         size={'small'}
@@ -103,7 +113,7 @@ const AdsReportingTable: FC<IProps> = ({ dataSource, total, onCopyAd, getList, o
           };
         }}
         pagination={{
-          position: ['bottomCenter'],
+          position: ['bottomRight'],
           defaultCurrent: 1,
           defaultPageSize: 30,
           pageSize: pageInfo.pageSize,
