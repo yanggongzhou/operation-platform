@@ -12,7 +12,7 @@ const AdsReporting = () => {
   const navigate = useNavigate();
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [total, setTotal] = useState(0);
-  const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 15 });
+  const [pageInfo, setPageInfo] = useState({ page: 0, pageSize: 30 });
   const [rows, setRows] = useState<IAdsListItem[]>([]);
   const [loading, setLoading] = useState(true);
   // 创建报表
@@ -23,12 +23,12 @@ const AdsReporting = () => {
   // 复制报表
   const onCopyAd = async (detail: IAdsListItem, name: string) => {
     await netCopyAd(detail.id, name);
-    messageApi.success(`复制成功: ${name}`);
     await getList(pageInfo);
   };
   // 删除报表
-  const onDeleteAd = async (id: string) => {
+  const onDeleteAd = async (id: string, name: string) => {
     await netDeleteAd([id]);
+    messageApi.info(`已删除「${name}」报告。`);
     await getList(pageInfo);
   };
   // 查看报表

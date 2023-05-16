@@ -26,7 +26,7 @@ const AdReportHeader: FC<IProps> = ({ adName = '', onSave, onBackTo, onChange })
     <div className={styles.adHeaderBox}>
       <Space.Compact className={styles.adHeaderLeft}>
         <Button type="text" icon={<LeftOutlined/>} onClick={() => onBackTo()}>所有报告</Button>
-        <Tooltip placement="bottom" title={adName}>
+        <Tooltip placement="bottom" arrow={false} title={adName} color={'grey'}>
           <Input
             style={{ marginLeft: '20px' }}
             // bordered={false}

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { message, Modal } from "antd";
+import { Button, message, Modal, Space } from "antd";
 import { debounce } from "throttle-debounce";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
@@ -171,20 +171,20 @@ const AdReporting = () => {
 
   // 保存报表
   const onSave = (isBack?: boolean) => {
-    modal.confirm({
-      title: '保存报表',
-      direction: 'ltr',
-      icon: <ExclamationCircleOutlined />,
-      content: `确认保存「${adName}」？此操作无法撤销`,
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => handleSave(isBack),
-      onCancel: () => {
-        if (isBack) navigate('/adsReporting', { replace: true });
-      }
-    });
+    if (!isBack) {
+      modal.confirm({ bodyStyle: { padding: 20 }, title: '保存报表', direction: 'ltr', icon: <ExclamationCircleOutlined />, content: `确认保存「${adName}」？原数据将被覆盖，无法撤销`, okText: '确认', cancelText: '取消', onOk: () => handleSave() });
+    } else { // 修改未保存
+      const modala =  modal.confirm({ bodyStyle: {padding: 20}, title: '修改未保存报表', direction: 'ltr', icon: <ExclamationCircleOutlined />, content: `要保存对「${adName}」的修改吗`,
+        footer: <div style={{ display: "flex", justifyContent: "space-between", padding: '10px 0 0 35px' }}>
+          <Button type="primary" onClick={() => navigate('/adsReporting', { replace: true }) }>不保存</Button>
+          <Space>
+            <Button onClick={() => modala.destroy()}>取消</Button>
+            <Button type="primary" onClick={() => handleSave(isBack)}>保存</Button>
+          </Space>
+        </div>,
+      });
+    }
   };
-
   const handleSave = async (isBack?: boolean) => {
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
