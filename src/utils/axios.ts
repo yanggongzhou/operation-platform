@@ -3,7 +3,7 @@ import axios, {
   AxiosResponse,
   AxiosError,
   AxiosPromise,
-  InternalAxiosRequestConfig, CreateAxiosDefaults
+  InternalAxiosRequestConfig, CreateAxiosDefaults, Canceler
 } from 'axios';
 import { notification } from "antd";
 import { Store } from "redux";
@@ -18,7 +18,7 @@ interface PendingType {
   method?: Method | string;
   params: any;
   data: any;
-  cancel: () => void;
+  cancel: Canceler;
 }
 
 declare module 'axios' {
@@ -62,14 +62,21 @@ export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {
 Service.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     Reflect.set(request.headers, 'userToken', getToken() || '');
-    request.cancelToken = new CancelToken((c: any) => {
-      pending.push({
+    request.cancelToken = new CancelToken((c: Canceler) => {
+      const item = {
         url: request.url,
         method: request.method,
         params: request.params,
         data: request.data,
         cancel: c
-      });
+      };
+      const itemIndex = pending.findIndex(val => val.url === request.url);
+      if (itemIndex !== -1) {
+        pending[itemIndex].cancel();
+        pending.splice(itemIndex, 1, item);
+      } else {
+        pending.push(item);
+      }
     });
     return request;
   },
@@ -101,6 +108,10 @@ Service.interceptors.response.use(
     }
   },
   (err: AxiosError): any => {
+    if (err?.code === "ERR_CANCELED") {
+      // 请求取消
+      return;
+    }
     console.log('axios err--------------------------->', err);
     const navigator = window.navigator;
     if (!navigator.onLine) {

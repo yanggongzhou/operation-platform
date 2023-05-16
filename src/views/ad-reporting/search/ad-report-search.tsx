@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, Select, Space, Switch, Tooltip } from "antd";
+import { Button, message, Select, Space, Switch, Tooltip } from "antd";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
@@ -25,6 +25,7 @@ interface IProps {
 }
 
 const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
+  const [messageApi, contextMsgHolder] = message.useMessage();
   const [fieldList, setFieldList] = useState<IFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
@@ -54,7 +55,11 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
   useEffect(() => {
     if (isPaintData) {
       setIsShowMenu(true);
-      onSearch();
+      if ((startDate && endDate) || formRelatedDynamicDate) {
+        onSearch();
+      } else {
+        messageApi.warning('请选择时间范围');
+      }
     }
   }, [searchFieldList, costType, showDetailedCondition, startDate, endDate, formRelatedDynamicDate]);
 
@@ -115,6 +120,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
 
   return (
     <div className={styles.adSearchWrap}>
+      {contextMsgHolder}
       <div className={styles.adSearchTop}>
         <div className={styles.topDetail}>
           {fieldList.map((fieldItem, index) => {

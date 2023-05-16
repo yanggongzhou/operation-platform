@@ -76,6 +76,9 @@ const AdReporting = () => {
   const getUnSaveList = debounce(500, async (page: number) => {
     isNeedSave.current = true;
     dispatch(setTableLoading(true));
+    if (page === 0) {
+      setRows([]);
+    }
     const { records = [], total = 0, sumData, pages = 1 } = await netListAd(bodyData, page);
     if (page === 0) {
       setRows(records);
@@ -149,6 +152,9 @@ const AdReporting = () => {
   const getList = debounce(300, async (page: number = 0) => {
     setIsPaintData(true);
     dispatch(setTableLoading(true));
+    if (page === 0) {
+      setRows([]);
+    }
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
     if (page === 0) {
       setRows(records);
@@ -206,7 +212,7 @@ const AdReporting = () => {
   useEffect(() => {
     if (pageNo >= 0) {
       if (pageNo >= pageInfo.pages) {
-        return messageApi.info('已加载全部数据');
+        return;
       }
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
