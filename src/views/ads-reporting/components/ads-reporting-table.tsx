@@ -31,7 +31,7 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
   }, [pageInfo]);
 
   const columns = [
-    { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name', width: 200,
+    { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name',
       ellipsis: {
         showTitle: false,
       },

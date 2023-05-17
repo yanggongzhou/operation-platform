@@ -17,13 +17,13 @@ const AdsReporting = () => {
   const [loading, setLoading] = useState(true);
   // 创建报表
   const onCreate = async (name: string) => {
-    await netAddAd(name);
-    await getList(pageInfo);
+    const data = await netAddAd(name);
+    if (data) navigate(`/adReporting/${data}`);
   };
   // 复制报表
   const onCopyAd = async (detail: IAdsListItem, name: string) => {
-    await netCopyAd(detail.id, name);
-    await getList(pageInfo);
+    const data = await netCopyAd(detail.id, name);
+    if (data) navigate(`/adReporting/${data}`);
   };
   // 删除报表
   const onDeleteAd = async (id: string, name: string) => {
