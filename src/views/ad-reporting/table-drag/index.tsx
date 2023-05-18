@@ -163,7 +163,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
     const targetData = state.app.searchList.target;
     return indexColumnList.map(val => {
       const targetItem = targetData.find(item => item.field === val) || { text: '-', filed: '-' };
-      return { key: val, label: targetItem.text, sum: sumData?.[val] ?? '-' };
+      return { key: val, label: targetItem.text, sum: sumData?.[val] || '-' };
     });
   });
 
