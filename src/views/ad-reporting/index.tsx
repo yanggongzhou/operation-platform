@@ -91,7 +91,7 @@ const AdReporting = () => {
     setSumData(sumData);
     setPageInfo({ total, pages });
     dispatch(setTableLoading(false));
-  }, { atBegin: true });
+  }, { atBegin: false });
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
   const fieldNames = useMemo(() => {
     const _fieldNames: string[] = [];

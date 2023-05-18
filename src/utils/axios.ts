@@ -61,7 +61,6 @@ export const initAxios = (store: Store<AppState>, navigate: HashHistory) => {
 // 添加请求拦截器
 Service.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
-    Reflect.set(request.headers, 'userToken', getToken() || '');
     request.cancelToken = new CancelToken((c: Canceler) => {
       const item = {
         url: request.url,
@@ -70,7 +69,10 @@ Service.interceptors.request.use(
         data: request.data,
         cancel: c
       };
+
       const itemIndex = pending.findIndex(val => val.url === request.url);
+      console.log('request.url:', itemIndex);
+
       if (itemIndex !== -1) {
         pending[itemIndex].cancel();
         pending.splice(itemIndex, 1, item);

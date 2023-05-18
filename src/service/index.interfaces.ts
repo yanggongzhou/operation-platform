@@ -49,10 +49,10 @@ export interface INetDetailAd {
 
 export enum EFormRelatedDynamicDate {
   normal = '',
-  today = '0',
-  lastDay = '-1',
-  lastSeven = '-7',
-  lastFourteen = '-14',
+  today = 0,
+  lastDay = -1,
+  lastSeven = -7,
+  lastFourteen = -14,
 }
 
 export interface INetDetailListAd {

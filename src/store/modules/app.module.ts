@@ -75,7 +75,7 @@ export const appSlice = createSlice({
     setRangeDate: (state: IAppStore, action: PayloadAction<string[] | undefined>) => {
       state.detail.structure.startDate = action.payload ? action.payload[0] : '';
       state.detail.structure.endDate = action.payload ? action.payload[1] : '';
-      state.detail.structure.formRelatedDynamicDate = EFormRelatedDynamicDate.normal;
+      // state.detail.structure.formRelatedDynamicDate = EFormRelatedDynamicDate.normal;
     },
     setFormRelatedDynamicDate: (state: IAppStore, action: PayloadAction<EFormRelatedDynamicDate>) => {
       state.detail.structure.formRelatedDynamicDate = action.payload;

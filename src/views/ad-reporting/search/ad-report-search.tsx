@@ -55,22 +55,18 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
   useEffect(() => {
     if (isPaintData) {
       setIsShowMenu(true);
-      if ((startDate && endDate) || formRelatedDynamicDate) {
+      if (startDate && endDate) {
         onSearch();
       } else {
         messageApi.warning('请选择时间范围');
       }
     }
-  }, [searchFieldList, costType, showDetailedCondition, startDate, endDate, formRelatedDynamicDate]);
+  }, [searchFieldList, costType, showDetailedCondition, startDate, endDate]);
 
   // 消耗过滤
   const consumeSearch = (value: EConsume) => {
     dispatch(setCostType(value));
 
-  };
-  // 日期范围搜索
-  const onTimeSearch = (startDate: string, endDate: string) => {
-    console.log('日期范围搜索 From: ', startDate, ', to: ', endDate);
   };
   // 筛选类型
   const onChoose = (field: EGroupField) => {
@@ -164,7 +160,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
         </Space.Compact>
         <Space.Compact className={styles.timeRange}>
           <div className={styles.adSearchBottomLabel}>时间范围: </div>
-          <AdReportSearchTime onSearch={onTimeSearch}/>
+          <AdReportSearchTime formRelatedDynamicDate={formRelatedDynamicDate}/>
         </Space.Compact>
         <Switch
           checkedChildren="数据透视"
