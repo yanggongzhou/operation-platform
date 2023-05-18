@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { Table, Tooltip, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
-import { debounce, throttle } from "throttle-debounce";
+import { throttle } from "throttle-debounce";
 import { ColumnsType } from "antd/es/table/interface";
 import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";

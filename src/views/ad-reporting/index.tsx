@@ -10,14 +10,14 @@ import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 import { store, useAppDispatch, useAppSelector } from "@/store";
 import {
   baseInfoAsync,
-  searchListAsync,
+  searchListAsync, setDetail,
   setFilterFieldList,
   setIndexColumnList,
   setTableLoading
 } from "@/store/modules/app.module";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
-import { netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
+import { netDetailAd, netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
 import { INetDetailAd } from "@/service/index.interfaces";
 
 const AdReporting = () => {
@@ -26,7 +26,6 @@ const AdReporting = () => {
   const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
   const isNeedSave = useRef(false); // 是否需要保存
-  const isPaint = useRef(true);
   const dispatch = useAppDispatch();
   const routeParams = useParams();
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
@@ -40,38 +39,17 @@ const AdReporting = () => {
     const data = JSON.parse(JSON.stringify(state.app.detail)) as INetDetailAd;
     Reflect.deleteProperty(data, 'updateTime');
     Reflect.deleteProperty(data, 'createTime');
+    Reflect.deleteProperty(data, 'dataUpdateTime');
     return data;
   });
   useEffect(() => {
     initData();
-    windowBack();
-    return () => {
-      if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
-        isPaint.current = false;
-        return;
-      }
-      window.onpopstate = null;
-    };
   }, []);
   const initData = debounce(300, () => {
     dispatch(baseInfoAsync());
     dispatch(searchListAsync(routeParams.id as string));
   }, { atBegin: true });
-  // 保存挽留
-  const windowBack = () => {
-    window.onpopstate = function () {
-      if (isNeedSave.current) {
-        onSave(true);
-        window.history.pushState('forward', '', '');
-        window.history.forward();
-      } else {
-        // window.onpopstate = null; window.history.go(-2);
-        navigate('/adsReporting', { replace: true });
-      }
-    };
-    window.history.pushState('forward', '', '');
-    window.history.forward();
-  };
+
   // 报表详情(列表数据, 修改配置情况下)
   const getUnSaveList = debounce(500, async (page: number) => {
     isNeedSave.current = true;
@@ -186,12 +164,17 @@ const AdReporting = () => {
     }
   };
   const handleSave = async (isBack?: boolean) => {
+    setIsPaintData(false);
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
     messageApi.success('已保存');
     if (isBack) {
       navigate('/adsReporting', { replace: true });
-    } else { getList(); }
+    } else {
+      const detail = await netDetailAd(store.getState().app.detail.id);
+      dispatch(setDetail(detail));
+      getList();
+    }
   };
 
   // 搜索
@@ -211,9 +194,7 @@ const AdReporting = () => {
 
   useEffect(() => {
     if (pageNo >= 0) {
-      if (pageNo >= pageInfo.pages) {
-        return;
-      }
+      if (pageNo >= pageInfo.pages) return;
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
       } else {

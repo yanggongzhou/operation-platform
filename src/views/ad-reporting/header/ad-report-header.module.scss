@@ -10,27 +10,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-
-    .adHeaderInputFocus, .adHeaderInput {
-      border-radius: 3px 0 0 3px;
-      margin: 0 0 0 10px !important;
-      font-weight: 700 !important;
-      font-size: 18px !important;
-      background-color: #FFFFFF;
-      box-shadow: 0 0 0 2px #1E90FFFF;
-      padding: 0 10px;
-    }
-
-    .adHeaderInput {
-      background-color: transparent;
-      box-shadow: none;
-
-      &:hover {
-        box-shadow: 0 0 0 2px grey;
-        background-color: #FFFFFF;
-      }
-    }
-
   }
 
   .adHeaderRight {

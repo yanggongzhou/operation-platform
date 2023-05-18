@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button, Input, Space, Tooltip } from "antd";
 import { LeftOutlined, SaveOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/header/ad-report-header.module.scss";
@@ -13,9 +13,8 @@ interface IProps {
 }
 
 const AdReportHeader: FC<IProps> = ({ adName = '', onSave, onBackTo, onChange }) => {
-  const updateTime = useAppSelector(state => state.app.detail?.updateTime ?? '-');
+  const dataUpdateTime = useAppSelector(state => state.app.detail?.dataUpdateTime ?? '-');
   const dispatch = useAppDispatch();
-  const [isFocus, setIsFocus] = useState(false);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setAdName(e.target.value));
@@ -29,20 +28,16 @@ const AdReportHeader: FC<IProps> = ({ adName = '', onSave, onBackTo, onChange })
         <Tooltip placement="bottom" arrow={false} title={adName} color={'grey'}>
           <Input
             style={{ marginLeft: '20px' }}
-            // bordered={false}
-            // className={isFocus ? styles.adHeaderInputFocus : styles.adHeaderInput}
             value={adName}
             showCount={false}
             maxLength={100}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
             onChange={(e) => onInputChange(e)}/>
         </Tooltip>
         <Button type={'primary'} icon={<SaveOutlined/>} onClick={() => onSave()}>保存</Button>
       </Space.Compact>
 
       <div className={styles.adHeaderRight}>
-        <div className={styles.adHeaderUpdateTime}>更新时间: {updateTime}</div>
+        <div className={styles.adHeaderUpdateTime}>更新时间: {dataUpdateTime}</div>
       </div>
 
     </div>

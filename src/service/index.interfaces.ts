@@ -45,6 +45,7 @@ export interface INetDetailAd {
   };
   createTime?: string;
   updateTime?: string;
+  dataUpdateTime?: string;
 }
 
 export enum EFormRelatedDynamicDate {

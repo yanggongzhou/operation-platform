@@ -33,7 +33,7 @@ export const ConsumeOptions = [
 
 // 筛选条件
 export enum EGroupField {
-  AppId = 'appId',
+  AppId = 'appName',
   CampaignId = 'campaignId',
   // SetId = 'setId',
   // AdId = 'adId',

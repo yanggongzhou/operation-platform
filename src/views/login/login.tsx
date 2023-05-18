@@ -76,3 +76,32 @@ export const Login = () => {
     </Form>
   </div>;
 };
+
+
+
+// useEffect(() => {
+//   windowBack();
+//   return () => {
+//     if (isPaint.current) { // 初次渲染回执行销毁，故做拦截处理
+//       isPaint.current = false;
+//       return;
+//     }
+//     window.onpopstate = null;
+//   };
+// }, []);
+//
+// // 保存挽留
+// const windowBack = () => {
+//   window.onpopstate = function () {
+//     if (isNeedSave.current) {
+//       onSave(true);
+//       window.history.pushState('forward', '', '');
+//       window.history.forward();
+//     } else {
+//       // window.onpopstate = null; window.history.go(-2);
+//       navigate('/adsReporting', { replace: true });
+//     }
+//   };
+//   window.history.pushState('forward', '', '');
+//   window.history.forward();
+// };
