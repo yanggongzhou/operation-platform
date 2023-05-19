@@ -101,7 +101,7 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
       <Table<IAdsListItem>
         loading={loading}
         className={styles.adsReportingTable}
-        scroll={{ y: 600 }}
+        // scroll={{ y: 600 }}
         bordered
         rowKey={'id'}
         size={'small'}
@@ -114,11 +114,13 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
         }}
         pagination={{
           position: ['bottomRight'],
+          showSizeChanger: true,
           defaultCurrent: 1,
           defaultPageSize: 30,
           pageSize: pageInfo.pageSize,
           current: pageInfo.page + 1,
           total,
+          showTotal:(total, range) => total ? `显示记录: ${range[0]} ~ ${range[1]},  总共 ${total} 条记录` : '',
           pageSizeOptions: [30, 50, 100],
           onChange: (page, pageSize) => {
             if (pageSize === pageInfo.pageSize) {

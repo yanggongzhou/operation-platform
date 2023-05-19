@@ -91,14 +91,15 @@ const AdReporting = () => {
   };
   const dataSource = useMemo(() => {
     if (!showDetailedCondition) {
-      return rows.map((item) => {
-        const val = Object.assign({}, item);
-        for (let i = 1; i < filterFieldList.length; i++) {
-          Reflect.set(val, filterFieldList[i], '全部');  // 设置 "全部"
-          Reflect.set(val, 'isAll', true);
-        }
-        return val;
-      });
+      return rows;
+      // return rows.map((item) => {
+      //   const val = Object.assign({}, item);
+      //   for (let i = 1; i < filterFieldList.length; i++) {
+      //     Reflect.set(val, filterFieldList[i], '全部');  // 设置 "全部"
+      //     Reflect.set(val, 'isAll', true);
+      //   }
+      //   return val;
+      // });
     }
     if (rows.length > 0 && fieldNames.length > 0) {
       return rows.map((item, ind) => {
