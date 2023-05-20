@@ -8,10 +8,12 @@ import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";
 import { TableDragHeader } from "@/views/ad-reporting/table-drag/table-drag-header";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
+import { setTableLoading } from "@/store/modules/app.module";
 
 const { Text } = Typography;
 
 interface IProps {
+  pageNo: number;
   dataSource: IRecordsItem[];
   sumData: AnyObject;
   total: number;
@@ -30,7 +32,7 @@ export interface IColItem {
   render: (text: string, record: IRecordsItem, index: number) => React.ReactNode;
 }
 
-export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore, onDrag }) => {
+export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore, onDrag, pageNo }) => {
   const loading = useAppSelector(state => state.app.loading);
   const [isFixed, setIsFixed] = useState(true); // 是否粘性布局
   const tableRef = useRef<HTMLTableElement | null>(null);
@@ -42,6 +44,16 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
       onMore();
     }
   }, { noLeading: true });
+  // 切换透视返回顶部
+  useEffect(() => {
+    if (pageNo === 0) {
+      if (tableRef.current) {
+        const tbodyDom = (tableRef.current as HTMLTableElement)?.querySelector(".ant-table-body");
+        tbodyDom && tbodyDom?.scrollTo({ top: 0 });
+      }
+    }
+  }, [pageNo]);
+
 
   const [scrollY, setScrollY] = useState(300);
 

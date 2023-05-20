@@ -265,6 +265,7 @@ const AdReporting = () => {
         <TableDrag
           dataSource={dataSource}
           sumData={sumData}
+          pageNo={pageNo}
           total={pageInfo.total}
           onMore={() => getMoreList()}
           onDrag={onTableDrag}/>
