@@ -37,7 +37,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const tbodyOnscroll = throttle(300, (e: Event) => {
     const { scrollHeight = 0, scrollTop = 0, offsetHeight = 0 } = (e.target as HTMLDivElement) || {};
-    if (scrollTop > scrollHeight - offsetHeight - 30) {
+    if (scrollTop > scrollHeight - offsetHeight - 30 && !loading) {
       console.log('==========距离底部距离低于 30===========>');
       onMore();
     }
@@ -54,7 +54,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
     if (tableRef.current) {
       setTimeout(() => {
         // @ts-ignore
-        setScrollY(tableRef.current?.parentNode?.offsetHeight - 140 || 300);
+        setScrollY(tableRef.current?.parentNode?.offsetHeight - 140 || 400);
       }, 200);
     }
     return () => {

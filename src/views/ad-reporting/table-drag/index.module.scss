@@ -24,6 +24,7 @@
 }
 
 .tableBox {
+  min-height: 600px;
 
   :global {
     .ant-table-thead > tr > th {

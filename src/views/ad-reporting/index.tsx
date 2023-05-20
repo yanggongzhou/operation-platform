@@ -129,12 +129,12 @@ const AdReporting = () => {
 
   // 报表详情(列表数据, 未修改配置情况下)
   const getList = debounce(300, async (page: number = 0) => {
-    setIsPaintData(true);
     dispatch(setTableLoading(true));
     if (page === 0) {
       setRows([]);
     }
     const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
+    setIsPaintData(true);
     if (page === 0) {
       setRows(records);
     } else {
@@ -184,6 +184,7 @@ const AdReporting = () => {
     if (pageNo !== 0) {
       setPageNo(0);
     } else {
+      dispatch(setTableLoading(true));
       getUnSaveList(0);
     }
   };
@@ -196,6 +197,7 @@ const AdReporting = () => {
   useEffect(() => {
     if (pageNo >= 0) {
       if (pageNo >= pageInfo.pages) return;
+      dispatch(setTableLoading(true));
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
       } else {
@@ -221,6 +223,7 @@ const AdReporting = () => {
         if (pageNo !== 0) {
           setPageNo(0);
         } else {
+          dispatch(setTableLoading(true));
           getUnSaveList(0);
         }
       }
@@ -244,12 +247,10 @@ const AdReporting = () => {
   // 拖拽细分条件刷新数据
   useEffect(() => {
     if (filterFieldList.length > 0 && isNeedSave.current) {
-      if (showDetailedCondition) {
-        if (pageNo !== 0) {
-          setPageNo(0);
-        } else {
-          getUnSaveList(0);
-        }
+      if (pageNo !== 0) {
+        setPageNo(0);
+      } else {
+        getUnSaveList(0);
       }
     }
   }, [filterFieldList]);
