@@ -18,7 +18,7 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
   const [data, setData] = useState<SelectProps['options']>([]);
   const [value, setValue] = useState<string[]>(fieldItem.fieldValue);
   const [operatorValue, setOperatorValue] = useState(fieldItem.operator || EOperator.In); // 包含不包含
-
+  const [searchValue, setSearchValue] = useState('');
   const onOperatorChange = (e: RadioChangeEvent) => {
     setOperatorValue(e.target.value);
   };
@@ -29,7 +29,7 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
   // 获取广告账户数据
   const getAccountList = debounce( 500, async (search?: string) => {
     let list: SelectProps['options'] = [];
-
+    setData([]);
     switch (fieldItem.fieldName) {
       case EGroupField.AccountId:
         const accountData = await netAccountList(search);
@@ -96,6 +96,9 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
           onChange={handleChange}
           notFoundContent={null}
           options={data}
+          onClear={() => {
+            console.log('onClear')
+          }}
         />
       </Space>
     </SearchPop>

@@ -91,7 +91,12 @@ const AdReporting = () => {
   };
   const dataSource = useMemo(() => {
     if (!showDetailedCondition) {
-      return rows;
+      return rows.map(val => ({
+        ...val,
+        bookId: `${val.bookName} (${val.bookId})`,
+        accountId: `${val.accountName} (${val.accountId})`,
+        campaignId: `${val.campaignName} (${val.campaignId})`,
+      }));
       // return rows.map((item) => {
       //   const val = Object.assign({}, item);
       //   for (let i = 1; i < filterFieldList.length; i++) {
@@ -103,7 +108,13 @@ const AdReporting = () => {
     }
     if (rows.length > 0 && fieldNames.length > 0) {
       return rows.map((item, ind) => {
-        const val = Object.assign({}, item);
+        const val = {
+          ...item,
+          bookId: `${item.bookName} (${item.bookId})`,
+          accountId: `${item.accountName} (${item.accountId})`,
+          campaignId: `${item.campaignName} (${item.campaignId})`,
+        };
+
         const index = fieldNames.indexOf(val.groupByFields);
         if (index === -1) return val;
         for (let i = 0; i < fieldNames.length; i++) {

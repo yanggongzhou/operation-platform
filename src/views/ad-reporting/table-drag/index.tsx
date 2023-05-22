@@ -88,7 +88,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         title: groupItem.text,
         dataIndex: field,
         key: field,
-        width: 120,
+        width: (field === 'bookId' || field === 'accountId' || field === 'campaignId') ? 160 : 120,
         fixed: isFixed ? 'left' : undefined,
         onCell: (record: IRecordsItem, index: number) => {
           if (showDetailedCondition) {
