@@ -24,12 +24,10 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
   };
 
   const handleFocus = () => {
-    if (!data || data.length === 0) {
-      getAccountList();
-    }
+    getAccountList();
   };
   // 获取广告账户数据
-  const getAccountList = debounce( 300, async (search?: string) => {
+  const getAccountList = debounce( 500, async (search?: string) => {
     let list: SelectProps['options'] = [];
 
     switch (fieldItem.fieldName) {
@@ -57,9 +55,9 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
     setData(list);
   }, { atBegin: false });
 
-  const handleSearch = debounce(500, (search: string) => {
+  const handleSearch = (search: string) => {
     getAccountList(search);
-  });
+  };
 
   const handleChange = (newValue: string[]) => {
     setValue(newValue);

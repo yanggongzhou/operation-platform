@@ -70,8 +70,7 @@ Service.interceptors.request.use(
         cancel: c
       };
 
-      const itemIndex = pending.findIndex(val => val.url === request.url);
-      console.log('request.url:', itemIndex);
+      const itemIndex = pending.findIndex(val => val.url === request.url && JSON.stringify(val.params) === JSON.stringify(request.params));
 
       if (itemIndex !== -1) {
         pending[itemIndex].cancel();

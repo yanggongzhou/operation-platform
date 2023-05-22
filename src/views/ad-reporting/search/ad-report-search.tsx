@@ -150,7 +150,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
       </div>
       <div className={styles.adSearchBottom}>
         <Space.Compact>
-          <div className={styles.adSearchBottomLabel}>消耗过滤: </div>
+          <div className={styles.adSearchBottomLabel}>数据过滤: </div>
           <Select<EConsume>
             value={costType}
             style={{ width: 150 }}

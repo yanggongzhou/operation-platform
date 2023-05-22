@@ -28,7 +28,7 @@ export enum EConsume {
 
 export const ConsumeOptions = [
   { value: EConsume.All, label: '所有数据' },
-  { value: EConsume.FWC, label: '过滤无消耗' },
+  { value: EConsume.FWC, label: '过滤无数据' },
 ];
 
 // 筛选条件

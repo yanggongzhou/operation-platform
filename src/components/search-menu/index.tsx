@@ -16,7 +16,6 @@ const SearchMenu: FC<IProps> = ({ onChoose }) => {
 
   const onChange = (newValue: EGroupField) => {
     onChoose(newValue);
-    console.log('value', value);
   };
 
   return (
@@ -25,6 +24,7 @@ const SearchMenu: FC<IProps> = ({ onChoose }) => {
       style={{ width: '200px', marginLeft: '20px' }}
       showSearch
       value={value}
+      optionFilterProp="label"
       placeholder="请搜索和筛选"
       onChange={onChange}
       options={treeData}
