@@ -113,7 +113,7 @@ export const netCampaignList = async (search: string = ''): Promise<INetCampaign
  * 书单列表
  */
 export const netBookList = async (bookName: string = ''): Promise<INetBookList> => {
-  return await Service.post('/book/list', { bookName, offset: 0, limit: 20 });
+  return await Service.post('/book/listv2', { bookName, offset: 0, limit: 20 });
 };
 
 /**
