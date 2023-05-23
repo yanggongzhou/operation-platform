@@ -25,7 +25,7 @@ export interface IColItem {
   title: string;
   dataIndex: string;
   key: string;
-  width?: number | string;
+  width: number;
   fixed?: FixedType;
   ellipsis?: boolean;
   rowScope?: string;
@@ -156,7 +156,10 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
   useEffect(() => {
     if (tableRef.current) {
       if (tableRef.current?.clientWidth) {
-        if (tableRef.current?.clientWidth/2 < groupColumns.length * 120) {
+        const width = groupColumns.reduce(( prev, next) => {
+          return prev + next.width;
+        }, 0);
+        if (tableRef.current?.clientWidth/2 < width) {
           if (isFixed) {
             setIsFixed(false);
           }

@@ -17,11 +17,11 @@
   z-index: 100;
 }
 
-@for $i from 1 through 14 {
-  .sortableItem:nth-child(#{$i}) {
-    left: 120.5px * ($i - 1);
-  }
-}
+//@for $i from 1 through 14 {
+//  .sortableItem:nth-child(#{$i}) {
+//    left: 120.5px * ($i - 1);
+//  }
+//}
 
 .tableBox {
   min-height: 600px;
