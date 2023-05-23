@@ -53,18 +53,18 @@ export enum EGroupField {
 export const NGroupField = {
   [EGroupField.Optimizer]: '优化师',
   [EGroupField.AccountId]: '账户',
+  [EGroupField.CampaignId]: '广告系列',
   // [EGroupField.AdId]: '广告',
   [EGroupField.BookId]: '书籍',
   [EGroupField.Url]: 'URL',
-  [EGroupField.Pixel]: '像素ID',
   [EGroupField.Device]: '设备',
   [EGroupField.Media]: '媒体',
   [EGroupField.Language]: '语种',
   [EGroupField.AppId]: 'App',
   [EGroupField.AdType]: '投放类型',
   [EGroupField.Country]: '国家',
+  [EGroupField.Pixel]: '像素ID',
   [EGroupField.Pline]: '业务线',
-  [EGroupField.CampaignId]: '广告计划',
   // [EGroupField.SetId]: '广告组',
 };
 

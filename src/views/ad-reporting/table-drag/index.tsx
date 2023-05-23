@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Table, Tooltip, Typography } from 'antd';
+import { Table, Tag, Tooltip, Typography } from 'antd';
 import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
 import { throttle } from "throttle-debounce";
@@ -8,7 +8,7 @@ import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";
 import { TableDragHeader } from "@/views/ad-reporting/table-drag/table-drag-header";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
-import { setTableLoading } from "@/store/modules/app.module";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const { Text } = Typography;
 
@@ -88,7 +88,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         title: groupItem.text,
         dataIndex: field,
         key: field,
-        width: (field === 'bookId' || field === 'accountId' || field === 'campaignId') ? 160 : 120,
+        width: (field === 'bookId' || field === 'accountId' || field === 'campaignId') ? 240 : 120,
         fixed: isFixed ? 'left' : undefined,
         onCell: (record: IRecordsItem, index: number) => {
           if (showDetailedCondition) {
@@ -104,7 +104,10 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
           const fieldIndex = groupByFieldsArr.indexOf(field);
           const backgroundColor = `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`;
           const borderRight = (fieldInd === filterFieldList.length - 1) ? '2px solid #ddd' : "none";
-
+          // <CopyToClipboard text={copyText} onCopy={() => {
+          // }}>
+          //   <div className={styles.openBtn}>打 開</div>
+          // </CopyToClipboard>
           if (record[field] === '全部') {
             return <div
               style={{ backgroundColor, fontWeight: 500, borderRight }}
@@ -119,7 +122,10 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
           return <Tooltip title={text} color={'#1ab394'}>
             <div
               style={{ backgroundColor }}
-              className={styles.tbodyTdItem} title={text}>{text || '-'}</div>
+              className={styles.tbodyTdItem} title={text}>
+              { (field === 'bookId' || field === 'accountId' || field === 'campaignId') }
+              <Tag  bordered={false}>{text || '-'}</Tag>
+            </div>
           </Tooltip>;
         },
       };

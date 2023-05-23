@@ -56,6 +56,7 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
   }, { atBegin: false });
 
   const handleSearch = (search: string) => {
+    setSearchValue(search)
     getAccountList(search);
   };
 
@@ -84,6 +85,7 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
           <Radio value={EOperator.Nin}>不包含</Radio>
         </Radio.Group>
         <Select
+          searchValue={searchValue}
           className={styles.popSelect}
           mode="multiple"
           showSearch
@@ -96,8 +98,10 @@ const AccountPop: FC<IProps> = ({ fieldItem, onDelete, onCancel, onConfirm }) =>
           onChange={handleChange}
           notFoundContent={null}
           options={data}
-          onClear={() => {
-            console.log('onClear')
+          onDropdownVisibleChange={(bool) => {
+            if (!bool) {
+              setSearchValue('')
+            }
           }}
         />
       </Space>
