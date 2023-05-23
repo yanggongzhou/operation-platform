@@ -48,6 +48,7 @@
     "@reduxjs/toolkit": "^1.9.3",
     "@types/js-cookie": "^3.0.3",
     "@types/nprogress": "^0.2.0",
+    "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-virtualized": "^9.21.21",
     "@types/throttle-debounce": "^5.0.0"
   }

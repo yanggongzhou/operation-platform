@@ -66,38 +66,48 @@
   height: 30px;
   line-height: 30px;
   padding: 0 8px;
-  background-color: #fafafa;
+  //background-color: #fafafa;
 }
-
-.tbodyTdItem, .tbodyTdItemLast {
-  color: #1a70cd;
-  font-weight: 500;
-  display: block;
-  //height: 30px;
-  line-height: 30px;
-  padding: 0 8px;
-  //overflow: hidden;
-  //text-overflow: ellipsis;
-  //white-space: nowrap;
-  display: -webkit-box;
+.tdTag, .tdTagNormal {
+  max-width: 100%;
   overflow: hidden;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  max-width: 240px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tdTag {
+  margin-bottom: 4px;
 }
 
-.tbodyTdItem {
-  background-color: #fafafa;
+.tbodyTdItem, .tbodyTdItemLast, .tbodyTdItemLast2 {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0;
+  padding: 4px 8px;
+  max-width: 240px;
+  text-align: center;
+  min-height: 30px;
 }
 
 .tbodyTdItemLast {
   border-right: 2px solid #ddd;
+
+  &:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: #ddd;
+  }
 }
 
 .tbodyTdTarget {
   height: 30px;
   line-height: 30px;
   padding: 0 8px;
+  text-align: center;
 }
 
 .summaryTotal {

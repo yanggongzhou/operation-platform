@@ -4,11 +4,11 @@ import { AnyObject } from "antd/es/table/Table";
 import { FixedType } from "rc-table/lib/interface";
 import { throttle } from "throttle-debounce";
 import { ColumnsType } from "antd/es/table/interface";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { useAppSelector } from "@/store";
 import { TableDragHeader } from "@/views/ad-reporting/table-drag/table-drag-header";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const { Text } = Typography;
 
@@ -99,32 +99,53 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
             };
           }
         },
-        render: (text: string, record: IRecordsItem, index: number) => {
+        render: (text: string, record: IRecordsItem) => {
           const groupByFieldsArr = record.groupByFields.split(',');
           const fieldIndex = groupByFieldsArr.indexOf(field);
           const backgroundColor = `rgba(231, 231, 231, ${1 - Math.floor(groupByFieldsArr.length / (filterFieldList.length + 1) * 100) / 100})`;
           const borderRight = (fieldInd === filterFieldList.length - 1) ? '2px solid #ddd' : "none";
-          // <CopyToClipboard text={copyText} onCopy={() => {
-          // }}>
-          //   <div className={styles.openBtn}>打 開</div>
-          // </CopyToClipboard>
+
           if (record[field] === '全部') {
             return <div
               style={{ backgroundColor, fontWeight: 500, borderRight }}
               className={styles.tbodyThItem} title={text}>{text}</div>;
           }
+          const content = field === 'campaignId' ? `${record.campaignName} (${text})` :
+            (field === 'accountId' ? `${record.accountName} (${text})` :
+              (field === 'bookId' ? `${record.bookName} (${text})` : text));
+
+          const TagCom = () => (<>
+            { field === 'campaignId' && record.campaignName ?
+              <CopyToClipboard text={record.campaignName} onCopy={() => {}}>
+                <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.campaignName}</Tag>
+              </CopyToClipboard> : null}
+            { field === 'accountId' && record.accountName ?
+              <CopyToClipboard text={record.accountName} onCopy={() => {}}>
+                <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.accountName}</Tag>
+              </CopyToClipboard>
+              : null}
+            { field === 'bookId' && record.bookName ?
+              <CopyToClipboard text={record.bookName} onCopy={() => {}}>
+                <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.bookName}</Tag>
+              </CopyToClipboard> : null}
+            {text ?
+              <CopyToClipboard text={text} onCopy={() => {}}>
+                <Tag className={styles.tdTagNormal} bordered={false} title='复制'>{text}</Tag>
+              </CopyToClipboard> : <span style={{ fontSize: 12 }}>-</span>}
+          </>);
           // 最后一项
           if ((record[`a_row_${fieldIndex}`] ?? 1) === 1) {
-            return <Tooltip title={text} color={'#1ab394'}>
-              <div style={{ borderRight }} className={styles.tbodyTdItemLast} title={text}>{text || '-'}</div>
+            return <Tooltip title={content} color={'#1ab394'}>
+              <div style={{ borderRight }} className={(fieldInd === filterFieldList.length - 1) ? styles.tbodyTdItemLast : styles.tbodyTdItemLast2}>
+                <TagCom/>
+              </div>
             </Tooltip>;
           }
-          return <Tooltip title={text} color={'#1ab394'}>
+          return <Tooltip title={content} color={'#1ab394'}>
             <div
-              style={{ backgroundColor }}
-              className={styles.tbodyTdItem} title={text}>
-              { (field === 'bookId' || field === 'accountId' || field === 'campaignId') }
-              <Tag  bordered={false}>{text || '-'}</Tag>
+              // style={{ backgroundColor }}
+              className={styles.tbodyTdItem}>
+              <TagCom/>
             </div>
           </Tooltip>;
         },

@@ -91,12 +91,13 @@ const AdReporting = () => {
   };
   const dataSource = useMemo(() => {
     if (!showDetailedCondition) {
-      return rows.map(val => ({
-        ...val,
-        bookId: `${val.bookName} (${val.bookId})`,
-        accountId: `${val.accountName} (${val.accountId})`,
-        campaignId: `${val.campaignName} (${val.campaignId})`,
-      }));
+      return rows;
+      //   .map(val => ({
+      //   ...val,
+      //   bookId: `${val.bookName} (${val.bookId})`,
+      //   accountId: `${val.accountName} (${val.accountId})`,
+      //   campaignId: `${val.campaignName} (${val.campaignId})`,
+      // }));
       // return rows.map((item) => {
       //   const val = Object.assign({}, item);
       //   for (let i = 1; i < filterFieldList.length; i++) {
@@ -110,9 +111,9 @@ const AdReporting = () => {
       return rows.map((item, ind) => {
         const val = {
           ...item,
-          bookId: `${item.bookName} (${item.bookId})`,
-          accountId: `${item.accountName} (${item.accountId})`,
-          campaignId: `${item.campaignName} (${item.campaignId})`,
+          // bookId: `${item.bookName} (${item.bookId})`,
+          // accountId: `${item.accountName} (${item.accountId})`,
+          // campaignId: `${item.campaignName} (${item.campaignId})`,
         };
 
         const index = fieldNames.indexOf(val.groupByFields);
