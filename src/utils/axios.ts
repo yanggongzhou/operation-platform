@@ -10,7 +10,6 @@ import { Store } from "redux";
 import { HashHistory } from "history";
 import { NavigateFunction } from "react-router";
 import { AppState } from "@/store";
-import { getToken } from '@/utils/cookies';
 
 // 定义接口
 interface PendingType {
@@ -124,7 +123,7 @@ Service.interceptors.response.use(
     //   Service.navigate('/404')
     } else if (err.response) {
       const { data } = err.response;
-      notification.error({ message: (data as any)?.message || '', placement: 'topRight' })
+      notification.error({ message: (data as any)?.message || '', placement: 'topRight' });
 
     } else {
       notification.error({ message: 'Network Error', placement: 'topRight' });

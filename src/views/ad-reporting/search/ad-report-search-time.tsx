@@ -50,8 +50,8 @@ const AdReportSearchTime: FC<IProps> = ({ formRelatedDynamicDate }) => {
   const rangePresets: { label: React.ReactNode; value: [Dayjs, Dayjs]; }[] = [
     { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.today} title="今天" />, value: [dayjs(), dayjs()] },
     { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastDay} title="昨天" />, value: [dayjs().add(-1, 'd'), dayjs().add(-1, 'd')] },
-    { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastSeven} title="过去7天" />, value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
-    { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastFourteen} title="过去14天" />, value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
+    { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastSeven} title="过去7天" />, value: [dayjs().add(-7, 'd'), dayjs().add(-1, 'd')] },
+    { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastFourteen} title="过去14天" />, value: [dayjs().add(-14, 'd'), dayjs().add(-1, 'd')] },
   ];
   const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
     console.log('日期范围搜索 From: ', dateStrings);

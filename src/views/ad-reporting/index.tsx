@@ -57,18 +57,21 @@ const AdReporting = () => {
     if (page === 0) {
       setRows([]);
     }
-    const { records = [], total = 0, sumData, pages = 1 } = await netListAd(bodyData, page);
-    if (page === 0) {
-      setRows(records);
-    } else {
-      setRows(prevState => [...prevState, ...records]);
+    try {
+      const { records = [], total = 0, sumData, pages = 1 } = await netListAd(bodyData, page);
+      if (page === 0) {
+        setRows(records);
+      } else {
+        setRows(prevState => [...prevState, ...records]);
+      }
+      if (page >= pages - 1) {
+        messageApi.info({ message: '已加载全部数据' });
+      }
+      setSumData(sumData);
+      setPageInfo({ total, pages });
+    } catch (e) {} finally {
+      dispatch(setTableLoading(false));
     }
-    if (page >= pages - 1) {
-      messageApi.info({ message: '已加载全部数据' });
-    }
-    setSumData(sumData);
-    setPageInfo({ total, pages });
-    dispatch(setTableLoading(false));
   }, { atBegin: false });
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
   const fieldNames = useMemo(() => {
@@ -126,19 +129,22 @@ const AdReporting = () => {
     if (page === 0) {
       setRows([]);
     }
-    const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
-    setIsPaintData(true);
-    if (page === 0) {
-      setRows(records);
-    } else {
-      setRows(prevState => [...prevState, ...records]);
+    try {
+      const { records = [], total = 0, sumData, pages } = await netDetailListAd(id, page);
+      setIsPaintData(true);
+      if (page === 0) {
+        setRows(records);
+      } else {
+        setRows(prevState => [...prevState, ...records]);
+      }
+      if (page >= pages - 1) {
+        messageApi.info({message: '已加载全部数据'});
+      }
+      setSumData(sumData);
+      setPageInfo({ total, pages });
+    } catch (e) {} finally {
+      dispatch(setTableLoading(false));
     }
-    if (page >= pages - 1) {
-      messageApi.info({message: '已加载全部数据'});
-    }
-    setSumData(sumData);
-    setPageInfo({ total, pages });
-    dispatch(setTableLoading(false));
   }, { atBegin: false });
 
   // 保存报表

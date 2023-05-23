@@ -39,10 +39,13 @@ const AdsReporting = () => {
   const getList = debounce(300, async (pageData: { page: number; pageSize: number; }) => {
     setLoading(true);
     setPageInfo({ ...pageData });
-    const { total = 0, rows = [] } = await netAdsList(pageData.page, pageData.pageSize);
-    setRows(rows);
-    setTotal(total);
-    setLoading(false);
+    try {
+      const { total = 0, rows = [] } = await netAdsList(pageData.page, pageData.pageSize);
+      setRows(rows);
+      setTotal(total);
+    } catch (e) {} finally {
+      setLoading(false);
+    }
   }, { atBegin: true });
 
   return (
