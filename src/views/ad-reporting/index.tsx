@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, message, Modal, Space } from "antd";
+import { Button, Modal, notification, Space } from "antd";
 import { debounce } from "throttle-debounce";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
@@ -23,7 +23,7 @@ import { INetDetailAd } from "@/service/index.interfaces";
 const AdReporting = () => {
   const [modal, contextHolder] = Modal.useModal();
   const [isPaintData, setIsPaintData] = useState(false); // 初次渲染数据
-  const [messageApi, contextMsgHolder] = message.useMessage();
+  const [messageApi, contextMsgHolder] = notification.useNotification();
   const navigate = useNavigate();
   const isNeedSave = useRef(false); // 是否需要保存
   const dispatch = useAppDispatch();
@@ -51,7 +51,7 @@ const AdReporting = () => {
   }, { atBegin: true });
 
   // 报表详情(列表数据, 修改配置情况下)
-  const getUnSaveList = debounce(500, async (page: number) => {
+  const getUnSaveList = debounce(300, async (page: number) => {
     isNeedSave.current = true;
     dispatch(setTableLoading(true));
     if (page === 0) {
@@ -63,8 +63,8 @@ const AdReporting = () => {
     } else {
       setRows(prevState => [...prevState, ...records]);
     }
-    if (page >= pages) {
-      messageApi.info('已加载全部数据');
+    if (page >= pages - 1) {
+      messageApi.info({ message: '已加载全部数据' });
     }
     setSumData(sumData);
     setPageInfo({ total, pages });
@@ -92,29 +92,10 @@ const AdReporting = () => {
   const dataSource = useMemo(() => {
     if (!showDetailedCondition) {
       return rows;
-      //   .map(val => ({
-      //   ...val,
-      //   bookId: `${val.bookName} (${val.bookId})`,
-      //   accountId: `${val.accountName} (${val.accountId})`,
-      //   campaignId: `${val.campaignName} (${val.campaignId})`,
-      // }));
-      // return rows.map((item) => {
-      //   const val = Object.assign({}, item);
-      //   for (let i = 1; i < filterFieldList.length; i++) {
-      //     Reflect.set(val, filterFieldList[i], '全部');  // 设置 "全部"
-      //     Reflect.set(val, 'isAll', true);
-      //   }
-      //   return val;
-      // });
     }
     if (rows.length > 0 && fieldNames.length > 0) {
       return rows.map((item, ind) => {
-        const val = {
-          ...item,
-          // bookId: `${item.bookName} (${item.bookId})`,
-          // accountId: `${item.accountName} (${item.accountId})`,
-          // campaignId: `${item.campaignName} (${item.campaignId})`,
-        };
+        const val = {...item};
 
         const index = fieldNames.indexOf(val.groupByFields);
         if (index === -1) return val;
@@ -152,8 +133,8 @@ const AdReporting = () => {
     } else {
       setRows(prevState => [...prevState, ...records]);
     }
-    if (page >= pages) {
-      messageApi.info('已加载全部数据');
+    if (page >= pages - 1) {
+      messageApi.info({message: '已加载全部数据'});
     }
     setSumData(sumData);
     setPageInfo({ total, pages });
@@ -180,7 +161,7 @@ const AdReporting = () => {
     setIsPaintData(false);
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
-    messageApi.success('已保存');
+    messageApi.success({ message: '已保存', duration: 2 });
     if (isBack) {
       navigate('/adsReporting', { replace: true });
     } else {
@@ -202,7 +183,7 @@ const AdReporting = () => {
   };
   // 更多数据
   const getMoreList = () => {
-    if (pageNo >= pageInfo.pages) return;
+    if (pageNo >= pageInfo.pages || store.getState().app.loading) return;
     setPageNo(prevState => ++prevState);
   };
 

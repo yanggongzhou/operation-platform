@@ -39,11 +39,11 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
   const showDetailedCondition = useAppSelector(state => state.app.detail.structure.showDetailedCondition);
   const tbodyOnscroll = throttle(300, (e: Event) => {
     const { scrollHeight = 0, scrollTop = 0, offsetHeight = 0 } = (e.target as HTMLDivElement) || {};
-    if (scrollTop > scrollHeight - offsetHeight - 30 && !loading) {
-      console.log('==========距离底部距离低于 30===========>');
+    if (scrollTop > scrollHeight - offsetHeight - 50) {
+      console.log('==========距离底部距离低于 50===========>');
       onMore();
     }
-  }, { noLeading: true });
+  }, { noLeading: false });
   // 切换透视返回顶部
   useEffect(() => {
     if (pageNo === 0) {
@@ -116,22 +116,32 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
 
           const TagCom = () => (<>
             { field === 'campaignId' && record.campaignName ?
-              <CopyToClipboard text={record.campaignName} onCopy={() => {}}>
-                <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.campaignName}</Tag>
-              </CopyToClipboard> : null}
+              <>
+                <CopyToClipboard text={record.campaignName} onCopy={() => {}}>
+                  <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.campaignName}</Tag>
+                </CopyToClipboard>
+                <br/>
+              </> : null}
             { field === 'accountId' && record.accountName ?
-              <CopyToClipboard text={record.accountName} onCopy={() => {}}>
-                <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.accountName}</Tag>
-              </CopyToClipboard>
+              <>
+                <CopyToClipboard text={record.accountName} onCopy={() => {}}>
+                  <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.accountName}</Tag>
+                </CopyToClipboard>
+                <br/>
+              </>
               : null}
             { field === 'bookId' && record.bookName ?
-              <CopyToClipboard text={record.bookName} onCopy={() => {}}>
-                <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.bookName}</Tag>
-              </CopyToClipboard> : null}
+              <>
+                <CopyToClipboard text={record.bookName} onCopy={() => {}}>
+                  <Tag color="#a1c2bc" className={styles.tdTag} bordered={false} title='复制'>{record.bookName}</Tag>
+                </CopyToClipboard>
+                <br/>
+              </> : null}
             {text ?
               <CopyToClipboard text={text} onCopy={() => {}}>
                 <Tag className={styles.tdTagNormal} bordered={false} title='复制'>{text}</Tag>
-              </CopyToClipboard> : <span style={{ fontSize: 12 }}>-</span>}
+              </CopyToClipboard>
+              : <span style={{ fontSize: 12 }}>-</span>}
           </>);
           // 最后一项
           if ((record[`a_row_${fieldIndex}`] ?? 1) === 1) {
@@ -159,7 +169,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         const width = groupColumns.reduce(( prev, next) => {
           return prev + next.width;
         }, 0);
-        if (tableRef.current?.clientWidth/2 < width) {
+        if (tableRef.current?.clientWidth/1.5 < width) {
           if (isFixed) {
             setIsFixed(false);
           }
