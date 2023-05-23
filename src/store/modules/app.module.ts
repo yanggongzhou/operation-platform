@@ -45,7 +45,7 @@ export const appSlice = createSlice({
     },
     detail: {
       structure: {
-        costType: EConsume.All, //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
+        costType: EConsume.FWC, //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
         searchFieldList: [], // 搜索字段
         order: "desc",
         sort: '',

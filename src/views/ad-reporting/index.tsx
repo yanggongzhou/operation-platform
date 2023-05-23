@@ -53,7 +53,6 @@ const AdReporting = () => {
   // 报表详情(列表数据, 修改配置情况下)
   const getUnSaveList = debounce(300, async (page: number) => {
     isNeedSave.current = true;
-    dispatch(setTableLoading(true));
     if (page === 0) {
       setRows([]);
     }
@@ -176,16 +175,19 @@ const AdReporting = () => {
       getList();
     }
   };
-
-  // 搜索
-  const onSearch = () => {
-    isNeedSave.current = true;
+  // 刷新数据
+  const onRefresh = () => {
     if (pageNo !== 0) {
       setPageNo(0);
     } else {
       dispatch(setTableLoading(true));
       getUnSaveList(0);
     }
+  };
+  // 搜索
+  const onSearch = () => {
+    isNeedSave.current = true;
+    onRefresh();
   };
   // 更多数据
   const getMoreList = () => {
@@ -257,7 +259,12 @@ const AdReporting = () => {
   return <div className={styles.adReportWrap}>
     {contextHolder}
     {contextMsgHolder}
-    <AdReportHeader onChange={() => {isNeedSave.current = true;}} adName={adName} onSave={onSave} onBackTo={onBackTo}/>
+    <AdReportHeader
+      onRefresh={onRefresh}
+      onChange={() => {isNeedSave.current = true;}}
+      adName={adName}
+      onSave={onSave}
+      onBackTo={onBackTo}/>
     <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
     <div className={styles.adReportMain}>
       <div className={styles.adReportBox}>
