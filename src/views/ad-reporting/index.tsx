@@ -26,6 +26,7 @@ const AdReporting = () => {
   const [messageApi, contextMsgHolder] = notification.useNotification();
   const navigate = useNavigate();
   const isNeedSave = useRef(false); // 是否需要保存
+  const isRequesting = useRef(false); // 是否在请求中
   const dispatch = useAppDispatch();
   const routeParams = useParams();
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
@@ -70,6 +71,7 @@ const AdReporting = () => {
       setPageInfo({ total, pages });
     } catch (e) {} finally {
       dispatch(setTableLoading(false));
+      isRequesting.current = false;
     }
   }, { atBegin: false });
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
@@ -143,6 +145,7 @@ const AdReporting = () => {
       setPageInfo({ total, pages });
     } catch (e) {} finally {
       dispatch(setTableLoading(false));
+      isRequesting.current = false;
     }
   }, { atBegin: false });
 
@@ -172,6 +175,7 @@ const AdReporting = () => {
     } else {
       const detail = await netDetailAd(store.getState().app.detail.id);
       dispatch(setDetail(detail));
+      isRequesting.current = true;
       getList();
     }
   };
@@ -191,13 +195,14 @@ const AdReporting = () => {
   };
   // 更多数据
   const getMoreList = () => {
-    if (pageNo >= pageInfo.pages || store.getState().app.loading) return;
+    if (pageNo >= pageInfo.pages || store.getState().app.loading || isRequesting.current) return;
     setPageNo(prevState => ++prevState);
   };
 
   useEffect(() => {
     if (pageNo >= 0) {
       if (pageNo >= pageInfo.pages) return;
+      isRequesting.current = true;
       dispatch(setTableLoading(true));
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
@@ -216,7 +221,7 @@ const AdReporting = () => {
     }
   };
   // 指标｜细分条件
-  const onChange = (checkedValues: string[], filterType: EFilterType) => {
+  const onRightChange = (checkedValues: string[], filterType: EFilterType) => {
     isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
       dispatch(setFilterFieldList(checkedValues));
@@ -226,6 +231,7 @@ const AdReporting = () => {
         } else {
           dispatch(setTableLoading(true));
           getUnSaveList(0);
+          isRequesting.current = true;
         }
       }
     } else {
@@ -252,6 +258,7 @@ const AdReporting = () => {
         setPageNo(0);
       } else {
         getUnSaveList(0);
+        isRequesting.current = true;
       }
     }
   }, [filterFieldList]);
@@ -260,12 +267,11 @@ const AdReporting = () => {
     {contextHolder}
     {contextMsgHolder}
     <AdReportHeader
-      onRefresh={onRefresh}
       onChange={() => {isNeedSave.current = true;}}
       adName={adName}
       onSave={onSave}
       onBackTo={onBackTo}/>
-    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
+    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch} onRefresh={onRefresh} onRightChange={onRightChange}/>
     <div className={styles.adReportMain}>
       <div className={styles.adReportBox}>
         <TableDrag
@@ -275,9 +281,6 @@ const AdReporting = () => {
           total={pageInfo.total}
           onMore={() => getMoreList()}
           onDrag={onTableDrag}/>
-      </div>
-      <div className={styles.adReportRight}>
-        <AdReportRight onChange={onChange}/>
       </div>
     </div>
   </div>;

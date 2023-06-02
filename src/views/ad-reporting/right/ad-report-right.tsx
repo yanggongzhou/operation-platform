@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
-import { Tabs, TabsProps, Checkbox, Row, Col, } from "antd";
+import { Tabs, TabsProps, Checkbox } from "antd";
 import styles from "@/views/ad-reporting/right/ad-report-right.module.scss";
 import { useAppSelector } from "@/store";
 import { EFilterType } from "@/views/ad-reporting/index.interfaces";
 
 interface IProps {
-  onChange: (checkedValues: string[], filterType: EFilterType) => void;
+  onRightChange: (checkedValues: string[], filterType: EFilterType) => void;
 }
 
 interface IItemChildProps {
@@ -31,7 +31,7 @@ const ItemChild: FC<IItemChildProps> = ({ list = [], defaultValue, onChange }) =
 
 
 // 细分条件指标
-const AdReportRight: FC<IProps> = ({onChange}) => {
+const AdReportRight: FC<IProps> = ({onRightChange}) => {
   const targetDefault = useAppSelector(state => state.app.detail.structure.indexColumnList || []);
   const targetList = useAppSelector(state => state.app.searchList.target);
   const groupDefault = useAppSelector(state => state.app.detail.structure.filterFieldList || []);
@@ -41,12 +41,12 @@ const AdReportRight: FC<IProps> = ({onChange}) => {
     {
       key: EFilterType.Group,
       label: '细分条件',
-      children: (<ItemChild list={groupList} defaultValue={groupDefault} onChange={e => onChange(e, EFilterType.Group)}/>)
+      children: (<ItemChild list={groupList} defaultValue={groupDefault} onChange={e => onRightChange(e, EFilterType.Group)}/>)
     },
     {
       key: EFilterType.Target,
       label: '指标',
-      children: <ItemChild list={targetList} defaultValue={targetDefault} onChange={e => onChange(e, EFilterType.Target)}/>
+      children: <ItemChild list={targetList} defaultValue={targetDefault} onChange={e => onRightChange(e, EFilterType.Target)}/>
     },
   ];
 

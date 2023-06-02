@@ -25,12 +25,18 @@
     display: flex;
     align-items: center;
     flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    column-gap: 10px;
+    position: relative;
+    padding-right: 220px;
 
     .timeRange {
-      margin: 0 20px;
+      width: 300px;
     }
 
     .adSearchBottomLabel {
+      width: 85px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -41,6 +47,12 @@
       border-radius: 2px 0 0 2px;
       font-size: 12px;
       font-weight: 500;
+    }
+
+    .rightColumn {
+      position: absolute;
+      right: 0;
+      top: 10px;
     }
   }
 }

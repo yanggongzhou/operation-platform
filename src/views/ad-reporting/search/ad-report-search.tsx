@@ -1,11 +1,12 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, message, Select, Space, Switch, Tooltip } from "antd";
+import { Button, message, Popover, Select, Space, Switch, Tooltip } from "antd";
+import { ReloadOutlined, TableOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
 import {
   ConsumeOptions,
-  EConsume,
+  EConsume, EFilterType,
   EGroupField,
   EOperator,
   IFieldItem,
@@ -18,13 +19,16 @@ import OptimizerPop from "@/views/ad-reporting/pop/optimizer-pop";
 import AccountPop from "@/views/ad-reporting/pop/account-pop";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setCostType, setSearchFieldList, setShowDetailedCondition } from "@/store/modules/app.module";
+import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 
 interface IProps {
   isPaintData: boolean;
   onSearch: () => void;
+  onRefresh: () => void;
+  onRightChange: (checkedValues: string[], filterType: EFilterType) => void;
 }
 
-const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
+const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh, onRightChange }) => {
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [fieldList, setFieldList] = useState<IFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
@@ -33,6 +37,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
   const startDate = useAppSelector(state => state.app.detail.structure.startDate);
   const endDate = useAppSelector(state => state.app.detail.structure.endDate);
   const formRelatedDynamicDate = useAppSelector(state => state.app.detail.structure.formRelatedDynamicDate);
+  const [refreshLoading, setRefreshLoading] = useState(false);
 
   const [isShowMenu, setIsShowMenu] = useState(true);
   useEffect(() => {
@@ -149,7 +154,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
         </Tooltip>
       </div>
       <div className={styles.adSearchBottom}>
-        <Space.Compact>
+        <Space.Compact style={{ width: '200px' }}>
           <div className={styles.adSearchBottomLabel}>数据过滤: </div>
           <Select<EConsume>
             value={costType}
@@ -163,10 +168,44 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
           <AdReportSearchTime formRelatedDynamicDate={formRelatedDynamicDate}/>
         </Space.Compact>
         <Switch
+          style={{ width: '82px' }}
           checkedChildren="数据透视"
           unCheckedChildren="数据透视"
           checked={showDetailedCondition}
           onChange={(c) => onShowDetailedCondition(c)} />
+
+        <Space.Compact className={styles.rightColumn}>
+          <Button
+            style={{ fontWeight: "bold" }}
+            icon={<ReloadOutlined />}
+            loading={refreshLoading}
+            disabled={refreshLoading}
+            onClick={() => {
+              setRefreshLoading(true);
+              onRefresh();
+              setTimeout(() => {
+                setRefreshLoading(false);
+              }, 800);
+            }}
+          >刷新</Button>
+          <Popover
+            arrow={false}
+            trigger={'click'}
+            destroyTooltipOnHide
+            placement={'bottomLeft'}
+            content={
+              <AdReportRight onRightChange={onRightChange}/>
+            }
+          >
+            <Button
+              style={{ fontWeight: "bold" }}
+              icon={<TableOutlined />}>细分条件 & 指标</Button>
+          </Popover>
+
+        </Space.Compact>
+
+
+
       </div>
     </div>
   );

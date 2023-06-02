@@ -64,6 +64,7 @@ export interface INetDetailListAd {
   total: number;
   records: IRecordsItem[];
   sumData: IRecordsItem;
+  hasMore: boolean;
 }
 
 export interface INetAccountList {

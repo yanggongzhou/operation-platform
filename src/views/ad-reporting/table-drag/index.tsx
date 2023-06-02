@@ -66,7 +66,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
     if (tableRef.current) {
       setTimeout(() => {
         // @ts-ignore
-        setScrollY(tableRef.current?.parentNode?.offsetHeight - 140 || 400);
+        setScrollY(tableRef.current?.parentNode?.offsetHeight - 120 || 500);
       }, 200);
     }
     return () => {
@@ -258,14 +258,14 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         <Table.Summary fixed>
           {(groupColumns.length > 0 || targetSum.length > 0) ?
             <Table.Summary.Row>
-              <Table.Summary.Cell className={styles.summaryTotal} index={0} colSpan={groupColumns.length}>
-                <Text strong>{total}</Text>
+              {groupColumns.length > 0 ? <Table.Summary.Cell className={styles.summaryTotal} index={0} colSpan={groupColumns.length}>
+                <Text strong><span style={{ color: "#A1C2BC" }}>{dataSource.length}</span> / {total}</Text>
                 <br/>
-                <Text type={'secondary'}>总行数</Text>
-              </Table.Summary.Cell>
+                <Text type={'secondary'}>已加载 / 总行数</Text>
+              </Table.Summary.Cell> : null}
               {targetSum.map(tar => {
                 return <Table.Summary.Cell key={tar.key} index={groupColumns.length}>
-                  <div>
+                  <div style={{ textAlign: "center" }}>
                     <Text strong>{tar.sum}</Text>
                     <br/>
                     <Text type={'secondary'}>{tar.label}</Text>

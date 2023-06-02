@@ -4,8 +4,8 @@ module.exports = {
   devServer: {
     proxy: {
       '/hw-adserving': {
-        // target: 'http://192.168.10.71:10000',
-        target: 'http://192.168.1.116:9999',
+        target: 'http://192.168.0.241:9999',
+        // target: 'http://192.168.1.116:9999',
         changeOrigin: true
       }
     },
