@@ -146,7 +146,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
           // 最后一项
           if ((record[`a_row_${fieldIndex}`] ?? 1) === 1) {
             return <Tooltip title={content} color={'#1ab394'}>
-              <div style={{ borderRight }} className={(fieldInd === filterFieldList.length - 1) ? styles.tbodyTdItemLast : styles.tbodyTdItemLast2}>
+              <div className={(fieldInd === filterFieldList.length - 1) ? styles.tbodyTdItemLast : styles.tbodyTdItemLast2}>
                 <TagCom/>
               </div>
             </Tooltip>;
@@ -227,6 +227,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
         header: {
           row: () => (
             <tr>
+              {/*<th style={{ position: "sticky", left: 0, textAlign: "center", zIndex: 100 }}>#</th>*/}
               <TableDragHeader
                 getContainer={() => {
                   return document.querySelector('.ant-table-thead') as HTMLElement;
@@ -252,7 +253,11 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
       loading={loading}
       pagination={false}
       bordered
-      columns={[...groupColumns, ...targetColumns] as ColumnsType<IRecordsItem>}
+      columns={[
+        // { key: "index", title: '#', width: 40, fixed: "left", render: (_, __, index) => <div className={styles.antTableRowIndex}>{index + 1}</div> },
+        ...groupColumns,
+        ...targetColumns
+      ] as ColumnsType<IRecordsItem>}
       dataSource={dataSource}
       summary={() => (
         <Table.Summary fixed>

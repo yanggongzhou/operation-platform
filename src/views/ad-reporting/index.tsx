@@ -15,7 +15,6 @@ import {
   setIndexColumnList,
   setTableLoading
 } from "@/store/modules/app.module";
-import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailAd, netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
 import { INetDetailAd } from "@/service/index.interfaces";
@@ -58,6 +57,7 @@ const AdReporting = () => {
       setRows([]);
     }
     try {
+      dispatch(setTableLoading(true));
       const { records = [], total = 0, sumData, pages = 1 } = await netListAd(bodyData, page);
       if (page === 0) {
         setRows(records);
@@ -69,7 +69,8 @@ const AdReporting = () => {
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       dispatch(setTableLoading(false));
       isRequesting.current = false;
     }
@@ -99,7 +100,7 @@ const AdReporting = () => {
     }
     if (rows.length > 0 && fieldNames.length > 0) {
       return rows.map((item, ind) => {
-        const val = {...item};
+        const val = { ...item };
 
         const index = fieldNames.indexOf(val.groupByFields);
         if (index === -1) return val;
@@ -139,11 +140,12 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info({message: '已加载全部数据'});
+        messageApi.info({ message: '已加载全部数据' });
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       dispatch(setTableLoading(false));
       isRequesting.current = false;
     }
@@ -152,11 +154,25 @@ const AdReporting = () => {
   // 保存报表
   const onSave = (isBack?: boolean) => {
     if (!isBack) {
-      modal.confirm({ bodyStyle: { padding: 20 }, title: '保存报表', direction: 'ltr', icon: <ExclamationCircleOutlined />, content: `确认保存「${adName}」？原数据将被覆盖，无法撤销`, okText: '确认', cancelText: '取消', onOk: () => handleSave() });
+      modal.confirm({
+        bodyStyle: { padding: 20 },
+        title: '保存报表',
+        direction: 'ltr',
+        icon: <ExclamationCircleOutlined/>,
+        content: `确认保存「${adName}」？原数据将被覆盖，无法撤销`,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => handleSave()
+      });
     } else { // 修改未保存
-      const modala =  modal.confirm({ bodyStyle: {padding: 20}, title: '修改未保存报表', direction: 'ltr', icon: <ExclamationCircleOutlined />, content: `要保存对「${adName}」的修改吗`,
+      const modala = modal.confirm({
+        bodyStyle: { padding: 20 },
+        title: '修改未保存报表',
+        direction: 'ltr',
+        icon: <ExclamationCircleOutlined/>,
+        content: `要保存对「${adName}」的修改吗`,
         footer: <div style={{ display: "flex", justifyContent: "space-between", padding: '10px 0 0 35px' }}>
-          <Button type="primary" onClick={() => navigate('/adsReporting', { replace: true }) }>不保存</Button>
+          <Button type="primary" onClick={() => navigate('/adsReporting', { replace: true })}>不保存</Button>
           <Space>
             <Button onClick={() => modala.destroy()}>取消</Button>
             <Button type="primary" onClick={() => handleSave(isBack)}>保存</Button>
@@ -184,7 +200,6 @@ const AdReporting = () => {
     if (pageNo !== 0) {
       setPageNo(0);
     } else {
-      dispatch(setTableLoading(true));
       getUnSaveList(0);
     }
   };
@@ -203,7 +218,6 @@ const AdReporting = () => {
     if (pageNo >= 0) {
       if (pageNo >= pageInfo.pages) return;
       isRequesting.current = true;
-      dispatch(setTableLoading(true));
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
       } else {
@@ -225,15 +239,6 @@ const AdReporting = () => {
     isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
       dispatch(setFilterFieldList(checkedValues));
-      if (showDetailedCondition) {
-        if (pageNo !== 0) {
-          setPageNo(0);
-        } else {
-          dispatch(setTableLoading(true));
-          getUnSaveList(0);
-          isRequesting.current = true;
-        }
-      }
     } else {
       dispatch(setIndexColumnList(checkedValues));
     }
@@ -257,6 +262,7 @@ const AdReporting = () => {
       if (pageNo !== 0) {
         setPageNo(0);
       } else {
+        dispatch(setTableLoading(true));
         getUnSaveList(0);
         isRequesting.current = true;
       }
@@ -267,7 +273,9 @@ const AdReporting = () => {
     {contextHolder}
     {contextMsgHolder}
     <AdReportHeader
-      onChange={() => {isNeedSave.current = true;}}
+      onChange={() => {
+        isNeedSave.current = true;
+      }}
       adName={adName}
       onSave={onSave}
       onBackTo={onBackTo}/>

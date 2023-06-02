@@ -105,7 +105,7 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
         bordered
         rowKey={'id'}
         size={'small'}
-        onRow={(record, rowIndex) => {
+        onRow={(record) => {
           return {
             onClick: (event) => {
               onCheck(record);

@@ -191,12 +191,8 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh, onRightC
           <Popover
             arrow={false}
             trigger={'click'}
-            destroyTooltipOnHide
             placement={'bottomLeft'}
-            content={
-              <AdReportRight onRightChange={onRightChange}/>
-            }
-          >
+            content={<AdReportRight onRightChange={onRightChange}/>}>
             <Button
               style={{ fontWeight: "bold" }}
               icon={<TableOutlined />}>细分条件 & 指标</Button>

@@ -35,7 +35,7 @@ export const SortableList: React.ComponentClass<IProps> = SortableContainer((pro
   let w = 0;
   return (<>
     {props.columns.map((val, ind) => {
-      w += val.width + 0.5;
+      w += val.width;
       return <SortableItem
         isGroupLast={props.isGroup && ind === props.columns.length - 1}
         key={val.dataIndex}

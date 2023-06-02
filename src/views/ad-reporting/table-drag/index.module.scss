@@ -1,6 +1,6 @@
 .sortableItem, .sortableTargetItem {
   min-width: 100px;
-  padding: 8px 12px !important;
+  padding: 6px !important;
   //border: 1px solid #f0f0f0;
   font-size: 14px;
   font-weight: bold;
@@ -26,9 +26,16 @@
 .tableBox {
   min-height: 600px;
 
+  .antTableRowIndex {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 8px;
+    text-align: center;
+  }
+
   :global {
     .ant-table-thead > tr > th {
-      background: rgba(236, 236, 236, 0.95);
+      background: rgba(236, 236, 236, 0.98);
       padding: 8px 12px;
       //  display: flex;
       //  flex-direction: row;
@@ -90,7 +97,7 @@
 }
 
 .tbodyTdItemLast {
-  border-right: 2px solid #ddd;
+  //border-right: 2px solid #ddd;
 
   &:after {
     content: "";
