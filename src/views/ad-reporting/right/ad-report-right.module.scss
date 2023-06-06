@@ -1,9 +1,57 @@
 .rightBox {
-  width: 100%;
+  overflow: hidden;
   user-select: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  position: relative;
+  //padding: 10px 15px 10px 20px;
+  padding: 10px;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+
+  .expansion {
+    font-size: 12px;
+    box-shadow: 1px 0 2px 0 #A1C2BC;;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    padding: 15px 3px;
+    border-radius: 0 3px 3px 0;
+    background-color: #A1C2BC;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    &:hover {
+      background-color: #1ab394;
+    }
+
+    .expansionIcon {
+      transform: rotate(0deg);
+      transition: all 0.3s;
+    }
+
+    .expansionIcon2 {
+      transform: rotate(180deg);
+      transition: all 0.3s;
+    }
+  }
 
   .rightBoxTabs {
     font-weight: 500;
+    flex: 1;
+    overflow-y: auto;
+
+    :global {
+      .ant-tabs-content {
+        height: 100%;
+      }
+      .ant-tabs-tabpane {
+        height: 100%;
+      }
+    }
   }
 }
 
@@ -12,13 +60,13 @@
   grid-template-columns: repeat(2, 1fr);
   flex-wrap: wrap;
   grid-gap: 8px 5px;
+
   .rightCheckBoxItem {
     margin: 0;
     font-weight: 500;
     align-items: flex-end;
     height: 20px;
     white-space: nowrap;
-
 
     :global {
       .ant-checkbox-inner {
@@ -30,4 +78,19 @@
       }
     }
   }
+}
+
+.checkableBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  flex-wrap: wrap;
+  grid-gap: 8px 5px;
+}
+
+.checkableBox2 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  overflow-y: auto;
 }

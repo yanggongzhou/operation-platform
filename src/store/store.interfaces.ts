@@ -5,4 +5,5 @@ export interface IAppStore {
   searchList: INetSearchList;
   detail: INetDetailAd;
   loading: boolean;
+  isExpansion: boolean;
 }

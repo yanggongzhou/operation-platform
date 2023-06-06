@@ -174,33 +174,20 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh, onRightC
           checked={showDetailedCondition}
           onChange={(c) => onShowDetailedCondition(c)} />
 
-        <Space.Compact className={styles.rightColumn}>
-          <Button
-            style={{ fontWeight: "bold" }}
-            icon={<ReloadOutlined />}
-            loading={refreshLoading}
-            disabled={refreshLoading}
-            onClick={() => {
-              setRefreshLoading(true);
-              onRefresh();
-              setTimeout(() => {
-                setRefreshLoading(false);
-              }, 800);
-            }}
-          >刷新</Button>
-          <Popover
-            arrow={false}
-            trigger={'click'}
-            placement={'bottomLeft'}
-            content={<AdReportRight onRightChange={onRightChange}/>}>
-            <Button
-              style={{ fontWeight: "bold" }}
-              icon={<TableOutlined />}>细分条件 & 指标</Button>
-          </Popover>
-
-        </Space.Compact>
-
-
+        <Button
+          className={styles.rightColumn}
+          style={{ fontWeight: "bold" }}
+          icon={<ReloadOutlined />}
+          loading={refreshLoading}
+          disabled={refreshLoading}
+          onClick={() => {
+            setRefreshLoading(true);
+            onRefresh();
+            setTimeout(() => {
+              setRefreshLoading(false);
+            }, 800);
+          }}
+        >刷新</Button>
 
       </div>
     </div>

@@ -58,6 +58,7 @@ export const appSlice = createSlice({
       },
     } as INetDetailAd,
     loading: false,
+    isExpansion: true,
   }),
   reducers: {
     setAdName: (state: IAppStore, action: PayloadAction<string>) => {
@@ -92,6 +93,9 @@ export const appSlice = createSlice({
     setDetail: (state: IAppStore, action: PayloadAction<INetDetailAd>) => {
       state.detail = action.payload;
     },
+    setIsExpansion: (state: IAppStore) => {
+      state.isExpansion = !state.isExpansion;
+    },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
   extraReducers: (builder) => {
@@ -120,5 +124,6 @@ export const setShowDetailedCondition = appSlice.actions.setShowDetailedConditio
 export const setDetail = appSlice.actions.setDetail;
 
 export const setTableLoading = appSlice.actions.setTableLoading;
+export const setIsExpansion = appSlice.actions.setIsExpansion;
 
 export const appReducer = appSlice.reducer;

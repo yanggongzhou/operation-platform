@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Modal, notification, Space } from "antd";
+import { Button, Modal, message, Space } from "antd";
 import { debounce } from "throttle-debounce";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { ExclamationCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/views/ad-reporting/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
@@ -18,11 +18,12 @@ import {
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailAd, netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
 import { INetDetailAd } from "@/service/index.interfaces";
+import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 
 const AdReporting = () => {
   const [modal, contextHolder] = Modal.useModal();
   const [isPaintData, setIsPaintData] = useState(false); // 初次渲染数据
-  const [messageApi, contextMsgHolder] = notification.useNotification();
+  const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
   const isNeedSave = useRef(false); // 是否需要保存
   const isRequesting = useRef(false); // 是否在请求中
@@ -42,6 +43,7 @@ const AdReporting = () => {
     Reflect.deleteProperty(data, 'dataUpdateTime');
     return data;
   });
+  const isExpansion = useAppSelector(state => (state.app.isExpansion));
   useEffect(() => {
     initData();
   }, []);
@@ -65,7 +67,7 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info({ message: '已加载全部数据' });
+        messageApi.info('已加载全部数据');
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
@@ -140,7 +142,7 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info({ message: '已加载全部数据' });
+        messageApi.info('已加载全部数据');
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
@@ -185,7 +187,7 @@ const AdReporting = () => {
     setIsPaintData(false);
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
-    messageApi.success({ message: '已保存', duration: 2 });
+    messageApi.success('已保存');
     if (isBack) {
       navigate('/adsReporting', { replace: true });
     } else {
@@ -273,14 +275,12 @@ const AdReporting = () => {
     {contextHolder}
     {contextMsgHolder}
     <AdReportHeader
-      onChange={() => {
-        isNeedSave.current = true;
-      }}
+      onChange={() => isNeedSave.current = true}
       adName={adName}
       onSave={onSave}
       onBackTo={onBackTo}/>
     <AdReportSearch isPaintData={isPaintData} onSearch={onSearch} onRefresh={onRefresh} onRightChange={onRightChange}/>
-    <div className={styles.adReportMain}>
+    <div className={isExpansion ? styles.adReportMainExpansion : styles.adReportMain}>
       <div className={styles.adReportBox}>
         <TableDrag
           dataSource={dataSource}
@@ -290,6 +290,7 @@ const AdReporting = () => {
           onMore={() => getMoreList()}
           onDrag={onTableDrag}/>
       </div>
+      <AdReportRight onRightChange={onRightChange}/>
     </div>
   </div>;
 };
