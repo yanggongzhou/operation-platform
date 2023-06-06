@@ -5,7 +5,7 @@ import {
   SortableElement,
   SortableElementProps,
 } from 'react-sortable-hoc';
-import { HolderOutlined, SortDescendingOutlined, SortAscendingOutlined } from "@ant-design/icons";
+import { HolderOutlined, ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import styles from '@/views/ad-reporting/table-drag/index.module.scss';
 import { IColItem } from "@/views/ad-reporting/table-drag/index";
 import { useAppSelector } from "@/store";
@@ -31,6 +31,7 @@ const SortableItem: React.ComponentClass<IItemProps> = SortableElement(({ name, 
     <HolderOutlined
       className={styles.sortableDragIcon}
       onMouseLeave={() => changeDisable(true)}
+      onTouchEnd={() => changeDisable(true)}
       onTouchStart={() => changeDisable(false)}
       onMouseEnter={() => changeDisable(false)}
     />
@@ -39,7 +40,7 @@ const SortableItem: React.ComponentClass<IItemProps> = SortableElement(({ name, 
     </div>
     {
       isSortServer ? <>
-        {isOrderUp ? <SortDescendingOutlined className={styles.sortableSortIcon}/> : <SortAscendingOutlined className={styles.sortableSortIcon}/>}
+        {isOrderUp ? <ArrowUpOutlined className={styles.sortableSortIcon}/> : <ArrowDownOutlined className={styles.sortableSortIcon}/>}
       </> : null
     }
 

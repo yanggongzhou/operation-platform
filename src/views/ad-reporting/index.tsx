@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Modal, message, Space } from "antd";
 import { debounce } from "throttle-debounce";
-import { ExclamationCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
 import { TableDrag } from "@/views/ad-reporting/table-drag";
 import AdReportHeader from "@/views/ad-reporting/header/ad-report-header";
@@ -293,7 +293,7 @@ const AdReporting = () => {
       adName={adName}
       onSave={onSave}
       onBackTo={onBackTo}/>
-    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch} onRefresh={onRefresh} onRightChange={onRightChange}/>
+    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch} onRefresh={onRefresh}/>
     <div className={isExpansion ? styles.adReportMainExpansion : styles.adReportMain}>
       <div className={styles.adReportBox}>
         <TableDrag

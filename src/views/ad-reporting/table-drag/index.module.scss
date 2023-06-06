@@ -16,15 +16,18 @@
 .sortableDragIcon {
   cursor: move;
   position: absolute;
-  left: 1px;
-  top: 10px;
+  left: 0;
+  top: 0;
   z-index: 3;
+  height: 100%;
+  padding: 0 4px 0 2px;
 }
 
 .sortableName {
   position: relative;
   z-index: 2;
   cursor: pointer;
+  padding-left: 6px;
 }
 
 .sortableSortIcon {
@@ -32,7 +35,7 @@
   right: 0;
   top: 0;
   z-index: 1;
-  font-size: 12px;
+  font-size: 14px;
   color: #1ab394;
 }
 

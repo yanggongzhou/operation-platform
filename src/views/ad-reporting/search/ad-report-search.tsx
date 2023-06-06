@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, message, Popover, Select, Space, Switch, Tooltip } from "antd";
-import { ReloadOutlined, TableOutlined } from "@ant-design/icons";
+import { Button, message, Select, Space, Switch, Tooltip } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
 import {
   ConsumeOptions,
-  EConsume, EFilterType,
+  EConsume,
   EGroupField,
   EOperator,
   IFieldItem,
@@ -19,16 +19,14 @@ import OptimizerPop from "@/views/ad-reporting/pop/optimizer-pop";
 import AccountPop from "@/views/ad-reporting/pop/account-pop";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setCostType, setSearchFieldList, setShowDetailedCondition } from "@/store/modules/app.module";
-import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 
 interface IProps {
   isPaintData: boolean;
   onSearch: () => void;
   onRefresh: () => void;
-  onRightChange: (checkedValues: string[], filterType: EFilterType) => void;
 }
 
-const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh, onRightChange }) => {
+const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh }) => {
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [fieldList, setFieldList] = useState<IFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
@@ -75,7 +73,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh, onRightC
   };
   // 筛选类型
   const onChoose = (field: EGroupField) => {
-    console.log(`筛选类型: ${field}`, NGroupField[field]);
     setIsShowMenu(false);
     let isExist = false; // 是否存在
     const list = fieldList.map((val) => {
