@@ -93,8 +93,7 @@ const AdReportRight: FC<IProps> = ({onRightChange}) => {
           icon={isExpansion ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => {
             dispatch(setIsExpansion());
-          }}
-        />
+          }}/>
       </Tooltip>
 
       {/*<div className={styles.expansion} onClick={() => {*/}

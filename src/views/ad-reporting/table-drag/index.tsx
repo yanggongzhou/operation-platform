@@ -19,6 +19,7 @@ interface IProps {
   total: number;
   onMore: () => void;
   onDrag: (oldIndex: number, newIndex: number, filterType: EFilterType) => void;
+  onTargetSort: (key: string) => void;
 }
 
 export interface IColItem {
@@ -32,7 +33,7 @@ export interface IColItem {
   render: (text: string, record: IRecordsItem, index: number) => React.ReactNode;
 }
 
-export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore, onDrag, pageNo }) => {
+export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore, onDrag, pageNo, onTargetSort }) => {
   const loading = useAppSelector(state => state.app.loading);
   const [isFixed, setIsFixed] = useState(true); // 是否粘性布局
   const tableRef = useRef<HTMLTableElement | null>(null);
@@ -219,6 +220,11 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
     });
   });
 
+  // const changeTargetSort = (key: string) => {
+  //   console.log('生序 & 降序', key);
+  //   changeTargetSort();
+  // };
+
   return (
     <Table
       className={styles.tableBox}
@@ -237,6 +243,7 @@ export const TableDrag: FC<IProps> = ({ dataSource = [], sumData, total, onMore,
                 columns={groupColumns}
                 onSortEnd={({ oldIndex, newIndex }) => onDrag(oldIndex, newIndex, EFilterType.Group)}/>
               <TableDragHeader
+                changeSort={onTargetSort}
                 getContainer={() => {
                   return document.querySelector('.ant-table-thead') as HTMLElement;
                 }}

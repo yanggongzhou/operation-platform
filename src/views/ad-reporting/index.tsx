@@ -12,7 +12,7 @@ import {
   baseInfoAsync,
   searchListAsync, setDetail,
   setFilterFieldList,
-  setIndexColumnList,
+  setIndexColumnList, setOrder, setSort,
   setTableLoading
 } from "@/store/modules/app.module";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
@@ -44,6 +44,10 @@ const AdReporting = () => {
     return data;
   });
   const isExpansion = useAppSelector(state => (state.app.isExpansion));
+  const sortName = useAppSelector(state => state.app.detail.structure.sort);
+  const isOrderUp = useAppSelector(state => state.app.detail.structure.order === "desc");
+
+
   useEffect(() => {
     initData();
   }, []);
@@ -258,6 +262,16 @@ const AdReporting = () => {
       dispatch(setIndexColumnList(list));
     }
   };
+  // 指标排序
+  const onTargetSort = (key: string) => {
+    isNeedSave.current = true;
+    if (sortName === key) {
+      dispatch(setOrder());
+    } else {
+      dispatch(setSort(key));
+    }
+  };
+
   // 拖拽细分条件刷新数据
   useEffect(() => {
     if (filterFieldList.length > 0 && isNeedSave.current) {
@@ -269,7 +283,7 @@ const AdReporting = () => {
         isRequesting.current = true;
       }
     }
-  }, [filterFieldList]);
+  }, [filterFieldList, isOrderUp, sortName]);
 
   return <div className={styles.adReportWrap}>
     {contextHolder}
@@ -288,7 +302,9 @@ const AdReporting = () => {
           pageNo={pageNo}
           total={pageInfo.total}
           onMore={() => getMoreList()}
-          onDrag={onTableDrag}/>
+          onDrag={onTableDrag}
+          onTargetSort={onTargetSort}
+        />
       </div>
       <AdReportRight onRightChange={onRightChange}/>
     </div>

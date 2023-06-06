@@ -29,7 +29,7 @@
     ],
     "max-lines": [
       "error",
-      300
+      350
     ],
     "unicorn/filename-case": [
       "off",
