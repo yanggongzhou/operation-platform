@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import { Button, message, Select, Space, Switch, Tooltip } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/search/ad-report-search.module.scss";
 import SearchMenu from "@/components/search-menu";
 import AdReportSearchTime from "@/views/ad-reporting/search/ad-report-search-time";
@@ -11,7 +10,6 @@ import {
   EOperator,
   IFieldItem,
   ISearchFieldItem,
-  NGroupField
 } from "@/views/ad-reporting/index.interfaces";
 import CheckedPop from "@/views/ad-reporting/pop/checked-pop";
 import CountryPop from "@/views/ad-reporting/pop/country-pop";
@@ -23,10 +21,9 @@ import { setCostType, setSearchFieldList, setShowDetailedCondition } from "@/sto
 interface IProps {
   isPaintData: boolean;
   onSearch: () => void;
-  onRefresh: () => void;
 }
 
-const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh }) => {
+const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
   const [messageApi, contextMsgHolder] = message.useMessage();
   const [fieldList, setFieldList] = useState<IFieldItem[]>([]);
   const costType = useAppSelector(state => state.app.detail.structure.costType);
@@ -35,7 +32,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh }) => {
   const startDate = useAppSelector(state => state.app.detail.structure.startDate);
   const endDate = useAppSelector(state => state.app.detail.structure.endDate);
   const formRelatedDynamicDate = useAppSelector(state => state.app.detail.structure.formRelatedDynamicDate);
-  const [refreshLoading, setRefreshLoading] = useState(false);
+  // const [refreshLoading, setRefreshLoading] = useState(false);
 
   const [isShowMenu, setIsShowMenu] = useState(true);
   useEffect(() => {
@@ -170,22 +167,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData, onRefresh }) => {
           unCheckedChildren="数据透视"
           checked={showDetailedCondition}
           onChange={(c) => onShowDetailedCondition(c)} />
-
-        <Button
-          className={styles.rightColumn}
-          style={{ fontWeight: "bold" }}
-          icon={<ReloadOutlined />}
-          loading={refreshLoading}
-          disabled={refreshLoading}
-          onClick={() => {
-            setRefreshLoading(true);
-            onRefresh();
-            setTimeout(() => {
-              setRefreshLoading(false);
-            }, 800);
-          }}
-        >刷新</Button>
-
       </div>
     </div>
   );

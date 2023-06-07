@@ -29,7 +29,6 @@
     row-gap: 8px;
     column-gap: 8px;
     position: relative;
-    padding-right: 80px;
 
     .timeRange {
       min-width: 285px;
@@ -49,12 +48,6 @@
       border-radius: 2px 0 0 2px;
       font-size: 12px;
       font-weight: 500;
-    }
-
-    .rightColumn {
-      position: absolute;
-      right: 0;
-      bottom: 0;
     }
   }
 }

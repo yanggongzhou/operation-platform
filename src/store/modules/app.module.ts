@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAppStore } from "@/store/store.interfaces";
 import { netBaseInfoList, netDetailAd, netSearchList } from "@/service/ads-reporting";
-import { EFormRelatedDynamicDate, INetBaseInfoList, INetDetailAd, INetSearchList } from "@/service/index.interfaces";
+import {
+  EFormRelatedDynamicDate,
+  ExpandTargetAndGroupType,
+  INetBaseInfoList,
+  INetDetailAd,
+  INetSearchList
+} from "@/service/index.interfaces";
 import { EConsume, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 
 export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
@@ -44,6 +50,7 @@ export const appSlice = createSlice({
       group: [],
     },
     detail: {
+      expandTargetAndGroup: ExpandTargetAndGroupType.expand, // 是否展开细分条件 & 指标
       structure: {
         costType: EConsume.FWC, //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
         searchFieldList: [], // 搜索字段
@@ -58,7 +65,6 @@ export const appSlice = createSlice({
       },
     } as INetDetailAd,
     loading: false,
-    isExpansion: true,
   }),
   reducers: {
     setAdName: (state: IAppStore, action: PayloadAction<string>) => {
@@ -100,8 +106,8 @@ export const appSlice = createSlice({
     setDetail: (state: IAppStore, action: PayloadAction<INetDetailAd>) => {
       state.detail = action.payload;
     },
-    setIsExpansion: (state: IAppStore) => {
-      state.isExpansion = !state.isExpansion;
+    setExpandTargetAndGroup: (state: IAppStore, action: PayloadAction<boolean>) => {
+      state.detail.expandTargetAndGroup = action.payload ? ExpandTargetAndGroupType.noExpand : ExpandTargetAndGroupType.expand;
     },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
@@ -134,6 +140,6 @@ export const setOrder = appSlice.actions.setOrder;
 
 
 export const setTableLoading = appSlice.actions.setTableLoading;
-export const setIsExpansion = appSlice.actions.setIsExpansion;
+export const setExpandTargetAndGroup = appSlice.actions.setExpandTargetAndGroup;
 
 export const appReducer = appSlice.reducer;

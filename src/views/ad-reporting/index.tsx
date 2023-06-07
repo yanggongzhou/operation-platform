@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Modal, message, Space } from "antd";
+import { Button, message, Modal, Space } from "antd";
 import { debounce } from "throttle-debounce";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
@@ -10,14 +10,18 @@ import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 import { store, useAppDispatch, useAppSelector } from "@/store";
 import {
   baseInfoAsync,
-  searchListAsync, setDetail,
+  searchListAsync,
+  setDetail,
+  setExpandTargetAndGroup,
   setFilterFieldList,
-  setIndexColumnList, setOrder, setSort,
+  setIndexColumnList,
+  setOrder,
+  setSort,
   setTableLoading
 } from "@/store/modules/app.module";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailAd, netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
-import { INetDetailAd } from "@/service/index.interfaces";
+import { ExpandTargetAndGroupType, INetDetailAd } from "@/service/index.interfaces";
 import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 
 const AdReporting = () => {
@@ -43,10 +47,9 @@ const AdReporting = () => {
     Reflect.deleteProperty(data, 'dataUpdateTime');
     return data;
   });
-  const isExpansion = useAppSelector(state => (state.app.isExpansion));
+  const isExpansion = useAppSelector(state => (state.app.detail.expandTargetAndGroup !== ExpandTargetAndGroupType.noExpand));
   const sortName = useAppSelector(state => state.app.detail.structure.sort);
   const isOrderUp = useAppSelector(state => state.app.detail.structure.order === "desc");
-
 
   useEffect(() => {
     initData();
@@ -285,6 +288,11 @@ const AdReporting = () => {
     }
   }, [filterFieldList, isOrderUp, sortName]);
 
+  const onRightExpend = (isExpansion: boolean) => {
+    isNeedSave.current = true;
+    dispatch(setExpandTargetAndGroup(isExpansion));
+  };
+
   return <div className={styles.adReportWrap}>
     {contextHolder}
     {contextMsgHolder}
@@ -293,7 +301,7 @@ const AdReporting = () => {
       adName={adName}
       onSave={onSave}
       onBackTo={onBackTo}/>
-    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch} onRefresh={onRefresh}/>
+    <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
     <div className={isExpansion ? styles.adReportMainExpansion : styles.adReportMain}>
       <div className={styles.adReportBox}>
         <TableDrag
@@ -306,7 +314,7 @@ const AdReporting = () => {
           onTargetSort={onTargetSort}
         />
       </div>
-      <AdReportRight onRightChange={onRightChange}/>
+      <AdReportRight onRightChange={onRightChange} onRightExpend={onRightExpend} onRefresh={onRefresh}/>
     </div>
   </div>;
 };
