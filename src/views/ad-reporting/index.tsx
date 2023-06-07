@@ -74,7 +74,7 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info('已加载全部数据');
+        messageApi.info({ content: '已加载全部数据', onClick: () => messageApi.destroy() });
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
@@ -149,7 +149,7 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info('已加载全部数据');
+        messageApi.info({ content: '已加载全部数据', onClick: () => messageApi.destroy() });
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
@@ -194,7 +194,7 @@ const AdReporting = () => {
     setIsPaintData(false);
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
-    messageApi.success('已保存');
+    messageApi.success({ content: '已保存', onClick: () => messageApi.destroy() });
     if (isBack) {
       navigate('/adsReporting', { replace: true });
     } else {
