@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAppStore } from "@/store/store.interfaces";
 import { netBaseInfoList, netDetailAd, netSearchList } from "@/service/ads-reporting";
-import { EFormRelatedDynamicDate, INetBaseInfoList, INetDetailAd, INetSearchList } from "@/service/index.interfaces";
+import {
+  EFormRelatedDynamicDate,
+  ExpandTargetAndGroupType,
+  INetBaseInfoList,
+  INetDetailAd,
+  INetSearchList
+} from "@/service/index.interfaces";
 import { EConsume, ISearchFieldItem } from "@/views/ad-reporting/index.interfaces";
 
 export const baseInfoAsync = createAsyncThunk<INetBaseInfoList>(
@@ -44,6 +50,7 @@ export const appSlice = createSlice({
       group: [],
     },
     detail: {
+      expandTargetAndGroup: ExpandTargetAndGroupType.expand, // 是否展开细分条件 & 指标
       structure: {
         costType: EConsume.FWC, //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
         searchFieldList: [], // 搜索字段
@@ -77,6 +84,13 @@ export const appSlice = createSlice({
       state.detail.structure.endDate = action.payload ? action.payload[1] : '';
       // state.detail.structure.formRelatedDynamicDate = EFormRelatedDynamicDate.normal;
     },
+    setSort: (state: IAppStore, action: PayloadAction<string>) => {
+      state.detail.structure.sort = action.payload;
+      state.detail.structure.order = "desc";
+    },
+    setOrder: (state: IAppStore) => {
+      state.detail.structure.order = state.detail.structure.order === "desc" ? "asc" : "desc";
+    },
     setFormRelatedDynamicDate: (state: IAppStore, action: PayloadAction<EFormRelatedDynamicDate>) => {
       state.detail.structure.formRelatedDynamicDate = action.payload;
     },
@@ -91,6 +105,9 @@ export const appSlice = createSlice({
     },
     setDetail: (state: IAppStore, action: PayloadAction<INetDetailAd>) => {
       state.detail = action.payload;
+    },
+    setExpandTargetAndGroup: (state: IAppStore, action: PayloadAction<boolean>) => {
+      state.detail.expandTargetAndGroup = action.payload ? ExpandTargetAndGroupType.noExpand : ExpandTargetAndGroupType.expand;
     },
   },
   // 在extraReducers中可以对请求结果的成功失败，做不同的处理
@@ -118,7 +135,11 @@ export const setAdName = appSlice.actions.setAdName;
 export const setSearchFieldList = appSlice.actions.setSearchFieldList;
 export const setShowDetailedCondition = appSlice.actions.setShowDetailedCondition;
 export const setDetail = appSlice.actions.setDetail;
+export const setSort = appSlice.actions.setSort;
+export const setOrder = appSlice.actions.setOrder;
+
 
 export const setTableLoading = appSlice.actions.setTableLoading;
+export const setExpandTargetAndGroup = appSlice.actions.setExpandTargetAndGroup;
 
 export const appReducer = appSlice.reducer;

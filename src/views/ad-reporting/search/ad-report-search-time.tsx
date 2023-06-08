@@ -53,8 +53,8 @@ const AdReportSearchTime: FC<IProps> = ({ formRelatedDynamicDate }) => {
     { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastSeven} title="过去7天" />, value: [dayjs().add(-7, 'd'), dayjs().add(-1, 'd')] },
     { label: <PresetsLabel dateCode={EFormRelatedDynamicDate.lastFourteen} title="过去14天" />, value: [dayjs().add(-14, 'd'), dayjs().add(-1, 'd')] },
   ];
+  // 日期范围搜索
   const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
-    console.log('日期范围搜索 From: ', dateStrings);
     if (dates) {
       dispatch(setRangeDate(dateStrings));
     } else {
@@ -76,6 +76,7 @@ const AdReportSearchTime: FC<IProps> = ({ formRelatedDynamicDate }) => {
 
   return (
     <DatePicker.RangePicker
+      inputReadOnly
       value={dates}
       popupClassName={styles.searchTimePopBox}
       presets={rangePresets}

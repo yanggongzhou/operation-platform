@@ -31,7 +31,7 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
   }, [pageInfo]);
 
   const columns = [
-    { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name',
+    { title: '报告名称', align: 'center', dataIndex: 'name', key: 'name', width: 200,
       ellipsis: {
         showTitle: false,
       },
@@ -40,9 +40,9 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
           {name}
         </Tooltip>
       ), },
-    { title: '编辑时间', align: 'center', dataIndex: 'updateTime', key: 'updateTime', width: 200 },
-    { title: '创建时间', align: 'center', dataIndex: 'createTime', key: 'createTime', width: 200 },
-    { title: '操作', width: 200, align: 'center', key: 'operation', render: (value: any, record: IAdsListItem) => (
+    { title: '编辑时间', align: 'center', dataIndex: 'updateTime', key: 'updateTime', width: 160 },
+    { title: '创建时间', align: 'center', dataIndex: 'createTime', key: 'createTime', width: 160 },
+    { title: '操作', width: 160, align: 'center', key: 'operation', render: (value: any, record: IAdsListItem) => (
       <Space size="small">
         <Button
           size={'small'}
@@ -105,7 +105,7 @@ const AdsReportingTable: FC<IProps> = ({ loading, dataSource, total, onCopyAd, g
         bordered
         rowKey={'id'}
         size={'small'}
-        onRow={(record, rowIndex) => {
+        onRow={(record) => {
           return {
             onClick: (event) => {
               onCheck(record);

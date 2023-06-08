@@ -1,39 +1,30 @@
 .adReportWrap {
-  padding: 16px 24px 24px;
+  padding: 8px 10px;
   height: 100%;
   display: flex;
   flex-direction: column;
 
-  .adReportMain {
+  .adReportMain, .adReportMainExpansion {
     width: 100%;
-    //display: flex;
-    //align-items: center;
-    //justify-content: center;
-    //flex-direction: row;
+    min-height: 600px;
+    flex: 1;
     display: grid;
     grid-template-columns: auto 220px;
     grid-column-gap: 8px;
-    min-height: 500px;
-    flex: 1;
-
-    .adReportBox {
-      overflow-x: scroll;
-      border-radius: 3px;
-      position: relative;
-      padding: 10px 15px;
-      background-color: #FFFFFF;
-      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    .adReportRight {
-      width: 100%;
-      height: 100%;
-      border-radius: 3px;
-      position: relative;
-      padding: 10px 15px;
-      background-color: #FFFFFF;
-      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
-    }
-
+    transition: all 0.3s;
   }
+
+  .adReportMain {
+    grid-template-columns: auto 80px;
+  }
+
+  .adReportBox {
+    height: 100%;
+    overflow-x: scroll;
+    border-radius: 3px;
+    position: relative;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
+  }
+
 }

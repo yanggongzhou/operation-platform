@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Modal, notification, Space } from "antd";
+import { Button, message, Modal, Space } from "antd";
 import { debounce } from "throttle-debounce";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "@/views/ad-reporting/index.module.scss";
@@ -10,22 +10,27 @@ import AdReportSearch from "@/views/ad-reporting/search/ad-report-search";
 import { store, useAppDispatch, useAppSelector } from "@/store";
 import {
   baseInfoAsync,
-  searchListAsync, setDetail,
+  searchListAsync,
+  setDetail,
+  setExpandTargetAndGroup,
   setFilterFieldList,
   setIndexColumnList,
+  setOrder,
+  setSort,
   setTableLoading
 } from "@/store/modules/app.module";
-import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 import { EFilterType, IRecordsItem } from "@/views/ad-reporting/index.interfaces";
 import { netDetailAd, netDetailListAd, netListAd, netUpdateAd } from "@/service/ads-reporting";
-import { INetDetailAd } from "@/service/index.interfaces";
+import { ExpandTargetAndGroupType, INetDetailAd } from "@/service/index.interfaces";
+import AdReportRight from "@/views/ad-reporting/right/ad-report-right";
 
 const AdReporting = () => {
   const [modal, contextHolder] = Modal.useModal();
   const [isPaintData, setIsPaintData] = useState(false); // 初次渲染数据
-  const [messageApi, contextMsgHolder] = notification.useNotification();
+  const [messageApi, contextMsgHolder] = message.useMessage();
   const navigate = useNavigate();
   const isNeedSave = useRef(false); // 是否需要保存
+  const isRequesting = useRef(false); // 是否在请求中
   const dispatch = useAppDispatch();
   const routeParams = useParams();
   const id = useMemo(() => routeParams?.id as string, [routeParams]);
@@ -42,6 +47,10 @@ const AdReporting = () => {
     Reflect.deleteProperty(data, 'dataUpdateTime');
     return data;
   });
+  const isExpansion = useAppSelector(state => (state.app.detail.expandTargetAndGroup !== ExpandTargetAndGroupType.noExpand));
+  const sortName = useAppSelector(state => state.app.detail.structure.sort);
+  const isOrderUp = useAppSelector(state => state.app.detail.structure.order === "desc");
+
   useEffect(() => {
     initData();
   }, []);
@@ -57,6 +66,7 @@ const AdReporting = () => {
       setRows([]);
     }
     try {
+      dispatch(setTableLoading(true));
       const { records = [], total = 0, sumData, pages = 1 } = await netListAd(bodyData, page);
       if (page === 0) {
         setRows(records);
@@ -64,12 +74,14 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info({ message: '已加载全部数据' });
+        messageApi.info({ content: '已加载全部数据', onClick: () => messageApi.destroy() });
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       dispatch(setTableLoading(false));
+      isRequesting.current = false;
     }
   }, { atBegin: false });
   const filterFieldList = useAppSelector(state => state.app.detail.structure.filterFieldList);
@@ -97,7 +109,7 @@ const AdReporting = () => {
     }
     if (rows.length > 0 && fieldNames.length > 0) {
       return rows.map((item, ind) => {
-        const val = {...item};
+        const val = { ...item };
 
         const index = fieldNames.indexOf(val.groupByFields);
         if (index === -1) return val;
@@ -137,23 +149,39 @@ const AdReporting = () => {
         setRows(prevState => [...prevState, ...records]);
       }
       if (page >= pages - 1) {
-        messageApi.info({message: '已加载全部数据'});
+        messageApi.info({ content: '已加载全部数据', onClick: () => messageApi.destroy() });
       }
       setSumData(sumData);
       setPageInfo({ total, pages });
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       dispatch(setTableLoading(false));
+      isRequesting.current = false;
     }
   }, { atBegin: false });
 
   // 保存报表
   const onSave = (isBack?: boolean) => {
     if (!isBack) {
-      modal.confirm({ bodyStyle: { padding: 20 }, title: '保存报表', direction: 'ltr', icon: <ExclamationCircleOutlined />, content: `确认保存「${adName}」？原数据将被覆盖，无法撤销`, okText: '确认', cancelText: '取消', onOk: () => handleSave() });
+      modal.confirm({
+        bodyStyle: { padding: 20 },
+        title: '保存报表',
+        direction: 'ltr',
+        icon: <ExclamationCircleOutlined/>,
+        content: `确认保存「${adName}」？原数据将被覆盖，无法撤销`,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => handleSave()
+      });
     } else { // 修改未保存
-      const modala =  modal.confirm({ bodyStyle: {padding: 20}, title: '修改未保存报表', direction: 'ltr', icon: <ExclamationCircleOutlined />, content: `要保存对「${adName}」的修改吗`,
+      const modala = modal.confirm({
+        bodyStyle: { padding: 20 },
+        title: '修改未保存报表',
+        direction: 'ltr',
+        icon: <ExclamationCircleOutlined/>,
+        content: `要保存对「${adName}」的修改吗`,
         footer: <div style={{ display: "flex", justifyContent: "space-between", padding: '10px 0 0 35px' }}>
-          <Button type="primary" onClick={() => navigate('/adsReporting', { replace: true }) }>不保存</Button>
+          <Button type="primary" onClick={() => navigate('/adsReporting', { replace: true })}>不保存</Button>
           <Space>
             <Button onClick={() => modala.destroy()}>取消</Button>
             <Button type="primary" onClick={() => handleSave(isBack)}>保存</Button>
@@ -166,12 +194,13 @@ const AdReporting = () => {
     setIsPaintData(false);
     await netUpdateAd(bodyData);
     isNeedSave.current = false;
-    messageApi.success({ message: '已保存', duration: 2 });
+    messageApi.success({ content: '已保存', onClick: () => messageApi.destroy() });
     if (isBack) {
       navigate('/adsReporting', { replace: true });
     } else {
       const detail = await netDetailAd(store.getState().app.detail.id);
       dispatch(setDetail(detail));
+      isRequesting.current = true;
       getList();
     }
   };
@@ -180,7 +209,6 @@ const AdReporting = () => {
     if (pageNo !== 0) {
       setPageNo(0);
     } else {
-      dispatch(setTableLoading(true));
       getUnSaveList(0);
     }
   };
@@ -191,14 +219,14 @@ const AdReporting = () => {
   };
   // 更多数据
   const getMoreList = () => {
-    if (pageNo >= pageInfo.pages || store.getState().app.loading) return;
+    if (pageNo >= pageInfo.pages || store.getState().app.loading || isRequesting.current) return;
     setPageNo(prevState => ++prevState);
   };
 
   useEffect(() => {
     if (pageNo >= 0) {
       if (pageNo >= pageInfo.pages) return;
-      dispatch(setTableLoading(true));
+      isRequesting.current = true;
       if (isNeedSave.current) {
         getUnSaveList(pageNo);
       } else {
@@ -216,18 +244,10 @@ const AdReporting = () => {
     }
   };
   // 指标｜细分条件
-  const onChange = (checkedValues: string[], filterType: EFilterType) => {
+  const onRightChange = (checkedValues: string[], filterType: EFilterType) => {
     isNeedSave.current = true;
     if (filterType === EFilterType.Group) {
       dispatch(setFilterFieldList(checkedValues));
-      if (showDetailedCondition) {
-        if (pageNo !== 0) {
-          setPageNo(0);
-        } else {
-          dispatch(setTableLoading(true));
-          getUnSaveList(0);
-        }
-      }
     } else {
       dispatch(setIndexColumnList(checkedValues));
     }
@@ -245,28 +265,44 @@ const AdReporting = () => {
       dispatch(setIndexColumnList(list));
     }
   };
+  // 指标排序
+  const onTargetSort = (key: string) => {
+    isNeedSave.current = true;
+    if (sortName === key) {
+      dispatch(setOrder());
+    } else {
+      dispatch(setSort(key));
+    }
+  };
+
   // 拖拽细分条件刷新数据
   useEffect(() => {
     if (filterFieldList.length > 0 && isNeedSave.current) {
       if (pageNo !== 0) {
         setPageNo(0);
       } else {
+        dispatch(setTableLoading(true));
         getUnSaveList(0);
+        isRequesting.current = true;
       }
     }
-  }, [filterFieldList]);
+  }, [filterFieldList, isOrderUp, sortName]);
+
+  const onRightExpend = (isExpansion: boolean) => {
+    isNeedSave.current = true;
+    dispatch(setExpandTargetAndGroup(isExpansion));
+  };
 
   return <div className={styles.adReportWrap}>
     {contextHolder}
     {contextMsgHolder}
     <AdReportHeader
-      onRefresh={onRefresh}
-      onChange={() => {isNeedSave.current = true;}}
+      onChange={() => isNeedSave.current = true}
       adName={adName}
       onSave={onSave}
       onBackTo={onBackTo}/>
     <AdReportSearch isPaintData={isPaintData} onSearch={onSearch}/>
-    <div className={styles.adReportMain}>
+    <div className={isExpansion ? styles.adReportMainExpansion : styles.adReportMain}>
       <div className={styles.adReportBox}>
         <TableDrag
           dataSource={dataSource}
@@ -274,11 +310,11 @@ const AdReporting = () => {
           pageNo={pageNo}
           total={pageInfo.total}
           onMore={() => getMoreList()}
-          onDrag={onTableDrag}/>
+          onDrag={onTableDrag}
+          onTargetSort={onTargetSort}
+        />
       </div>
-      <div className={styles.adReportRight}>
-        <AdReportRight onChange={onChange}/>
-      </div>
+      <AdReportRight onRightChange={onRightChange} onRightExpend={onRightExpend} onRefresh={onRefresh}/>
     </div>
   </div>;
 };

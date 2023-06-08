@@ -10,7 +10,6 @@ import {
   EOperator,
   IFieldItem,
   ISearchFieldItem,
-  NGroupField
 } from "@/views/ad-reporting/index.interfaces";
 import CheckedPop from "@/views/ad-reporting/pop/checked-pop";
 import CountryPop from "@/views/ad-reporting/pop/country-pop";
@@ -33,6 +32,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
   const startDate = useAppSelector(state => state.app.detail.structure.startDate);
   const endDate = useAppSelector(state => state.app.detail.structure.endDate);
   const formRelatedDynamicDate = useAppSelector(state => state.app.detail.structure.formRelatedDynamicDate);
+  // const [refreshLoading, setRefreshLoading] = useState(false);
 
   const [isShowMenu, setIsShowMenu] = useState(true);
   useEffect(() => {
@@ -70,7 +70,6 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
   };
   // 筛选类型
   const onChoose = (field: EGroupField) => {
-    console.log(`筛选类型: ${field}`, NGroupField[field]);
     setIsShowMenu(false);
     let isExist = false; // 是否存在
     const list = fieldList.map((val) => {
@@ -149,7 +148,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
         </Tooltip>
       </div>
       <div className={styles.adSearchBottom}>
-        <Space.Compact>
+        <Space.Compact style={{ width: '200px' }}>
           <div className={styles.adSearchBottomLabel}>数据过滤: </div>
           <Select<EConsume>
             value={costType}
@@ -163,6 +162,7 @@ const AdReportSearch: FC<IProps> = ({ onSearch, isPaintData }) => {
           <AdReportSearchTime formRelatedDynamicDate={formRelatedDynamicDate}/>
         </Space.Compact>
         <Switch
+          style={{ width: '82px' }}
           checkedChildren="数据透视"
           unCheckedChildren="数据透视"
           checked={showDetailedCondition}

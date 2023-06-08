@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Select } from "antd";
 import { EGroupField, NGroupField } from "@/views/ad-reporting/index.interfaces";
 
@@ -12,7 +12,7 @@ const treeData = Object.keys(NGroupField).map((field) => (
 
 const SearchMenu: FC<IProps> = ({ onChoose }) => {
 
-  const [value, setValue] = useState<EGroupField>();
+  // const [value, setValue] = useState<EGroupField>();
 
   const onChange = (newValue: EGroupField) => {
     onChoose(newValue);
@@ -22,9 +22,9 @@ const SearchMenu: FC<IProps> = ({ onChoose }) => {
     <Select
       bordered={false}
       style={{ width: '200px', marginLeft: '20px' }}
-      showSearch
-      value={value}
-      optionFilterProp="label"
+      // showSearch
+      // value={value}
+      // optionFilterProp="label"
       placeholder="请搜索和筛选"
       onChange={onChange}
       options={treeData}

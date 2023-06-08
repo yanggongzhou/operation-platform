@@ -31,6 +31,7 @@ export interface INetSearchList {
 export interface INetDetailAd {
   id: string; // 主键
   name: string; // 报表名称
+  expandTargetAndGroup: ExpandTargetAndGroupType;
   structure: {
     costType: EConsume; //消耗 2为不过滤，1为过滤无效数据，3为过滤无消耗
     endDate: string; //结束时间
@@ -46,6 +47,12 @@ export interface INetDetailAd {
   createTime?: string;
   updateTime?: string;
   dataUpdateTime?: string;
+}
+
+
+export enum ExpandTargetAndGroupType {
+  noExpand = 0,
+  expand = 1,
 }
 
 export enum EFormRelatedDynamicDate {
@@ -64,6 +71,7 @@ export interface INetDetailListAd {
   total: number;
   records: IRecordsItem[];
   sumData: IRecordsItem;
+  hasMore: boolean;
 }
 
 export interface INetAccountList {

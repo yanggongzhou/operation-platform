@@ -1,6 +1,6 @@
 .sortableItem, .sortableTargetItem {
   min-width: 100px;
-  padding: 8px 12px !important;
+  padding: 6px !important;
   //border: 1px solid #f0f0f0;
   font-size: 14px;
   font-weight: bold;
@@ -10,7 +10,33 @@
   border-bottom: 1px solid #f0f0f0;
   border-inline-end: 1px solid #f0f0f0;
   text-align: center !important;
+  user-select: unset;
+}
+
+.sortableDragIcon {
   cursor: move;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  height: 100%;
+  padding: 0 4px 0 2px;
+}
+
+.sortableName {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  padding-left: 6px;
+}
+
+.sortableSortIcon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  font-size: 14px;
+  color: #1ab394;
 }
 
 .sortableItem {
@@ -25,16 +51,26 @@
 
 .tableBox {
   min-height: 600px;
+  padding: 10px;
+
+  .antTableRowIndex {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 8px;
+    text-align: center;
+  }
 
   :global {
     .ant-table-thead > tr > th {
-      background: rgba(236, 236, 236, 0.95);
+      background: rgba(236, 236, 236, 0.98);
       padding: 8px 12px;
       //  display: flex;
       //  flex-direction: row;
       position: sticky;
       border-bottom: 1px solid #ddd;
       border-inline-end: 1px solid #ddd !important;
+      user-select: none;
+      height: 36px;
 
       &[data-title = 'group'] {
         border-right: 3px solid #ddd !important;
@@ -65,7 +101,6 @@
 .tbodyThItem {
   height: 30px;
   line-height: 30px;
-  padding: 0 8px;
   text-align: center;
   //background-color: #fafafa;
 }
@@ -83,14 +118,14 @@
   cursor: pointer;
   font-weight: 500;
   font-size: 0;
-  padding: 4px 8px;
+  padding: 4px;
   max-width: 240px;
   text-align: center;
   min-height: 30px;
 }
 
 .tbodyTdItemLast {
-  border-right: 2px solid #ddd;
+  //border-right: 2px solid #ddd;
 
   &:after {
     content: "";
@@ -107,7 +142,6 @@
 .tbodyTdTarget {
   height: 30px;
   line-height: 30px;
-  padding: 0 8px;
   text-align: center;
 }
 
